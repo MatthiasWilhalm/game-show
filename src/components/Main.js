@@ -10,6 +10,9 @@ import {
     useHistory
 } from "react-router-dom";
 import DataPackage from '../tools/DataPackage';
+import { getPlayerId, getUsername, storePlayerId, storeUsername } from '../tools/tools';
+import { Event } from '../tools/Event';
+import { Game } from '../tools/Game';
 
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');
@@ -41,27 +44,46 @@ const Main = () => {
         },
         share: true,
         onMessage: e => {
-            console.log("new msg res");
-            console.log(e);
             let msg = new DataPackage();
             msg.parse(e.data);
-            console.log(msg);
+            console.log(msg.type);
+            switch (msg.type) {
+                case 'getplayerid':
+                    if(!getPlayerId()) {
+                        storePlayerId(msg.payload);
+                    }
+                    send('updateplayerdata', {oldPlayerId: msg.payload, username: getUsername()});
+                    break;
+                case 'eventcreated':
+                    console.log(msg.payload);
+                    break;
+                default:
+                    break;
+            }
 
         }
     });
 
     const send = (type, data) => {
-        sendMessage("" + type + data);
+        sendMessage(new DataPackage(type, getPlayerId(), data).toString());
     }
 
     useEffect(() => {
-        send("hello"," world");
+        storeUsername('Bob');
     }, []);
 
+    const createTestEvent = () => {
+        let event = new Event("Test Event", [
+            new Game("Quiz Show", "bla bla", "quizShow", false, {}),
+            new Game("Bingo", "bla bla bla", "bingo", true, {})
+        ]);
+        send('createandjoinevent', event);
+    }
 
     return (
         <div>
             Home
+            <button onClick={createTestEvent}>Create Event</button>
         </div>
         // <div>
         //     <Router>

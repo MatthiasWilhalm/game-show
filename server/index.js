@@ -1,6 +1,8 @@
 // server/index.js
 
 const {DataPackage} = require('./tools/DataPackage.js');
+const {Event} = require('./tools/Event.js');
+const {Game, PlayerProgress} = require('./tools/Game.js');
 
 const webSocketsServerPort = 5110;
 const webSocketServer = require('websocket').server;
@@ -12,24 +14,33 @@ server.listen(webSocketsServerPort, "0.0.0.0");
 const wsServer = new webSocketServer({httpServer: server});
 
 const clients = new Map();
+const events = new Map();
+
+
 
 wsServer.on('request', function (request) {
-  var userID = getUniqueID();
+  var playerId = generatePlayerId();
   console.log('Recieved new connection');
   const connection = request.accept(null, request.origin);
 
   connection.on('message', handleRequest);
 
-  connection.on('close', () => handleDisconnect(userID));
+  connection.on('close', () => handleDisconnect(playerId));
 
-  connection.send(DataPackage("getsessionid", userID, "welcome"));
+  connection.send(DataPackage("getplayerid", playerId, playerId).toString());
 
-  storeConnection(connection, userID);
+  storeConnection(connection, playerId);
+  debugListEvents();
 });
 
-function getUniqueID() {
+function generatePlayerId() {
     const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     return s4() + s4() + '-' + s4();
+}
+
+function generateEventId() {
+  const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  return s4() + s4();
 }
 
 /**
@@ -41,115 +52,149 @@ function getUniqueID() {
     let msg = DataPackage();
     msg.parse(reqest.utf8Data);
   
-    // resyncClientData(msg);
-
     console.log("receiving client request...");
   
-    // TODO: handel request
+    switch (msg.type) {
+      case "createandjoinevent":
+        createAndJoinEvent(msg.payload, msg.playerId);
+        debugListEvents();
+        debugListClients();
+        break;
+      case 'updateplayerdata':
+        updatePlayerData(msg.payload.oldPlayerId, msg.playerId, msg.payload.username);
+        debugListClients();
+        break;
+      default:
+        break;
+    }
 
   }
   
   /**
    * 
-   * @param {String} userID 
+   * @param {String} playerId 
    */
-  function handleDisconnect(userID) {
-    console.log(userID + " disconnected");
-    let c = clients.get(userID);
+  function handleDisconnect(playerId) {
+    console.log(playerId + " disconnected");
+    let c = clients.get(playerId);
     let g = '';
-    if(c!==undefined && c.game!==null)
-      g = c.game;
-    clients.delete(userID);
+    if(c!==undefined && c.event!==null)
+      g = c.event;
+    clients.delete(playerId);
     if(g!=='')
-      updateGamePlayerList(g);
+      updateEventPlayerList(g);
     console.log(clients.size + " clients connected");
   }
   
   /**
    * store new connection in map 
    * @param {connection} connection 
-   * @param {String} userID 
+   * @param {String} playerId 
    */
-  function storeConnection(connection, userID) {
-      let client = { game: null, socket: connection, user: { id: null, name: '' } };
-      clients.set(userID, client);
+  function storeConnection(connection, playerId) {
+      let client = { event: null, socket: connection, username: '' };
+      clients.set(playerId, client);
   
-      console.log('connected: ' + userID);
+      console.log('connected: ' + playerId);
       console.log(clients.size + " clients connected");
   }
   
   /**
-   * send the newest gameobject to all players in game 
-   * @param {String} gameID 
+   * send the newest eventobject to all players in event 
+   * @param {String} eventID 
    */
-   function sendGameUpdate(gameID) {
-    dbc.getGame(gameID).then(game => {
-      sendToAllInGame(gameID, "hi threre");
-    });
+   function sendEventUpdate(eventID) {
+      sendToAllInEvent(eventID, DataPackage('eventupdate', '', events.get(eventID)));
   }
   
   /**
-   * sends to all users in game with id gameID the current playerlist {id, name}
-   * @param {String} userID 
+   * sends to all users in event with id eventID the current playerlist {id, name}
+   * @param {String} playerId 
    */
-  function updateGamePlayerList(gameID) {
+  function updateEventPlayerList(eventID) {
     let list = [];
     let debug_i = 0;
     clients.forEach(c => {
-      //console.log(typeof gameID);
-      //console.log(c.game.trim() == gameID.trim());
-      if (c.game+'' === gameID+'') {
+      if (c.event+'' === eventID+'') {
         debug_i++;
         list.push({ id: c.user.id, name: c.user.name });
       }
     });
     console.log("updateing playerlist for " + debug_i + " players; tot: " + clients.size);
-    let s = SocketCommunication('updateplayerlist', '', '', list);
-    sendToAllInGame(gameID, s);
+    let s = DataPackage('updateplayerlist', '', list);
+    sendToAllInEvent(eventID, s);
   }
   
   /**
    * send msg to client with id msg.id in client list
-   * @param {SocketCommunication} msg 
+   * @param {DataPackage} msg 
    */
   function sendToClient(msg) {
     debugListClients();
-    let c = clients.get(msg.id);
-    if (c !== undefined) c.socket.send(msg.getMsg());
+    let c = clients.get(msg.playerId);
+    if (c) c.socket.send(msg.toString());
     else return false;
     return true;
   }
   
   /**
-   * send msg to all user in game with id gameID
-   * @param {String} gameID 
-   * @param {SocketCommunication} msg 
+   * send msg to all user in event with id eventID
+   * @param {String} eventID 
+   * @param {DataPackage} msg 
    */
-  function sendToAllInGame(gameID, msg) {
+  function sendToAllInEvent(eventID, msg) {
     clients.forEach(c => {
-      if (c.game+'' === gameID+'')
+      if (c.event+'' === eventID+'')
         c.socket.send(msg);
     });
   }
   
   function debugListClients() {
     Array.from(clients.keys()).forEach(a => {
-      if(clients.get(a)!==undefined)
-        console.log('sid: '+a+' game: '+clients.get(a).game+' user: '+clients.get(a).user.name);
-      //console.log('sid: '+a);
-  
+      if(clients.get(a))
+        console.log('uid: '+a+' event: '+clients.get(a).event+' user: '+clients.get(a).username);
     });
   }
 
-/**
- * Takes the tokendata and resyncs it with the clients array
- * @param {SocketCommunication} msg 
- * @deprecated
- */
-function resyncClientData(msg) {
-    let c = clients.get(msg.id);
-    if (c) {
-      let user = am.getUser(msg.token);
-      c.user = { id: user.id, name: user.name };
+  function debugListEvents() {
+    if(events.size===0)
+      console.log("no events open");
+    else {
+      Array.from(events.keys()).forEach(a => {
+        if(events.get(a))
+          console.log('eid: '+a+' event name: '+events.get(a).title);
+      });
     }
   }
+
+function createAndJoinEvent(rawEvent, playerId) {
+  let player = clients.get(playerId);
+  if(player && rawEvent) {
+    let games = [];
+    rawEvent.games.forEach(game => {
+      games.push(Game(game.title, game.desciption, game.type, game.useTeams, game.content));
+    });
+    let event = Event(rawEvent.title, games);
+    let eventId = generateEventId();
+    events.set(eventId, event);
+    player.event = eventId;
+    sendToClient(DataPackage("eventcreated", playerId, {eventId: eventId}));
+  }
+}
+
+function updatePlayerData(oldPlayerId, newPlayerId, username) {
+  let c = clients.get(oldPlayerId);
+  if(c) {
+    if(oldPlayerId!==newPlayerId) {
+      console.log("update Client...");
+      let nc = {};
+      Object.assign(nc, [c]);
+      nc.username = username;
+      nc.socket = c.socket;
+      clients.set(newPlayerId, nc);
+      clients.delete(oldPlayerId);
+    } else {
+      c.username = username;
+    }
+  }
+}
