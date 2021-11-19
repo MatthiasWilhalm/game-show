@@ -2,7 +2,6 @@ class HintGame {
     constructor(skipAfterOneTry, rounds) {
         this.skipAfterOneTry = skipAfterOneTry;
         this.rounds = rounds;
-        this.played = false;
     }
 }
 
@@ -10,17 +9,24 @@ class HintGameRounds {
     constructor(hints, answer) {
         this.hints = hints;
         this.answer = answer;
-        this.isCurrent = false;
-        this.winner = null;
     }
 }
 
 class HintGameHint {
-    constructor(text, url, urlType) {
+    constructor(hintId, text, url, urlType) {
+        this.hintId = hintId;
         this.text = text;
         this.url = url;
         this.urlType = urlType;
         this.visible = false;
+    }
+}
+
+class HintGameRoundStatus {
+    constructor(isCurrent) {
+        this.isCurrent = !!isCurrent;
+        this.winner = null;
+        this.HintGameHintStatus = []; // Array<Boolean>
     }
 }
 
@@ -34,4 +40,8 @@ module.exports.HintGameRounds = (hints, answer) => {
 
 module.exports.HintGameHint = (text, url, urlType) => {
     return new HintGameHint(text, url, urlType);
+}
+
+module.exports.HintGameRoundStatus = () => {
+    return new HintGameRoundStatus();
 }

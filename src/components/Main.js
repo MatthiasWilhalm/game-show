@@ -3,7 +3,7 @@ import React, { Component, useState, useEffect, useRef, createRef } from 'react'
 
 import {
     BrowserRouter as Router,
-    Switch,
+    Routes,
     Route,
     Redirect,
     withRouter,
@@ -13,6 +13,8 @@ import DataPackage from '../tools/DataPackage';
 import { getPlayerId, getUsername, storePlayerId, storeUsername } from '../tools/tools';
 import { Event } from '../tools/Event';
 import { Game } from '../tools/Game';
+import Home from './Home';
+import GameScreen from './GameScreen';
 
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');
@@ -20,13 +22,11 @@ import { Game } from '../tools/Game';
  * Hauptsächlich für das Routen zuständig
  */
 const Main = () => {
-    const NOPROXYPORT = 5110;
-    const socketUrl = 'ws://'+window.location.hostname+":"+NOPROXYPORT;
+    const PORT = 5110;
+    const socketUrl = 'ws://'+window.location.hostname+":"+PORT;
 
     const refHome = createRef();
-    const refLogin = createRef();
     const refGame = createRef();
-    const refQuestion = createRef();
 
     const {
         sendMessage,
@@ -54,8 +54,22 @@ const Main = () => {
                     }
                     send('updateplayerdata', {oldPlayerId: msg.payload, username: getUsername()});
                     break;
-                case 'eventcreated':
+                case 'createandjoinevent':
                     console.log(msg.payload);
+                    break;
+                case 'eventupdate':
+                    console.log(msg.payload);
+                    // TODO: link to /event/:id
+                    break;
+                case 'eventstatusupdate':
+                    // TODO: set gamescreen
+                    break;
+                case 'geteventlist':
+                    if(refHome?.current) {
+                        refHome.current.setEvents(msg.payload);
+                    }
+                    break;
+
                     break;
                 default:
                     break;
@@ -69,36 +83,28 @@ const Main = () => {
     }
 
     useEffect(() => {
-        storeUsername('Bob');
+
     }, []);
 
-    const createTestEvent = () => {
-        let event = new Event("Test Event", [
-            new Game("Quiz Show", "bla bla", "quizShow", false, {}),
-            new Game("Bingo", "bla bla bla", "bingo", true, {})
-        ]);
-        send('createandjoinevent', event);
-    }
 
     return (
-        <div>
-            Home
-            <button onClick={createTestEvent}>Create Event</button>
-        </div>
         // <div>
-        //     <Router>
-        //         <div>
-        //             <Switch>
-        //                 <Route exact path="/"><Home send={send} ref={refHome}></Home></Route>
-        //                 <Route path="/home"><Home send={send} ref={refHome}></Home></Route>
-        //                 <Route path="/login"><Login send={send} ref={refLogin}></Login></Route>
-        //                 <Route exact path="/game"><Game send={send} ref={refGame}></Game></Route>
-        //                 <Route path="/game/:id"><Game send={send} ref={refGame}></Game></Route>
-        //                 <Route path="/question"><Question send={send} ref={refQuestion}></Question></Route>
-        //             </Switch>
-        //         </div>
-        //     </Router>
+        //     Main
+        //     <button onClick={createTestEvent}>Create Event</button>
+        //     <button onClick={createTestEvent}>Event List</button>
         // </div>
+        <div>
+            <Router>
+                <div>
+                    <Routes>
+                        <Route exact path="/" element={<Home send={send} ref={refHome}/>}></Route>
+                        <Route path="/home" element={<Home send={send} ref={refHome}/>}></Route>
+                        <Route exact path="/game" element={<GameScreen send={send} ref={refGame}/>}></Route>
+                        <Route path="/game/:id" element={<GameScreen send={send} ref={refGame}/>}></Route>
+                    </Routes>
+                </div>
+            </Router>
+        </div>
     );
 }
 

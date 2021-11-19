@@ -15,6 +15,7 @@ const wsServer = new webSocketServer({ httpServer: server });
 
 const clients = new Map();
 const events = new Map();
+const eventStatus = new Map();
 
 
 
@@ -51,18 +52,32 @@ function handleRequest(reqest) {
 
   let msg = DataPackage();
   msg.parse(reqest.utf8Data);
+  let client = clients.get(msg.playerId);
+  // let event = events.get(client.event);
 
   console.log("receiving client request...");
 
   switch (msg.type) {
-    case "createandjoinevent":
+    case 'updateplayerdata':
+      updatePlayerData(msg.payload.oldPlayerId, msg.playerId, msg.payload.username);
+      debugListClients();
+      break;
+    case 'createandjoinevent':
       createAndJoinEvent(msg.payload, msg.playerId);
       debugListEvents();
       debugListClients();
       break;
-    case 'updateplayerdata':
-      updatePlayerData(msg.payload.oldPlayerId, msg.playerId, msg.payload.username);
-      debugListClients();
+    case 'geteventlist':
+      sendEventList(msg.playerId);
+      break;
+    case 'eventupdate':
+      sendEvent(msg.playerId, player.event);
+      break;
+    case 'eventstatusupdate':
+      sendEventStatus(msg.playerId, client.event);
+      break;
+    case 'joinevent':
+      joinEvent(msg.playerId, client.event);
       break;
     default:
       break;
@@ -100,11 +115,93 @@ function storeConnection(connection, playerId) {
 }
 
 /**
- * send the newest eventobject to all players in event 
+ * send msg to client with id msg.id in client list
+ * @param {DataPackage} msg 
+ */
+function sendToClient(msg) {
+  debugListClients();
+  let c = clients.get(msg.playerId);
+  if (c) c.socket.send(msg.toString());
+  else return false;
+  return true;
+}
+
+/**
+ * send msg to all user in event with id eventID
+ * @param {String} eventId 
+ * @param {DataPackage} msg 
+ */
+function sendToAllInEvent(eventId, msg) {
+  clients.forEach(c => {
+    if (c.event + '' === eventId + '') {
+      msg.playerId = c.playerId;
+      c.socket.send(msg.toString());
+    }
+  });
+}
+
+/**
+ * send msg to all user in no event
+ * @param {DataPackage} msg 
+ */
+function sendAllInNoEvent(msg) {
+  clients.forEach(c => {
+    if (!c.event || c.event+'' === '') {
+      msg.playerId = c.playerId;
+      c.socket.send(msg.toString());
+    }
+  });
+}
+
+/**
+ * send the eventobject to all players in event 
  * @param {String} eventID 
  */
-function sendEventUpdate(eventID) {
-  sendToAllInEvent(eventID, DataPackage('eventupdate', '', events.get(eventID)));
+function sendEventToAllInEvent(eventId) {
+  sendToAllInEvent(eventId, DataPackage('eventupdate', '', events.get(eventId)));
+}
+
+/**
+ * send the eventobject to specific player
+ * @param {String} playerId
+ * @param {String} eventID 
+ */
+function sendEvent(playerId, eventId) {
+  sendToClient(DataPackage('eventupdate', playerId, events.get(eventId)));
+}
+
+/**
+ * send the status to all players in event 
+ * @param {String} eventID 
+ */
+function sendEventStatusToAllInEvent(eventId) {
+  sendToAllInEvent(eventId, DataPackage('eventstatusupdate', '', eventStatus.get(eventId)));
+}
+
+/**
+ * send the eventstatus to specific player
+ * @param {String} playerId
+ * @param {String} eventID 
+ */
+function sendEventStatus(playerId, eventId) {
+  sendToClient(DataPackage('eventstatusupdate', playerId, eventStatus.get(eventId)));
+}
+
+/**
+ * Sends all active events to client {id, title, onlinecount}
+ * @param {String} playerId 
+ */
+function sendEventList(playerId) {
+  sendToClient(DataPackage('geteventlist', playerId, getEventList()));
+}
+
+function sendEventListToAllInNoEvent() {
+  const eventList = getEventList();
+  clients.forEach((client, playerId) => {
+    if(!client.event || client.event === '') {
+      sendToClient(DataPackage('geteventlist', playerId, eventList));
+    }
+  });
 }
 
 /**
@@ -121,32 +218,28 @@ function updateEventPlayerList(eventID) {
     }
   });
   console.log("updateing playerlist for " + debug_i + " players; tot: " + clients.size);
-  let s = DataPackage('updateplayerlist', '', list);
-  sendToAllInEvent(eventID, s);
+  sendToAllInEvent(eventID, DataPackage('updateplayerlist', '', list));
 }
 
-/**
- * send msg to client with id msg.id in client list
- * @param {DataPackage} msg 
- */
-function sendToClient(msg) {
-  debugListClients();
-  let c = clients.get(msg.playerId);
-  if (c) c.socket.send(msg.toString());
-  else return false;
-  return true;
+function mapToObject(map) {
+  let ret = {};
+  if(map instanceof Map) {
+    map.forEach((a, k) => {
+      ret[k] = a;
+    });
+  }
+  return ret;
 }
 
-/**
- * send msg to all user in event with id eventID
- * @param {String} eventID 
- * @param {DataPackage} msg 
- */
-function sendToAllInEvent(eventID, msg) {
-  clients.forEach(c => {
-    if (c.event + '' === eventID + '')
-      c.socket.send(msg);
+function getEventList() {
+  let ev = mapToObject(events);
+  let eventlist = [];
+  Object.keys(ev).forEach(eventId => {
+    let c = 0;
+    clients.forEach(cl => cl.event === eventId ? c++ : null);
+    eventlist.push({ eventId: eventId, title: ev[eventId].title, online: c });
   });
+  return eventlist;
 }
 
 function debugListClients() {
@@ -167,21 +260,6 @@ function debugListEvents() {
   }
 }
 
-function createAndJoinEvent(rawEvent, playerId) {
-  let player = clients.get(playerId);
-  if (player && rawEvent) {
-    let games = [];
-    rawEvent.games.forEach(game => {
-      games.push(Game(game.title, game.desciption, game.type, game.useTeams, game.content));
-    });
-    let event = Event(rawEvent.title, games);
-    let eventId = generateEventId();
-    events.set(eventId, event);
-    player.event = eventId;
-    sendToClient(DataPackage("eventcreated", playerId, { eventId: eventId }));
-  }
-}
-
 function updatePlayerData(oldPlayerId, newPlayerId, username) {
   let c = clients.get(oldPlayerId);
   if (c) {
@@ -198,3 +276,34 @@ function updatePlayerData(oldPlayerId, newPlayerId, username) {
     }
   }
 }
+
+function createAndJoinEvent(rawEvent, playerId) {
+  let player = clients.get(playerId);
+  if (player && rawEvent) {
+    let games = [];
+    rawEvent.games.forEach(game => {
+      games.push(Game(game.title, game.desciption, game.type, game.useTeams, game.content));
+    });
+    let event = Event(rawEvent.title, games);
+    let eventId = generateEventId();
+    events.set(eventId, event);
+    player.event = eventId;
+    sendEvent(playerId, eventId);
+    sendEventListToAllInNoEvent();
+    // sendToClient(DataPackage("createandjoinevent", playerId, { eventId: eventId }));
+  }
+}
+
+function joinEvent(playerId, eventId) {
+  let c = clients.get(playerId);
+  if (c) {
+    c.event = eventId;
+    sendEvent(playerId, eventId);
+    sendEventStatus(playerId, eventId);
+  }
+}
+
+function setEventStatus(eventId, eventStatus) {
+
+}
+
