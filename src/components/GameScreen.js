@@ -1,5 +1,6 @@
-import React, { Component, useState, useEffect, useRef, createRef } from 'react';
+import React, { Component, useState, useEffect, useRef, createRef, forwardRef,useImperativeHandle } from 'react';
 
+import { useNavigate } from 'react-router-dom';
 
 import DataPackage from '../tools/DataPackage';
 import { getPlayerId, getUsername, storePlayerId, storeUsername } from '../tools/tools';
@@ -11,12 +12,21 @@ import { Game } from '../tools/Game';
 /**
  * Hauptsächlich für das Routen zuständig
  */
-const GameScreen = () => {
+const GameScreen = forwardRef((props, ref) => {
 
+    const navigate = useNavigate();
 
     useEffect(() => {
-        
+        if(!props.eventData) {
+            navigate('/home');
+        }
+        console.log(props.eventData);
+        console.log(props.eventStatus);
     }, []);
+
+    useImperativeHandle(ref, () => ({
+        // webhook triggers
+    }));
 
 
     return (
@@ -24,6 +34,6 @@ const GameScreen = () => {
             Game
         </div>
     );
-}
+});
 
 export default GameScreen

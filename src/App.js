@@ -2,10 +2,18 @@ import logo from './logo.svg';
 import './App.css';
 import Main from './components/Main';
 
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
+
 function App() {
   return (
     <div className="App">
-      <Main></Main>
+      <Router>
+        <Main></Main>
+      </Router>
     </div>
   );
 }

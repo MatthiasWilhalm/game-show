@@ -7,7 +7,7 @@ import {
     Route,
     Redirect,
     withRouter,
-    useHistory
+    useNavigate
 } from "react-router-dom";
 import DataPackage from '../tools/DataPackage';
 import { getPlayerId, getUsername, storePlayerId, storeUsername } from '../tools/tools';
@@ -27,6 +27,17 @@ const Main = () => {
 
     const refHome = createRef();
     const refGame = createRef();
+
+    const navigate = useNavigate();
+
+    const [eventData, setEventData] = useState(null);
+    const [eventStatus, setEventStatus] = useState(null);
+
+    const playerStates = {
+        MOD: "mod",
+        PLAYER: "player",
+        SPECTATOR: "spectator"
+    }      
 
     const {
         sendMessage,
@@ -58,11 +69,10 @@ const Main = () => {
                     console.log(msg.payload);
                     break;
                 case 'eventupdate':
-                    console.log(msg.payload);
-                    // TODO: link to /event/:id
+                    handleEventUpdate(msg);
                     break;
                 case 'eventstatusupdate':
-                    // TODO: set gamescreen
+                    handleEventStatusUpdate(msg);
                     break;
                 case 'geteventlist':
                     if(refHome?.current) {
@@ -70,7 +80,6 @@ const Main = () => {
                     }
                     break;
 
-                    break;
                 default:
                     break;
             }
@@ -78,32 +87,39 @@ const Main = () => {
         }
     });
 
+    useEffect(() => {
+
+    }, []);
+    
     const send = (type, data) => {
         sendMessage(new DataPackage(type, getPlayerId(), data).toString());
     }
 
-    useEffect(() => {
+    const handleEventUpdate = msg => {
+        setEventData(msg.payload);
+        if(!window.location.pathname.includes('game'))
+            navigate('/game');
+    } 
 
-    }, []);
+    const handleEventStatusUpdate = msg => {
+        setEventStatus(msg.payload);
+    } 
 
 
     return (
-        // <div>
-        //     Main
-        //     <button onClick={createTestEvent}>Create Event</button>
-        //     <button onClick={createTestEvent}>Event List</button>
-        // </div>
         <div>
-            <Router>
-                <div>
-                    <Routes>
-                        <Route exact path="/" element={<Home send={send} ref={refHome}/>}></Route>
-                        <Route path="/home" element={<Home send={send} ref={refHome}/>}></Route>
-                        <Route exact path="/game" element={<GameScreen send={send} ref={refGame}/>}></Route>
-                        <Route path="/game/:id" element={<GameScreen send={send} ref={refGame}/>}></Route>
-                    </Routes>
-                </div>
-            </Router>
+            <Routes>
+                <Route exact path="/" element={<Home send={send} ref={refHome}/>}></Route>
+                <Route path="/home" element={<Home send={send} ref={refHome}/>}></Route>
+                <Route exact path="/game" element={
+                    <GameScreen 
+                        send={send}
+                        ref={refGame}
+                        eventData={eventData}
+                        eventStatus={eventStatus}
+                    />
+                }></Route>
+            </Routes>
         </div>
     );
 }

@@ -45,6 +45,10 @@ const Home = forwardRef((props, ref) => {
         props.send('createandjoinevent', event);
     }
 
+    const joinEvent = eventId => {
+        props.send('joinevent', {"eventId": eventId});
+    }
+
     return (
         <div>
             <h1>Home</h1>
@@ -53,7 +57,7 @@ const Home = forwardRef((props, ref) => {
             <button onClick={saveNewUsername}>Update Username</button>
             <ul>
                 {eventList.map(a =>
-                    <li>
+                    <li onClick={() => joinEvent(a.eventId)}>
                         {a.eventId}
                     </li>    
                 )}

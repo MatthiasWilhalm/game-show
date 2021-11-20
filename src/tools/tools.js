@@ -13,3 +13,11 @@ export function storeUsername(username) {
 export function getUsername() {
     return localStorage.getItem('username') ?? '';
 }
+
+export function storeEventData(eventData) {
+    sessionStorage.setItem('eventData', JSON.stringify(eventData));
+}
+
+export function getEventData() {
+    return JSON.parse(sessionStorage.getItem('eventData'));
+}

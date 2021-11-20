@@ -17,7 +17,11 @@ const clients = new Map();
 const events = new Map();
 const eventStatus = new Map();
 
-
+const PlayerStates = {
+  MOD: "mod",
+  PLAYER: "player",
+  SPECTATOR: "spectator"
+}
 
 wsServer.on('request', function (request) {
   var playerId = generatePlayerId();
@@ -77,7 +81,10 @@ function handleRequest(reqest) {
       sendEventStatus(msg.playerId, client.event);
       break;
     case 'joinevent':
-      joinEvent(msg.playerId, client.event);
+      joinEvent(msg.playerId, msg.payload.eventId);
+      break;
+    case 'seteventstatus':
+      updateEventStatus(client.event, msg.payload);
       break;
     default:
       break;
@@ -107,7 +114,7 @@ function handleDisconnect(playerId) {
  * @param {String} playerId 
  */
 function storeConnection(connection, playerId) {
-  let client = { event: null, socket: connection, username: '' };
+  let client = { event: null, socket: connection, username: '', playerState: PlayerStates.PLAYER};
   clients.set(playerId, client);
 
   console.log('connected: ' + playerId);
@@ -288,6 +295,7 @@ function createAndJoinEvent(rawEvent, playerId) {
     let eventId = generateEventId();
     events.set(eventId, event);
     player.event = eventId;
+    player.playerState = PlayerStates.MOD;
     sendEvent(playerId, eventId);
     sendEventListToAllInNoEvent();
     // sendToClient(DataPackage("createandjoinevent", playerId, { eventId: eventId }));
@@ -299,11 +307,13 @@ function joinEvent(playerId, eventId) {
   if (c) {
     c.event = eventId;
     sendEvent(playerId, eventId);
+    // console.log('pass');
     sendEventStatus(playerId, eventId);
   }
 }
 
-function setEventStatus(eventId, eventStatus) {
-
+function updateEventStatus(eventId, status) {
+  eventStatus.get(eventId) = status;
+  sendEventStatusToAllInEvent(eventId);
 }
 
