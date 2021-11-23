@@ -10,7 +10,7 @@ import {
     useNavigate
 } from "react-router-dom";
 import DataPackage from '../tools/DataPackage';
-import { getPlayerId, getUsername, storePlayerId, storeUsername } from '../tools/tools';
+import { getPlayerId, getUsername, storePlayerId, storePlayerState, storeUsername } from '../tools/tools';
 import { Event } from '../tools/Event';
 import { Game } from '../tools/Game';
 import Home from './Home';
@@ -32,8 +32,9 @@ const Main = () => {
 
     const [eventData, setEventData] = useState(null);
     const [eventStatus, setEventStatus] = useState(null);
+    const [eventPlayerList, setEventPlayerList] = useState([]);
 
-    const playerStates = {
+    const PlayerStates = {
         MOD: "mod",
         PLAYER: "player",
         SPECTATOR: "spectator"
@@ -65,6 +66,9 @@ const Main = () => {
                     }
                     send('updateplayerdata', {oldPlayerId: msg.payload, username: getUsername()});
                     break;
+                case 'updateplayerdata':
+                    handlePlayerDataUpdate(msg);
+                    break;
                 case 'createandjoinevent':
                     console.log(msg.payload);
                     break;
@@ -79,7 +83,9 @@ const Main = () => {
                         refHome.current.setEvents(msg.payload);
                     }
                     break;
-
+                case 'updateplayerlist':
+                    handlePlayerList(msg);
+                    break;
                 default:
                     break;
             }
@@ -105,6 +111,15 @@ const Main = () => {
         setEventStatus(msg.payload);
     } 
 
+    const handlePlayerList = msg => {
+        setEventPlayerList(msg.payload);
+    }
+
+    const handlePlayerDataUpdate = msg => {
+        if(msg.payload.username) storeUsername(msg.payload.username);
+        if(msg.payload.playerState) storePlayerState(msg.payload.playerState); 
+    }
+
 
     return (
         <div>
@@ -117,6 +132,8 @@ const Main = () => {
                         ref={refGame}
                         eventData={eventData}
                         eventStatus={eventStatus}
+                        eventPlayerList={eventPlayerList}
+                        PlayerStates={PlayerStates}
                     />
                 }></Route>
             </Routes>

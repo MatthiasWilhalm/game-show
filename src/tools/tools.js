@@ -3,7 +3,7 @@ export function storePlayerId(userId) {
 }
 
 export function getPlayerId() {
-    return localStorage.getItem('userId');
+    return localStorage.getItem('userId')+'';
 }
 
 export function storeUsername(username) {
@@ -20,4 +20,12 @@ export function storeEventData(eventData) {
 
 export function getEventData() {
     return JSON.parse(sessionStorage.getItem('eventData'));
+}
+
+export function storePlayerState(playerState) {
+    sessionStorage.setItem('playerState', playerState);
+}
+
+export function getPlayerState() {
+    return sessionStorage.getItem('playerState');
 }

@@ -63,7 +63,7 @@ function handleRequest(reqest) {
 
   switch (msg.type) {
     case 'updateplayerdata':
-      updatePlayerData(msg.payload.oldPlayerId, msg.playerId, msg.payload.username);
+      updatePlayerData(msg.payload.oldPlayerId, msg.playerId, msg.payload.username, msg.payload.playerState);
       debugListClients();
       break;
     case 'createandjoinevent':
@@ -99,12 +99,12 @@ function handleRequest(reqest) {
 function handleDisconnect(playerId) {
   console.log(playerId + " disconnected");
   let c = clients.get(playerId);
-  let g = '';
-  if (c !== undefined && c.event !== null)
-    g = c.event;
+  let eventId = null;
+  if (c && c.event)
+    eventId = c.event;
   clients.delete(playerId);
-  if (g !== '')
-    updateEventPlayerList(g);
+  if (!eventId)
+    updateEventPlayerList(eventId);
   console.log(clients.size + " clients connected");
 }
 
@@ -218,10 +218,10 @@ function sendEventListToAllInNoEvent() {
 function updateEventPlayerList(eventID) {
   let list = [];
   let debug_i = 0;
-  clients.forEach(c => {
+  clients.forEach((c, playerId) => {
     if (c.event + '' === eventID + '') {
       debug_i++;
-      list.push({ id: c.user.id, name: c.user.name });
+      list.push({ playerId: playerId, username: c.username, playerState: c.playerState });
     }
   });
   console.log("updateing playerlist for " + debug_i + " players; tot: " + clients.size);
@@ -249,6 +249,15 @@ function getEventList() {
   return eventlist;
 }
 
+function getPlayerByStateInEvent(eventId, playerState) {
+  let ret = [];
+  clients.forEach((c, id) => {
+    if(c.event+'' === eventId && c.playerState === playerState) {
+      ret.push({ playerId: playerId, username: c.username, playerState: c.playerState });
+    }
+  });
+}
+
 function debugListClients() {
   Array.from(clients.keys()).forEach(a => {
     if (clients.get(a))
@@ -267,19 +276,28 @@ function debugListEvents() {
   }
 }
 
-function updatePlayerData(oldPlayerId, newPlayerId, username) {
+function updatePlayerData(oldPlayerId, newPlayerId, username, playerState) {
   let c = clients.get(oldPlayerId);
   if (c) {
     if (oldPlayerId !== newPlayerId) {
       console.log("update Client...");
       let nc = {};
       Object.assign(nc, [c]);
-      nc.username = username;
       nc.socket = c.socket;
+      if(username)
+        nc.username = username;
+      if(playerState)
+        nc.playerState = playerState;
       clients.set(newPlayerId, nc);
       clients.delete(oldPlayerId);
     } else {
-      c.username = username;
+      if(username)
+        c.username = username;
+      if(playerState)
+        c.playerState = playerState;
+    }
+    if(c.event) {
+      updateEventPlayerList(c.event);
     }
   }
 }
@@ -297,6 +315,7 @@ function createAndJoinEvent(rawEvent, playerId) {
     player.event = eventId;
     player.playerState = PlayerStates.MOD;
     sendEvent(playerId, eventId);
+    updateEventPlayerList(eventId);
     sendEventListToAllInNoEvent();
     // sendToClient(DataPackage("createandjoinevent", playerId, { eventId: eventId }));
   }
@@ -306,9 +325,11 @@ function joinEvent(playerId, eventId) {
   let c = clients.get(playerId);
   if (c) {
     c.event = eventId;
+    c.playerState = PlayerStates.PLAYER;
     sendEvent(playerId, eventId);
-    // console.log('pass');
     sendEventStatus(playerId, eventId);
+    sendToClient(DataPackage('updateplayerdata', playerId, {playerState: PlayerStates.PLAYER}));
+    updateEventPlayerList(eventId);
   }
 }
 
