@@ -91,6 +91,18 @@ const UiTest = props => {
                         </ul>
                     </div>
                 );
+            case 'lobby-screen':
+                return(
+                    <div className="lobby-screen">
+                        <h1>TFGame Summer 2022</h1>
+                        <h2>Game starts soon...</h2>
+                        <h3>Mod: Hugo</h3>
+                        <p>6 Online</p>
+                        <div className="center">
+                            <MainButton text={"switch to spectator"}></MainButton>
+                        </div>
+                    </div>
+                );
             default:
                 return(
                     <p>
@@ -109,6 +121,7 @@ const UiTest = props => {
                         <li onClick={() => setCurrentElement('panel')}>panel</li>
                         <li onClick={() => setCurrentElement('panel-click')}>panel-click</li>
                         <li onClick={() => setCurrentElement('panel-states')}>panel-states</li>
+                        <li onClick={() => setCurrentElement('lobby-screen')}>lobby-screen</li>
                         <li>scoreboard</li>
                     </ul>
                 </div>
