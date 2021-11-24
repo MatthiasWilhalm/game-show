@@ -1,3 +1,141 @@
+/* html {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+} */
+
+:root {
+  --default-bg: linear-gradient(90deg, rgba(255,202,4,1) 0%, rgba(206,166,46,1) 100%);
+  --default-panel-bg: #aeaeae85;
+  --default-hover-bg: linear-gradient(90deg, rgb(5, 170, 235) 0%, rgb(46, 169, 206) 100%);
+  --default-used-bg: linear-gradient(90deg, rgb(134, 134, 134) 0%, rgb(185, 185, 185) 100%);
+  --default-right-bg: linear-gradient(90deg, rgb(4, 121, 0) 0%, rgb(0, 102, 9) 100%);
+  --default-wrong-bg: linear-gradient(90deg, rgb(175, 0, 0) 0%, rgb(156, 0, 0) 100%);
+  --default-font: 'Franklin Gothic Heavy', 'Arial Narrow', Arial, sans-serif;
+  --button-box-shadow: inset 0px 0px 15px -5px #000000, 6px 7px 8px -2px #00000088;
+  --default-button-box: 6px 7px 8px -2px #00000088;
+}
+
+body {
+  font-family: var(--default-font);
+}
+
+.uitest-sidepanel {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 150px;
+  background-color: rgb(197, 197, 197);
+  padding-right: 10px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.uitest-canvas {
+  position: absolute;
+  display: flex;
+  top: 0;
+  /* left: 160px; */
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.uitest-sidepanel ul {
+  padding: 0;
+  list-style-type: none;
+  width: 100%;
+}
+
+.uitest-sidepanel li {
+  display: flex;
+  background-color: rgb(162, 98, 223);
+  color: black;
+  width: 100%;
+  height: 40px;
+  border-radius: 20px;
+  margin-bottom: 5px;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.uitest-sidepanel li:hover {
+  background-color: rgb(0, 255, 213);
+  cursor: pointer;
+}
+
+.main-button {
+  width: 20vw;
+  height: 4vw;
+  background: var(--default-bg);
+  border: 0;
+  font-family: var(--default-font);
+  font-size: 2vw;
+  border: 5px solid black;
+  box-shadow: var(--button-box-shadow);
+  transition: transform ease-out 100ms;
+}
+
+.main-button:hover {
+  transform: translate(0px, 2px);
+  cursor: pointer;
+  background: var(--default-hover-bg);
+}
+
+.panel {
+  position: absolute;
+  background: var(--default-panel-bg);
+  height: max-content;
+  max-height: 70%;
+  min-height: 200px;
+  width: 80%;
+}
+
+.small-list {
+  list-style-type: none;
+  padding-right: 5%;
+  padding-left: 5%;
+
+}
+
+.small-list li {
+  display: grid;
+  grid-template-columns: 80% 20%;
+  background: var(--default-bg);
+  height: 40px;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 5px;
+  box-shadow: var(--default-button-box);
+}
+
+.small-list li *:last-child {
+  text-align: end;
+}
+
+.locked {
+  background: var(--default-used-bg) !important;
+}
+
+.right {
+  background: var(--default-right-bg) !important;
+}
+
+.wrong {
+  background: var(--default-wrong-bg) !important;
+}
+
+.clickable-list li:hover {
+  background: var(--default-hover-bg);
+  cursor: pointer;
+  transform: translate(2px, 2px);
+}
+
 .scoreboard {
   position: fixed;
   width: 90%;
@@ -6,10 +144,4 @@
   left: 50%;
   transform: translateX(-50%);
   background-color: rgb(218, 218, 218);
-}
-
-html {
-  display: flex;
-  justify-content: center;
-  text-align: center;
 }

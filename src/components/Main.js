@@ -15,6 +15,7 @@ import { Event } from '../tools/Event';
 import { Game } from '../tools/Game';
 import Home from './Home';
 import GameScreen from './GameScreen';
+import UiTest from './UiTest';
 
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');
@@ -136,6 +137,7 @@ const Main = () => {
                         PlayerStates={PlayerStates}
                     />
                 }></Route>
+                <Route path="/uitest" element={<UiTest/>}></Route>
             </Routes>
         </div>
     );
