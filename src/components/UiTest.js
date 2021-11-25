@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import useToggle from "../tools/useToggle";
+import ChatComponent from "./ChatComponent";
 import MainButton from "./MainButton";
 
 const UiTest = props => {
@@ -21,6 +22,12 @@ const UiTest = props => {
             toggleHideSidebar(!hideSidebar);
         }
     }
+
+    const testChat = [
+        {"username": "Bob", "text": "Hi there"},
+        {"username": "Hans", "text": "Moin"},
+        {"username": "Reeeeeeeeeeeeeeee", "text": "Moinnnnnnnnnnnnnnnnnnnnnn nnnnnnnnnnnnnnnnnnnnnnnnnn nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn"},
+    ]
 
     const renderElement = () => {
         console.log(currentElement);
@@ -103,6 +110,10 @@ const UiTest = props => {
                         </div>
                     </div>
                 );
+            case 'chat':
+                return(
+                    <ChatComponent chat={testChat}></ChatComponent>
+                );
             default:
                 return(
                     <p>
@@ -122,6 +133,7 @@ const UiTest = props => {
                         <li onClick={() => setCurrentElement('panel-click')}>panel-click</li>
                         <li onClick={() => setCurrentElement('panel-states')}>panel-states</li>
                         <li onClick={() => setCurrentElement('lobby-screen')}>lobby-screen</li>
+                        <li onClick={() => setCurrentElement('chat')}>chat</li>
                         <li>scoreboard</li>
                     </ul>
                 </div>

@@ -86,6 +86,9 @@ function handleRequest(reqest) {
     case 'seteventstatus':
       updateEventStatus(client.event, msg.payload);
       break;
+    case 'chat':
+      handleChatMsg(client.event, msg.playerId, msg.payload);
+      break;
     default:
       break;
   }
@@ -338,3 +341,27 @@ function updateEventStatus(eventId, status) {
   sendEventStatusToAllInEvent(eventId);
 }
 
+function handleChatMsg(eventId, playerId, chatMsg) {
+  let shouldSend = true;
+  if(chatMsg.text.startsWith('/')) {
+    let cmd = chatMsg.text.substring(1);
+    switch (cmd) {
+      case 'roll':
+        let r = Math.trunc(Math.random()*100);
+        chatMsg.username = ">" + chatMsg.username;
+        chatMsg.text = "rolled "+r;
+        break;
+
+      case 'flip':
+        let r2 = Math.round(Math.random());
+        chatMsg.username = ">" + chatMsg.username;
+        chatMsg.text = "flipped "+(r2?"tail":"head");
+        break;
+      default:
+        shouldSend = false;
+        break;
+    }
+  }
+  if(shouldSend)
+    sendToAllInEvent(eventId, DataPackage('chat', playerId, chatMsg));
+}

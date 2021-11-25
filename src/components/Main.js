@@ -26,6 +26,12 @@ const Main = () => {
     const PORT = 5110;
     const socketUrl = 'ws://'+window.location.hostname+":"+PORT;
 
+    const PlayerStates = {
+        MOD: "mod",
+        PLAYER: "player",
+        SPECTATOR: "spectator"
+    }
+
     const refHome = createRef();
     const refGame = createRef();
 
@@ -34,12 +40,11 @@ const Main = () => {
     const [eventData, setEventData] = useState(null);
     const [eventStatus, setEventStatus] = useState(null);
     const [eventPlayerList, setEventPlayerList] = useState([]);
+    const [chatLog, setchatLog] = useState([]);
 
-    const PlayerStates = {
-        MOD: "mod",
-        PLAYER: "player",
-        SPECTATOR: "spectator"
-    }      
+    useEffect(() => {
+
+    }, [eventData, eventStatus, eventPlayerList, chatLog]);
 
     const {
         sendMessage,
@@ -87,16 +92,15 @@ const Main = () => {
                 case 'updateplayerlist':
                     handlePlayerList(msg);
                     break;
+                case 'chat':
+                    handleChatUpdate(msg);
+                    break;
                 default:
                     break;
             }
 
         }
     });
-
-    useEffect(() => {
-
-    }, []);
     
     const send = (type, data) => {
         sendMessage(new DataPackage(type, getPlayerId(), data).toString());
@@ -121,6 +125,15 @@ const Main = () => {
         if(msg.payload.playerState) storePlayerState(msg.payload.playerState); 
     }
 
+    const handleChatUpdate = msg => {
+        let log = chatLog;
+        if(chatLog.length>100)
+            log.shift();
+        log.push(msg.payload);
+        setchatLog(log);
+        refGame?.current.triggerChat();
+    }
+
 
     return (
         <div>
@@ -135,6 +148,7 @@ const Main = () => {
                         eventStatus={eventStatus}
                         eventPlayerList={eventPlayerList}
                         PlayerStates={PlayerStates}
+                        chat={chatLog}
                     />
                 }></Route>
                 <Route path="/uitest" element={<UiTest/>}></Route>

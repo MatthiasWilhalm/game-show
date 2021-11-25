@@ -7,6 +7,7 @@ import { getPlayerId, getPlayerState, getUsername, storePlayerId, storePlayerSta
 import { Event } from '../tools/Event';
 import { Game } from '../tools/Game';
 import Scoreboard from './Scoreboard';
+import ChatComponent from './ChatComponent';
 
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');
@@ -16,6 +17,8 @@ import Scoreboard from './Scoreboard';
 const GameScreen = forwardRef((props, ref) => {
 
     const navigate = useNavigate();
+
+    const chatRef = useRef(null);
 
     const [showScoreboard, setShowScoreboard] = useState(false);
 
@@ -34,7 +37,9 @@ const GameScreen = forwardRef((props, ref) => {
     }, []);
 
     useImperativeHandle(ref, () => ({
-        // webhook triggers
+        triggerChat() {
+            chatRef?.current.newMsg();
+        }
     }));
 
     const changeToSpectator = () => {
@@ -43,7 +48,6 @@ const GameScreen = forwardRef((props, ref) => {
     }
 
     const keyDownEvents = k => {
-        console.log(k.key);
         if(k.key === 'Tab') {
             k.preventDefault();
             setShowScoreboard(true);
@@ -73,6 +77,7 @@ const GameScreen = forwardRef((props, ref) => {
             {showScoreboard?
                 <Scoreboard {...props}></Scoreboard>
             :''}
+            <ChatComponent {...props} ref={chatRef}></ChatComponent>
         </div>
     );
 });
