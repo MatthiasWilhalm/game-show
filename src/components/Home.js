@@ -9,6 +9,7 @@ import DataPackage from '../tools/DataPackage';
 import { getPlayerId, getUsername, storePlayerId, storeUsername } from '../tools/tools';
 import { Event } from '../tools/Event';
 import { Game } from '../tools/Game';
+import MainButton from './MainButton';
 
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');
@@ -51,17 +52,29 @@ const Home = forwardRef((props, ref) => {
 
     return (
         <div>
-            <h1>Home</h1>
-            <button onClick={createTestEvent}>Create Event</button>
-            <input value={newUsername} onChange={e => setNewUsername(e.target.value)}></input>
-            <button onClick={saveNewUsername}>Update Username</button>
-            <ul>
-                {eventList.map(a =>
-                    <li onClick={() => joinEvent(a.eventId)}>
-                        {a.eventId}
-                    </li>    
-                )}
-            </ul>
+            <div className="change-username">
+                <input value={newUsername} onChange={e => setNewUsername(e.target.value)}></input>
+                <button onClick={saveNewUsername}>Update Username</button>
+            </div>
+            <div className="home-grid">
+                <div></div>
+                <div className="panel centered-panel">
+                    <ul className="small-list clickable-list">
+                        {eventList.map(a =>
+                            <li onClick={() => joinEvent(a.eventId)}>
+                                <div>{a.title}</div>
+                                <div>{a.online}</div>
+                            </li>    
+                        )}
+                    </ul>
+                </div>
+                <div className="home-main-button-array">
+                    <MainButton onClick={createTestEvent} text={"Open Event"}/>
+                    <MainButton onClick={null} text={"Editor"}/>
+                    {/* <button onClick={createTestEvent} className="main-button">Create Event</button>
+                    <button onClick={null} className="main-button">Event Editor</button> */}
+                </div>
+            </div>
         </div>
     );
 });

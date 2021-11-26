@@ -8,6 +8,7 @@ import { Event } from '../tools/Event';
 import { Game } from '../tools/Game';
 import Scoreboard from './Scoreboard';
 import ChatComponent from './ChatComponent';
+import MainButton from './MainButton';
 
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');
@@ -34,7 +35,7 @@ const GameScreen = forwardRef((props, ref) => {
             document.removeEventListener('keydown', keyDownEvents);
             document.removeEventListener('keyup', keyUpEvents);
         }
-    }, []);
+    }, [showScoreboard]);
 
     useImperativeHandle(ref, () => ({
         triggerChat() {
@@ -63,17 +64,57 @@ const GameScreen = forwardRef((props, ref) => {
         }
     }
 
+    const renderMainView = () => {
+        switch (getPlayerState()) {
+            case props.PlayerStates.MOD:
+                return(
+                    <div>
+                        Mod view
+                    </div>
+                );
+            default:
+                return (
+                    <div className="lobby-screen">
+                        <h1>{props.eventData?.title}</h1>
+                        <h2>Game starts soon...</h2>
+                        <h3>Mod: Hugo</h3>
+                        <p>{props.eventPlayerList?.length+" online"}</p>
+                        {(getPlayerState() === props.PlayerStates.PLAYER+'')?
+                            <div className="center">
+                                <MainButton text={"switch to spectator"} onClick={changeToSpectator}></MainButton>
+                            </div>
+                        :
+                            <div className="center">
+                                <MainButton text={"request to play"}></MainButton>
+                            </div>
+                        }
+                    </div>
+                );
+        }
+    }
+
+    const renderModView = () => {
+        return (
+            <div>
+                <div className="game-title">
+                    <h1>
+                        {props.eventData?.title}
+                    </h1>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div>
-            Game
-            <h1>{props.eventData?.title}</h1>
-            <h2>game starts soon...</h2>
-            <h3>{props.eventPlayerList?.length+" online"}</h3>
-            {(getPlayerState() === props.PlayerStates.PLAYER+'')?
-                    <button onClick={changeToSpectator}>switch to spectator</button>
+            <div className="lobby-grid">
+                <div></div>
+                {getPlayerState()!==props.PlayerStates?.MOD?
+                    renderMainView()
                 :
-                    <button>TODO: request to play</button>
-            }
+                    renderModView()
+                }
+            </div>
             {showScoreboard?
                 <Scoreboard {...props}></Scoreboard>
             :''}

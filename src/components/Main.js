@@ -118,6 +118,12 @@ const Main = () => {
 
     const handlePlayerList = msg => {
         setEventPlayerList(msg.payload);
+        if(getPlayerId()) {
+            let player = msg.payload?.find(player => player.playerId === getPlayerId());
+            if(player) {
+                storePlayerState(player.playerState);
+            }
+        }
     }
 
     const handlePlayerDataUpdate = msg => {

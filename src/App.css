@@ -6,7 +6,9 @@
 
 :root {
   --default-bg: linear-gradient(90deg, rgba(255,202,4,1) 0%, rgba(206,166,46,1) 100%);
+  --default-darker-bg: linear-gradient(90deg, rgb(255, 176, 4) 0%, rgb(206, 123, 46) 100%);
   --default-panel-bg: #aeaeae85;
+  --screen-bg: #6A00A0;
   --default-hover-bg: linear-gradient(90deg, rgb(5, 170, 235) 0%, rgb(46, 169, 206) 100%);
   --default-used-bg: linear-gradient(90deg, rgb(134, 134, 134) 0%, rgb(185, 185, 185) 100%);
   --default-right-bg: linear-gradient(90deg, rgb(4, 121, 0) 0%, rgb(0, 102, 9) 100%);
@@ -14,11 +16,13 @@
   --default-font: 'Franklin Gothic Heavy', 'Arial Narrow', Arial, sans-serif;
   --button-box-shadow: inset 0px 0px 15px -5px #000000, 6px 7px 8px -2px #00000088;
   --default-button-box: 6px 7px 8px -2px #00000088;
+  --default-inner-box-shadow: inset 0px 0px 15px -5px #000000;
   --default-border: 5px solid black;
 }
 
 body {
   font-family: var(--default-font);
+  background: var(--screen-bg);
 }
 
 .uitest-sidepanel {
@@ -69,12 +73,92 @@ body {
   cursor: pointer;
 }
 
+.home-grid {
+  position: absolute;
+  display: grid;
+  grid-template-rows: 200px auto 40%;
+  height: 100%;
+  width: 100%;
+}
+
+.lobby-grid {
+  position: absolute;
+  display: grid;
+  grid-template-rows: 200px auto 20%;
+  height: 100%;
+  width: 100%;
+}
+
+
+.home-main-button-array {
+  position: relative;
+  display: grid;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-content: center;
+}
+
+.home-main-button-array * {
+  margin-bottom: 20px;
+}
+
+.change-username {
+  z-index: 1;
+  position: fixed;
+  display: grid;
+  top: 50px;
+  right: 0;
+  width: 400px;
+  height: 100px;
+  background: var(--default-bg);
+  border-left: var(--default-border);
+  border-bottom: var(--default-border);
+  border-top: var(--default-border);
+  box-shadow: var(--button-box-shadow);
+}
+
+.change-username input {
+  display: flex;
+  align-self: center;
+  justify-self: center;
+  box-shadow: var(--default-inner-box-shadow);
+  border: 0;
+  min-width: 150px;
+  height: 40px;
+  width: 80%;
+  background-color: #ffffffaf;
+  font-size: 15pt;
+  font-family: var(--default-font);
+  padding-left: 5px;
+}
+
+.change-username button {
+  border: 0;
+  background: var(--default-bg);
+  height: 80%;
+  width: 70%;
+  justify-self: center;
+  font-family: var(--default-font);
+  border: 2px solid black;
+  font-size: 13pt;
+  box-shadow: var(--button-box-shadow);
+  transition: transform 100ms ease-out;
+}
+
+.change-username button:hover {
+  background: var(--default-hover-bg);
+  transform: translate(0px, 1px);
+}
+
 .main-button {
   width: 20vw;
+  min-width: 250px;
   height: 4vw;
+  min-height: 50px;
   background: var(--default-bg);
   font-family: var(--default-font);
-  font-size: 2vw;
+  font-size: max(2vw, 20pt);
   border: var(--default-border);
   box-shadow: var(--button-box-shadow);
   transition: transform ease-out 100ms;
@@ -87,12 +171,19 @@ body {
 }
 
 .panel {
-  position: absolute;
   background: var(--default-panel-bg);
   height: max-content;
-  max-height: 70%;
+  /* max-height: 70%; */
   min-height: 200px;
-  width: 80%;
+  max-width: 80%;
+}
+
+.centered-panel {
+  width: 60%;
+  height: 100%;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .small-list {
@@ -143,20 +234,20 @@ body {
 }
 
 .lobby-screen {
+  justify-self: center;
   width: 70%;
-  height: 70%;
   background: var(--default-bg);
   box-shadow: var(--button-box-shadow);
 }
 
 .lobby-screen h1 {
-  font-size: 4vw;
+  font-size: max(4vw, 20pt);
   width: 100%;
   text-align: center;
 }
 
 .lobby-screen h2 {
-  font-size: 2vw;
+  font-size: max(2vw, 15pt);
   width: 100%;
   text-align: center;
 }
@@ -332,12 +423,80 @@ body {
   height: 40px;
 }
 
-.scoreboard {
+.window-bg {
   position: fixed;
-  width: 90%;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background-color: #00000086;
+}
+
+.scoreboard {
+  position: absolute;
+  width: 80%;
   height: max-content;
   min-height: 200px;
+  max-height: 70%;
+  overflow-y: auto;
+  left: 50%;
+  top: 10%;
+  transform: translateX(-50%);
+  background: var(--default-bg);
+}
+
+.scoreboard h1 {
+  text-align: center;
+}
+
+.scoreboard ul {
+  position: relative;
+  list-style: none;
+  padding: 0;
+  width: 80%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgb(218, 218, 218);
+}
+
+.scoreboard-item-mod {
+  background: var(--default-darker-bg) !important;
+}
+
+.scoreboard-item-spectator {
+  background: var(--default-used-bg) !important;
+}
+
+.scoreboard li {
+  display: grid;
+  grid-template-columns: auto min-content min-content;
+  background: var(--default-bg);
+  height: 40px;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 5px;
+  border: 2px solid black;
+  box-shadow: var(--button-box-shadow);
+}
+
+.list-spacer {
+  width: 100%;
+  height: 20px;
+}
+
+.game-title {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  min-width: 60%;
+  max-width: 80%;
+  width: max-content;
+  background: var(--default-bg);
+  box-shadow: var(--button-box-shadow);
+  height: max-content;
+  font-size: 30pt;
+  padding: 20px;
+}
+
+.game-title h1 {
+  margin: 0;
 }
