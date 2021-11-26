@@ -29,8 +29,6 @@ const GameScreen = forwardRef((props, ref) => {
         }
         document.addEventListener('keydown', keyDownEvents);
         document.addEventListener('keyup', keyUpEvents);
-        console.log(props.eventData);
-        console.log(props.eventStatus);
         return () => {
             document.removeEventListener('keydown', keyDownEvents);
             document.removeEventListener('keyup', keyUpEvents);

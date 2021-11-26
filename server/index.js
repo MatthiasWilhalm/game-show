@@ -2,6 +2,7 @@
 
 const { DataPackage } = require('./tools/DataPackage.js');
 const { Event } = require('./tools/Event.js');
+const { EventStatus } = require('./tools/EventStatus.js');
 const { Game, PlayerProgress } = require('./tools/Game.js');
 
 const webSocketsServerPort = 5110;
@@ -185,7 +186,7 @@ function sendEvent(playerId, eventId) {
  * @param {String} eventID 
  */
 function sendEventStatusToAllInEvent(eventId) {
-  sendToAllInEvent(eventId, DataPackage('eventstatusupdate', '', eventStatus.get(eventId)));
+  sendToAllInEvent(eventId, DataPackage('eventstatusupdate', '', eventStatus.get(eventId).convertToObject()));
 }
 
 /**
@@ -317,7 +318,12 @@ function createAndJoinEvent(rawEvent, playerId) {
     events.set(eventId, event);
     player.event = eventId;
     player.playerState = PlayerStates.MOD;
+    
+    let es = EventStatus(playerId);
+    eventStatus.set(eventId, es);
+
     sendEvent(playerId, eventId);
+    sendEventStatus(playerId, eventId);
     updateEventPlayerList(eventId);
     sendEventListToAllInNoEvent();
     // sendToClient(DataPackage("createandjoinevent", playerId, { eventId: eventId }));
@@ -327,12 +333,20 @@ function createAndJoinEvent(rawEvent, playerId) {
 function joinEvent(playerId, eventId) {
   let c = clients.get(playerId);
   if (c) {
-    c.event = eventId;
-    c.playerState = PlayerStates.PLAYER;
-    sendEvent(playerId, eventId);
-    sendEventStatus(playerId, eventId);
-    sendToClient(DataPackage('updateplayerdata', playerId, {playerState: PlayerStates.PLAYER}));
-    updateEventPlayerList(eventId);
+    let es = eventStatus.get(eventId);
+    if(es) {
+      c.event = eventId;
+      c.playerState = PlayerStates.PLAYER;
+
+      es.globalScores.set(playerId,0);
+  
+      sendEvent(playerId, eventId);
+      sendEventStatusToAllInEvent(eventId);
+      sendToClient(DataPackage('updateplayerdata', playerId, {playerState: PlayerStates.PLAYER}));
+      updateEventPlayerList(eventId);
+
+    }
+
   }
 }
 

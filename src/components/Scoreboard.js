@@ -1,11 +1,49 @@
+import trophyIcon from "../assets/trophy.svg"
+import coinsIcon from "../assets/coins.svg"
+import roundIcon from "../assets/round.svg"
+import upIcon from "../assets/up.svg"
+import downIcon from "../assets/down.svg"
+import { getPlayerState } from "../tools/tools"
+
 const Scoreboard = props => {
 
     const renderPlayerItem = a => {
+        let m = getPlayerState() === props.PlayerStates.MOD;
         return (
             <li className="scoreboard-item-player">
                 <div>{a.username}</div>
-                <div>10</div>
-                <div>12</div>
+                <div className="scoreboard-score-data">
+                    {m?
+                        <button className="score-up">
+                            <img src={upIcon}></img>
+                        </button>
+                    :''}
+                    <p>10</p>
+                    <img className="scoreboard-score-data" src={trophyIcon}></img>
+                    {m?
+                        <button className="score-down">
+                            <img src={downIcon}></img>
+                        </button>
+                    :''}
+                </div>
+                <div className="scoreboard-score-data">
+                    {m?
+                        <button className="score-up">
+                            <img src={upIcon}></img>
+                        </button>
+                    :''}
+                    <p>12</p>
+                    <img className="scoreboard-score-data" src={coinsIcon}></img>
+                    {m?
+                        <button className="score-down">
+                            <img src={downIcon}></img>
+                        </button>
+                    :''}
+                </div>
+                <div className="scoreboard-score-data">
+                    <p>5</p>
+                    <img className="scoreboard-score-data" src={roundIcon}></img>
+                </div>
             </li>
         );
     }

@@ -467,7 +467,7 @@ body {
 
 .scoreboard li {
   display: grid;
-  grid-template-columns: auto min-content min-content;
+  grid-template-columns: auto max-content max-content max-content;
   background: var(--default-bg);
   height: 40px;
   align-items: center;
@@ -476,6 +476,48 @@ body {
   margin-bottom: 5px;
   border: 2px solid black;
   box-shadow: var(--button-box-shadow);
+}
+
+.scoreboard-score-data {
+  width: max-content;
+  display: flex;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.scoreboard-score-data img {
+  width: 20px;
+  height: auto;
+  float: right;
+  padding: 0;
+}
+
+.scoreboard-score-data p {
+  margin: 0;
+  display: block;
+}
+
+.score-up, .score-down {
+  position: relative;
+  width: 100%;
+  border: 0;
+}
+
+.score-up:hover, .score-down:hover {
+  cursor: pointer;
+}
+
+.score-up {
+  background: var(--default-right-bg);
+}
+
+.score-down {
+  background: var(--default-wrong-bg);
+}
+
+.score-down img, .score-up img {
+  height: 10px;
+  width: auto;
 }
 
 .list-spacer {

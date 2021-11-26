@@ -7,6 +7,27 @@ class EventStatus {
         this.globalScores = new Map();
         this.gameStatus = new Map(); // gameId, GameStatus
     }
+    
+    convertToObject() {
+        function mapToObject(map) {
+            let ret = {};
+            if(map instanceof Map) {
+              map.forEach((a, k) => {
+                ret[k] = a;
+              });
+            }
+            return ret;
+        }
+
+        let gs = mapToObject(this.globalScores);
+        let status = {};
+        this.gameStatus.forEach((a, key) => {
+            status[key] = a;
+            status[key].playerProgress = mapToObject(a.playerProgress);
+        });
+        return {modId: this.modId, globalScores: gs, gameStatus: status};
+    }
+
 }
 
 /**

@@ -113,6 +113,7 @@ const Main = () => {
     } 
 
     const handleEventStatusUpdate = msg => {
+        console.log(msg.payload);
         setEventStatus(msg.payload);
     } 
 
