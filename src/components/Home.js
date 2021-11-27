@@ -40,8 +40,43 @@ const Home = forwardRef((props, ref) => {
 
     const createTestEvent = () => {
         let event = new Event("Test Event", [
-            new Game("Quiz Show", "bla bla", "quizShow", false, {}),
-            new Game("Bingo", "bla bla bla", "bingo", true, {})
+            new Game("Quiz Show", "bla bla", "quiz", false, {}),
+            new Game("Bingo", "bla bla bla", "bingo", true, {}),
+            new Game("Text erraten", "bla bla bla", "queue", false, {
+                skipAfterOneTry: false,
+                rounds: [
+                    {
+                        hints: [
+                            {
+                                text: "AAA",
+                                url: "",
+                                urlType: "none"
+                            },
+                            {
+                                text: "BBB",
+                                url: "",
+                                urlType: "none"
+                            }
+                        ],
+                        answer: "Obama"
+                    },
+                    {
+                        hints: [
+                            {
+                                text: "111",
+                                url: "",
+                                urlType: "none"
+                            },
+                            {
+                                text: "222",
+                                url: "",
+                                urlType: "none"
+                            }
+                        ],
+                        answer: "reeeeeeeee"
+                    }
+                ]
+            })
         ]);
         props.send('createandjoinevent', event);
     }

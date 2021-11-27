@@ -2,7 +2,7 @@
 
 const { DataPackage } = require('./tools/DataPackage.js');
 const { Event } = require('./tools/Event.js');
-const { EventStatus } = require('./tools/EventStatus.js');
+const { EventStatus, GameStatus } = require('./tools/EventStatus.js');
 const { Game, PlayerProgress } = require('./tools/Game.js');
 
 const webSocketsServerPort = 5110;
@@ -186,7 +186,7 @@ function sendEvent(playerId, eventId) {
  * @param {String} eventID 
  */
 function sendEventStatusToAllInEvent(eventId) {
-  sendToAllInEvent(eventId, DataPackage('eventstatusupdate', '', eventStatus.get(eventId).convertToObject()));
+  sendToAllInEvent(eventId, DataPackage('eventstatusupdate', '', eventStatus.get(eventId)));
 }
 
 /**
@@ -320,6 +320,9 @@ function createAndJoinEvent(rawEvent, playerId) {
     player.playerState = PlayerStates.MOD;
     
     let es = EventStatus(playerId);
+    games.forEach(() => {
+      es.gameStatus.push(GameStatus());
+    });
     eventStatus.set(eventId, es);
 
     sendEvent(playerId, eventId);
@@ -338,7 +341,7 @@ function joinEvent(playerId, eventId) {
       c.event = eventId;
       c.playerState = PlayerStates.PLAYER;
 
-      es.globalScores.set(playerId,0);
+      es.globalScores[playerId] = 0;
   
       sendEvent(playerId, eventId);
       sendEventStatusToAllInEvent(eventId);
@@ -351,7 +354,7 @@ function joinEvent(playerId, eventId) {
 }
 
 function updateEventStatus(eventId, status) {
-  eventStatus.get(eventId) = status;
+  eventStatus.set(eventId, status);
   sendEventStatusToAllInEvent(eventId);
 }
 

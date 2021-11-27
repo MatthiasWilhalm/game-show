@@ -9,6 +9,10 @@ import { Game } from '../tools/Game';
 import Scoreboard from './Scoreboard';
 import ChatComponent from './ChatComponent';
 import MainButton from './MainButton';
+import LobbyPlayerScreen from './LobbyPlayerScreen';
+import LobbyModScreen from './LobbyModScreen';
+import GameQueuePlayerScreen from './GameQueuePlayerScreen';
+import GameQueueModScreen from './GamequeueModScreen';
 
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');
@@ -41,11 +45,6 @@ const GameScreen = forwardRef((props, ref) => {
         }
     }));
 
-    const changeToSpectator = () => {
-        props.send('updateplayerdata', {oldPlayerId: getPlayerId(), playerState: props.PlayerStates.SPECTATOR});
-        storePlayerState(props.PlayerStates.SPECTATOR);
-    }
-
     const keyDownEvents = k => {
         if(k.key === 'Tab') {
             k.preventDefault();
@@ -62,61 +61,56 @@ const GameScreen = forwardRef((props, ref) => {
         }
     }
 
-    const renderMainView = () => {
-        switch (getPlayerState()) {
-            case props.PlayerStates.MOD:
-                return(
-                    <div>
-                        Mod view
-                    </div>
-                );
-            default:
-                return (
-                    <div className="lobby-screen">
-                        <h1>{props.eventData?.title}</h1>
-                        <h2>Game starts soon...</h2>
-                        <h3>Mod: Hugo</h3>
-                        <p>{props.eventPlayerList?.length+" online"}</p>
-                        {(getPlayerState() === props.PlayerStates.PLAYER+'')?
-                            <div className="center">
-                                <MainButton text={"switch to spectator"} onClick={changeToSpectator}></MainButton>
-                            </div>
-                        :
-                            <div className="center">
-                                <MainButton text={"request to play"}></MainButton>
-                            </div>
-                        }
-                    </div>
-                );
+    const renderGameScreen = isMod => {
+        let currentId = props.eventStatus?.gameStatus?.findIndex(a => a.current);
+        if(currentId!==-1) {
+            let type = props?.eventData?.games[currentId]?.type;
+            switch (type) {
+                case "queue":
+                    if(isMod)
+                        return (<GameQueuePlayerScreen {...props}/>);
+                    else
+                        return (<GameQueueModScreen {...props}/>);
+            
+                default:
+                    return(
+                        <div>
+                            {"null"}
+                        </div>
+                    );
+                    break;
+            }
         }
+
+
     }
 
-    const renderModView = () => {
-        return (
-            <div>
-                <div className="game-title">
-                    <h1>
-                        {props.eventData?.title}
-                    </h1>
+    const renderScreenState = () => {
+        
+        const isMod = getPlayerState()!==props.PlayerStates?.MOD
+
+        if(!!props.eventStatus?.gameStatus?.find(a => a.current)) {
+            return renderGameScreen(isMod);
+        } else {
+            return (
+                <div>
+                    {isMod?
+                        <LobbyPlayerScreen {...props}/>
+                    :
+                        <LobbyModScreen {...props}/>
+                    }
                 </div>
-            </div>
-        );
+            );
+        }
     }
 
     return (
         <div>
-            <div className="lobby-grid">
-                <div></div>
-                {getPlayerState()!==props.PlayerStates?.MOD?
-                    renderMainView()
-                :
-                    renderModView()
-                }
-            </div>
+            {renderScreenState()}
             {showScoreboard?
-                <Scoreboard {...props}></Scoreboard>
+                <Scoreboard {...props}/>
             :''}
-            <ChatComponent {...props} ref={chatRef}></ChatComponent>
+            <ChatComponent {...props} ref={chatRef}/>
         </div>
     );
 });

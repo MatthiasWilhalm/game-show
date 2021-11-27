@@ -4,8 +4,8 @@
 class EventStatus {
     constructor(modId) {
         this.modId = modId;
-        this.globalScores = new Map();
-        this.gameStatus = new Map(); // gameId, GameStatus
+        this.globalScores = {};
+        this.gameStatus = []; // GameStatus
     }
     
     convertToObject() {
@@ -35,10 +35,11 @@ class EventStatus {
  */
 class GameStatus {
     constructor(teams) {
+        this.selected = false;
         this.current = false;
         this.done = false;
         this.teams = teams || [];
-        this.playerProgress = new Map(); // playerId, PlayerProgress
+        this.playerProgress = {}; // playerId, PlayerProgress
         this.roundStatus = [];
     }
 }

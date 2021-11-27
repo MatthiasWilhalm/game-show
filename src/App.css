@@ -89,6 +89,15 @@ body {
   width: 100%;
 }
 
+.lobby-mod-grid {
+  position: absolute;
+  display: grid;
+  grid-template-columns: 80% 20%;
+  grid-template-rows: 200px auto 20%;
+  height: 100%;
+  width: 100%;
+}
+
 
 .home-main-button-array {
   position: relative;
@@ -170,12 +179,19 @@ body {
   background: var(--default-hover-bg);
 }
 
+.sidepanel {
+  width: 100%;
+  max-width: 100% !important;
+  height: 100% !important;
+}
+
 .panel {
   background: var(--default-panel-bg);
   height: max-content;
-  /* max-height: 70%; */
+  max-height: 100%;
   min-height: 200px;
   max-width: 80%;
+  overflow: auto;
 }
 
 .centered-panel {
@@ -186,7 +202,7 @@ body {
   transform: translateX(-50%);
 }
 
-.small-list {
+.small-list, .large-list {
   list-style-type: none;
   padding-right: 5%;
   padding-left: 5%;
@@ -205,8 +221,23 @@ body {
   box-shadow: var(--default-button-box);
 }
 
-.small-list li *:last-child {
-  text-align: end;
+.small-list li *:last-child, .rigth-element {
+  text-align: center;
+}
+
+.large-list li {
+  display: grid;
+  grid-template-columns: 80% 20%;
+  background: var(--default-bg);
+  min-height: 80px;
+  max-height: 200px;
+  height: max-content;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 5px;
+  box-shadow: var(--default-button-box);
+  font-size: 15pt;
 }
 
 .locked {
@@ -219,6 +250,18 @@ body {
 
 .wrong {
   background: var(--default-wrong-bg) !important;
+}
+
+.selected {
+  background: var(--default-hover-bg) !important;
+}
+
+.double-r {
+  grid-row: span 2;
+}
+
+.double {
+  grid-column: span 2;
 }
 
 .center {
@@ -526,7 +569,7 @@ body {
 }
 
 .game-title {
-  position: absolute;
+  position: relative;
   top: 20px;
   left: 20px;
   min-width: 60%;
@@ -541,4 +584,10 @@ body {
 
 .game-title h1 {
   margin: 0;
+}
+
+.buttom-right-button {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
 }

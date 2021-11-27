@@ -19,3 +19,9 @@ class Game {
 module.exports.Game = (title, description, type, useTeams, content) => {
     return new Game(title, description, type, useTeams, content);
 }
+
+// content queuegame: 
+/*
+* 
+*
+*/

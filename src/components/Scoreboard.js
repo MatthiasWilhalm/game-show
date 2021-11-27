@@ -9,6 +9,8 @@ const Scoreboard = props => {
 
     const renderPlayerItem = a => {
         let m = getPlayerState() === props.PlayerStates.MOD;
+        let global = props.eventStatus?.globalScores?.[a.playerId] ?? '-';
+        let coins = props.gameStatus?.find(b => b.current)?.playerProgress[a.playerId]?.score;
         return (
             <li className="scoreboard-item-player">
                 <div>{a.username}</div>
@@ -18,7 +20,7 @@ const Scoreboard = props => {
                             <img src={upIcon}></img>
                         </button>
                     :''}
-                    <p>10</p>
+                    <p>{global}</p>
                     <img className="scoreboard-score-data" src={trophyIcon}></img>
                     {m?
                         <button className="score-down">
@@ -26,20 +28,22 @@ const Scoreboard = props => {
                         </button>
                     :''}
                 </div>
-                <div className="scoreboard-score-data">
-                    {m?
-                        <button className="score-up">
-                            <img src={upIcon}></img>
-                        </button>
-                    :''}
-                    <p>12</p>
-                    <img className="scoreboard-score-data" src={coinsIcon}></img>
-                    {m?
-                        <button className="score-down">
-                            <img src={downIcon}></img>
-                        </button>
-                    :''}
-                </div>
+                {coins?
+                    <div className="scoreboard-score-data">
+                        {m?
+                            <button className="score-up">
+                                <img src={upIcon}></img>
+                            </button>
+                        :''}
+                        <p>coins</p>
+                        <img className="scoreboard-score-data" src={coinsIcon}></img>
+                        {m?
+                            <button className="score-down">
+                                <img src={downIcon}></img>
+                            </button>
+                        :''}
+                    </div>
+                :''}
                 <div className="scoreboard-score-data">
                     <p>5</p>
                     <img className="scoreboard-score-data" src={roundIcon}></img>
