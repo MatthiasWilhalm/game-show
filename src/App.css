@@ -474,6 +474,10 @@ body {
   background-color: #00000086;
 }
 
+.window-bg-animated {
+  transition: background 100ms ease-out;
+}
+
 .scoreboard {
   position: absolute;
   width: 80%;
@@ -588,8 +592,49 @@ body {
 
 .buttom-right-button {
   position: absolute;
+  display: grid;
+  gap: 10px;
   right: 20px;
   bottom: 20px;
+}
+
+.buttom-right-button label {
+  font-style: italic;
+  font-size: 20pt;
+  color: white;
+  margin-bottom: -15px;
+  z-index: 1;
+}
+
+.mod-menu-button-array {
+  display: flex;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}
+
+.mod-menu-button-array * {
+  margin-right: 5px;
+}
+
+.mod-menu-button {
+  display: grid;
+  background: var(--default-bg);
+  border: var(--default-border);
+  box-shadow: var(--button-box-shadow);
+  height: 100px;
+  width: 100px;
+  font-size: 20pt;
+  text-align: center;
+  justify-content: center;
+  align-content: center;
+  transition: transform 100ms ease-out;
+}
+
+.mod-menu-button:hover {
+  background: var(--default-hover-bg);
+  transform: translateY(1px);
+  cursor: pointer;
 }
 
 .buzzer {
@@ -627,4 +672,39 @@ body {
   text-align: center;
   margin: 0;
   font-size: 20pt;
+}
+
+.buzzer-window {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  left: 0;
+  top: 30%;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  background: var(--default-bg);
+  animation: buzzer-window-in 3000ms cubic-bezier(0,0,.14,.99);
+}
+
+.buzzer-window h1 {
+  text-align: center;
+  animation: buzzer-window-h1-in 3000ms cubic-bezier(0,.84,1,.24);
+  font-size: 40pt;
+  margin: 0;
+  height: fit-content;
+}
+
+@keyframes buzzer-window-in {
+  0% {transform: scaleY(0.0);}
+  10% {transform: scaleY(1.0);}
+  90% {transform: scaleY(1.0);}
+  100% {transform: scaleY(0.0);}
+}
+
+@keyframes buzzer-window-h1-in {
+  0% {transform: translateX(-700%);}
+  /* 15% {transform: translateX(0%);}
+  85% {transform: translateX(0%);} */
+  100% {transform: translateX(600%);}
 }

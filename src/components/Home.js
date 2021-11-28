@@ -43,6 +43,8 @@ const Home = forwardRef((props, ref) => {
             new Game("Quiz Show", "bla bla", "quiz", false, {}),
             new Game("Bingo", "bla bla bla", "bingo", true, {}),
             new Game("Text erraten", "bla bla bla", "queue", false, {
+                scoreWin: 4,
+                scoreLose: -2,
                 skipAfterOneTry: false,
                 rounds: [
                     {
