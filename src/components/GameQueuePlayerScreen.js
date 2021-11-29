@@ -48,6 +48,10 @@ const GameQueuePlayerScreen = props => {
         return props?.eventPlayerList?.find(a => a.playerId === userClicked)?.username || null;
     }
 
+    const isSpectator = () => {
+        return props.eventPlayerList?.find(a => a.playerId === getPlayerId())?.playerState === props.PlayerStates.SPECTATOR;
+    }
+
     return (
         <div className="lobby-mod-grid">
             <div className="game-title">
@@ -68,7 +72,7 @@ const GameQueuePlayerScreen = props => {
                 </ul>
             </div>
             <div></div>
-            {showBuzzer()?
+            {(showBuzzer() && !isSpectator())?
                 <div className="buzzer" onClick={buzzer}>
                     <h3>Buzzer</h3>
                     <p>(space)</p>

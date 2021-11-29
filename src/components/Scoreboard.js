@@ -7,7 +7,7 @@ import { getPlayerState } from "../tools/tools"
 
 const Scoreboard = props => {
 
-    const renderPlayerItem = a => {
+    const renderPlayerItem = (a, i) => {
         let m = getPlayerState() === props.PlayerStates.MOD;
         let global = props.eventStatus?.globalScores?.[a.playerId] ?? '-';
         let coins = props.eventStatus.gameStatus?.find(b => b.current)?.playerProgress[a.playerId]?.score;
@@ -15,7 +15,7 @@ const Scoreboard = props => {
 
         return (
             <li className="scoreboard-item-player">
-                <div>{a.username}</div>
+                <div>{i+". "+a.username}</div>
                 <div className="scoreboard-score-data">
                     {m?
                         <button className="score-up">
@@ -80,8 +80,11 @@ const Scoreboard = props => {
                         renderModItem(a)
                     )}
                     <div className="list-spacer"></div>
-                    {props.eventPlayerList?.filter(b => b.playerState === props.PlayerStates.PLAYER).map(a => 
-                        renderPlayerItem(a)
+                    {props.eventPlayerList?.
+                    filter(b => b.playerState === props.PlayerStates.PLAYER).
+                    sort((b, c) => props.eventStatus?.globalScores?.[c.playerId] - props.eventStatus?.globalScores?.[b.playerId]).
+                    map((a,i) => 
+                        renderPlayerItem(a,i+1)
                     )}
                     <div className="list-spacer"></div>
                     {props.eventPlayerList?.filter(b => b.playerState === props.PlayerStates.SPECTATOR).map(a => 

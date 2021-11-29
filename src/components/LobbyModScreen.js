@@ -71,8 +71,22 @@ const LobbyModScreen = props => {
             </div>
             <div className="sidepanel panel double-r">
                 <ul className="small-list">
-                    {props.eventPlayerList?.map(a => 
+                    {props.eventPlayerList?.filter(b => b.playerState === props.PlayerStates.MOD).map(a => 
+                        <li className="scoreboard-item-mod">
+                            <div>{a.username}</div>
+                            <div></div>
+                        </li>
+                    )}
+                    <div className="list-spacer"></div>
+                    {props.eventPlayerList?.filter(b => b.playerState === props.PlayerStates.PLAYER).map(a => 
                         <li>
+                            <div>{a.username}</div>
+                            <div></div>
+                        </li>
+                    )}
+                    <div className="list-spacer"></div>
+                    {props.eventPlayerList?.filter(b => b.playerState === props.PlayerStates.SPECTATOR).map(a => 
+                        <li className="scoreboard-item-spectator">
                             <div>{a.username}</div>
                             <div></div>
                         </li>

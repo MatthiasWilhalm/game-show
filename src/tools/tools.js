@@ -3,7 +3,7 @@ export function storePlayerId(userId) {
 }
 
 export function getPlayerId() {
-    return localStorage.getItem('userId')+'';
+    return localStorage.getItem('userId');
 }
 
 export function storeUsername(username) {

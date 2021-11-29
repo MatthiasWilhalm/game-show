@@ -102,7 +102,7 @@ const GameQueueModScreen = props => {
 
     const setWinner = () => {
         let winner = [];
-        let maxScore = 0;
+        let maxScore = Number.MIN_SAFE_INTEGER;
         Object.keys(gameState.playerProgress).forEach(ps => {
             if(gameState.playerProgress[ps].score>maxScore)
                 maxScore = gameState.playerProgress[ps].score;
