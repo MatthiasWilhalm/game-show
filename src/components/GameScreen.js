@@ -11,8 +11,8 @@ import ChatComponent from './ChatComponent';
 import MainButton from './MainButton';
 import LobbyPlayerScreen from './LobbyPlayerScreen';
 import LobbyModScreen from './LobbyModScreen';
-import GameQueuePlayerScreen from './GameQueuePlayerScreen';
-import GameQueueModScreen from './GamequeueModScreen';
+import GameQueuePlayerScreen from './QueueGame/GameQueuePlayerScreen';
+import GameQueueModScreen from './QueueGame/GameQueueModScreen';
 
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');

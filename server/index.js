@@ -33,11 +33,16 @@ wsServer.on('request', function (request) {
 
   connection.on('close', () => handleDisconnect(playerId));
 
-  connection.send(DataPackage("getplayerid", playerId, playerId).toString());
+  connection.send(DataPackage("getplayerid", playerId, {playerId: playerId, username: generateGenericUsername()}).toString());
 
   storeConnection(connection, playerId);
   debugListEvents();
 });
+
+function generateGenericUsername() {
+  const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  return "User-"+s4();
+}
 
 function generatePlayerId() {
   const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);

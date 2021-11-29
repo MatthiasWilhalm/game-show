@@ -68,9 +68,13 @@ const Main = () => {
             switch (msg.type) {
                 case 'getplayerid':
                     if(!getPlayerId()) {
-                        storePlayerId(msg.payload);
+                        storePlayerId(msg.payload.playerId);
                     }
-                    send('updateplayerdata', {oldPlayerId: msg.payload, username: getUsername()});
+                    if(getUsername()==="") {
+                        storeUsername(msg.payload.username);
+                    }
+                    refHome?.current.updateUsername();
+                    send('updateplayerdata', {oldPlayerId: msg.payload.playerId, username: getUsername()});
                     break;
                 case 'updateplayerdata':
                     handlePlayerDataUpdate(msg);

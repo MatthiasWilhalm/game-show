@@ -221,8 +221,19 @@ body {
   box-shadow: var(--default-button-box);
 }
 
-.small-list li *:last-child, .rigth-element {
+.small-list li *:last-child {
+  text-align: right;
+}
+
+.rigth-element {
   text-align: center;
+}
+
+.small-list img {
+  width: 20px;
+  height: auto;
+  float: right;
+  padding: 0;
 }
 
 .large-list li {

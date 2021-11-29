@@ -62,6 +62,10 @@ const LobbyModScreen = props => {
         return props.eventStatus?.gameStatus?.findIndex(g => g.selected);
     }
 
+    const isDone = i => {
+        return !!props.eventStatus?.gameStatus[i]?.done;
+    }
+
     return (
         <div className="lobby-mod-grid">
             <div className="game-title">
@@ -96,7 +100,7 @@ const LobbyModScreen = props => {
             <div className="panel">
                 <ul className="large-list clickable-list">
                     {props.eventData?.games?.map((game, i) => 
-                        <li onClick={() => selectGame(i)} className={getSelectedGameIndex()===i?"selected":""}>
+                        <li onClick={() => selectGame(i)} className={isDone(i)?"locked":(getSelectedGameIndex()===i?"selected":"")}>
                             <div>{game.title}</div>
                             <div className="double-r rigth-element"></div>
                             <div>{game.description}</div>

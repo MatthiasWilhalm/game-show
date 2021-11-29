@@ -1,22 +1,24 @@
 import BuzzerTriggerEventComponent from "./BuzzerTriggerEventComponent";
-import MainButton from "./MainButton";
+import MainButton from "../MainButton";
 
 const GameQueueModScreen = props => {
 
     const game = props.eventData?.games[props.eventStatus?.gameStatus?.findIndex(g => g.current)];
     const gameState = props.eventStatus?.gameStatus?.find(g => g.current);
 
+    const updateStatus = () => {
+        props.send('seteventstatus', props.eventStatus);
+    }
+
     const setupRoundStatus = roundId => {
         let ngs = gameState.roundStatus;
         let oldRound = ngs?.find(a => a.roundId === roundId);
         if(!oldRound) {
             ngs.push({roundId: roundId, hints: [], current: true, clickedBuzzer: null, paused: false});
-            let ret = props.eventStatus;
-            ret.gameStatus.find(g => g.current).roundStatus = ngs;
-            props.send('seteventstatus', ret);
+            updateStatus();
         } else{
             oldRound.current = true;
-            props.send('seteventstatus', props.eventStatus);
+            updateStatus();
         }
     }
 
@@ -39,11 +41,8 @@ const GameQueueModScreen = props => {
     const openHint = hintId => {
         let ngs = gameState.roundStatus;
         if(!isHintLocked(hintId)) {
-            console.log(ngs.find(i => i.roundId === getCurrentRoundId()));
             ngs.find(i => i.roundId === getCurrentRoundId()).hints.push(hintId);
-            let ret = props.eventStatus;
-            ret.gameStatus.find(g => g.current).roundStatus = ngs;
-            props.send('seteventstatus', ret);
+            updateStatus();
         }
     }
 
@@ -65,7 +64,7 @@ const GameQueueModScreen = props => {
         if(ngs) {
             ngs.score += game.content.scoreWin;
         }
-        props.send('seteventstatus', props.eventStatus);
+        updateStatus();
         resetBuzzerEvent();
     }
 
@@ -74,7 +73,7 @@ const GameQueueModScreen = props => {
         if(ngs) {
             ngs.score += game.content.scoreLose;
         }
-        props.send('seteventstatus', props.eventStatus);
+        updateStatus();
         resetBuzzerEvent();
     }
 
@@ -83,21 +82,21 @@ const GameQueueModScreen = props => {
         let e = ngs.find(i => i.roundId === getCurrentRoundId());
         e.paused = false;
         e.clickedBuzzer = null;
-        props.send('seteventstatus', props.eventStatus);
+        updateStatus();
     }
 
     const closeRound = () => {
         let ngs = gameState.roundStatus;
         let e = ngs.find(i => i.roundId === getCurrentRoundId());
         e.current = false;
-        props.send('seteventstatus', props.eventStatus);
+        updateStatus();
     }
 
     const closeGame = () => {
         setWinner();
         gameState.current = false;
         gameState.done = true;
-        props.send('seteventstatus', props.eventStatus);
+        updateStatus();
     }
 
     const setWinner = () => {
@@ -119,7 +118,7 @@ const GameQueueModScreen = props => {
                 gs[w] = 1;
             }
         });
-        props.send('seteventstatus', props.eventStatus);
+        updateStatus();
     }
 
     const renderRoundSelectScreen = () => {

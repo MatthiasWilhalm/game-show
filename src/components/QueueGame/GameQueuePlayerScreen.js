@@ -1,12 +1,15 @@
-import { getPlayerId } from "../tools/tools";
+import { getPlayerId } from "../../tools/tools";
 import BuzzerTriggerEventComponent from "./BuzzerTriggerEventComponent";
-import MainButton from "./MainButton";
+import MainButton from "../MainButton";
 
 const GameQueuePlayerScreen = props => {
 
     const game = props.eventData?.games[props.eventStatus?.gameStatus?.findIndex(g => g.current)];
     const gameState = props.eventStatus?.gameStatus?.find(g => g.current);
 
+    const updateStatus = () => {
+        props.send('seteventstatus', props.eventStatus);
+    }
 
     const getCurrentRoundId = () => {
         return gameState.roundStatus.find(a => a.current)?.roundId;
@@ -30,9 +33,7 @@ const GameQueuePlayerScreen = props => {
         let r = ngs.find(i => i.roundId === getCurrentRoundId());
         r.paused = true;
         r.clickedBuzzer = getPlayerId();
-        let ret = props.eventStatus;
-        ret.gameStatus.find(g => g.current).roundStatus = ngs;
-        props.send('seteventstatus', ret);
+        updateStatus();
     }
 
     const isPaused = () => {
