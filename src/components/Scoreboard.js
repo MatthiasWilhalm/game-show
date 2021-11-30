@@ -71,27 +71,24 @@ const Scoreboard = props => {
     }
 
     return (
-        <div className="window-bg">
-            {console.log(props.eventPlayerList)}
-            <div className="scoreboard">
-                <h1>Scoreboard</h1>
-                <ul>
-                    {props.eventPlayerList?.filter(b => b.playerState === props.PlayerStates.MOD).map(a => 
-                        renderModItem(a)
-                    )}
-                    <div className="list-spacer"></div>
-                    {props.eventPlayerList?.
-                    filter(b => b.playerState === props.PlayerStates.PLAYER).
-                    sort((b, c) => props.eventStatus?.globalScores?.[c.playerId] - props.eventStatus?.globalScores?.[b.playerId]).
-                    map((a,i) => 
-                        renderPlayerItem(a,i+1)
-                    )}
-                    <div className="list-spacer"></div>
-                    {props.eventPlayerList?.filter(b => b.playerState === props.PlayerStates.SPECTATOR).map(a => 
-                        renderSpectatorItem(a)
-                    )}
-                </ul>
-            </div>
+        <div className="scoreboard">
+            <h1>Scoreboard</h1>
+            <ul>
+                {props.eventPlayerList?.filter(b => b.playerState === props.PlayerStates.MOD).map(a => 
+                    renderModItem(a)
+                )}
+                <div className="list-spacer"></div>
+                {props.eventPlayerList?.
+                filter(b => b.playerState === props.PlayerStates.PLAYER).
+                sort((b, c) => props.eventStatus?.globalScores?.[c.playerId] - props.eventStatus?.globalScores?.[b.playerId]).
+                map((a,i) => 
+                    renderPlayerItem(a,i+1)
+                )}
+                <div className="list-spacer"></div>
+                {props.eventPlayerList?.filter(b => b.playerState === props.PlayerStates.SPECTATOR).map(a => 
+                    renderSpectatorItem(a)
+                )}
+            </ul>
         </div>
     );
 }

@@ -6,13 +6,15 @@ import DataPackage from '../tools/DataPackage';
 import { getPlayerId, getPlayerState, getUsername, storePlayerId, storePlayerState, storeUsername } from '../tools/tools';
 import { Event } from '../tools/Event';
 import { Game } from '../tools/Game';
-import Scoreboard from './Scoreboard';
 import ChatComponent from './ChatComponent';
 import MainButton from './MainButton';
 import LobbyPlayerScreen from './LobbyPlayerScreen';
 import LobbyModScreen from './LobbyModScreen';
 import GameQueuePlayerScreen from './QueueGame/GameQueuePlayerScreen';
 import GameQueueModScreen from './QueueGame/GameQueueModScreen';
+import GameQuizMod from './QuizGame/GameQuizMod';
+import GameQuizPlayer from './QuizGame/GameQuizPlayer';
+import ScoreboardWindow from './ScoreboardWindow';
 
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');
@@ -68,10 +70,15 @@ const GameScreen = forwardRef((props, ref) => {
             switch (type) {
                 case "queue":
                     if(isMod)
-                        return (<GameQueuePlayerScreen {...props}/>);
-                    else
                         return (<GameQueueModScreen {...props}/>);
+                    else
+                        return (<GameQueuePlayerScreen {...props}/>);
             
+                case "quiz":
+                    if(isMod)
+                        return(<GameQuizMod {...props}/>);
+                    else
+                        return (<GameQuizPlayer {...props}/>);
                 default:
                     return(
                         <div>
@@ -87,7 +94,7 @@ const GameScreen = forwardRef((props, ref) => {
 
     const renderScreenState = () => {
         
-        const isMod = getPlayerState()!==props.PlayerStates?.MOD
+        const isMod = getPlayerState()===props.PlayerStates?.MOD;
 
         if(!!props.eventStatus?.gameStatus?.find(a => a.current)) {
             return renderGameScreen(isMod);
@@ -95,9 +102,10 @@ const GameScreen = forwardRef((props, ref) => {
             return (
                 <div>
                     {isMod?
-                        <LobbyPlayerScreen {...props}/>
-                    :
                         <LobbyModScreen {...props}/>
+                        
+                    :
+                        <LobbyPlayerScreen {...props}/>
                     }
                 </div>
             );
@@ -108,7 +116,7 @@ const GameScreen = forwardRef((props, ref) => {
         <div>
             {renderScreenState()}
             {showScoreboard?
-                <Scoreboard {...props}/>
+                <ScoreboardWindow {...props}/>
             :''}
             <ChatComponent {...props} ref={chatRef}/>
         </div>

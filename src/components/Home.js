@@ -58,7 +58,47 @@ const Home = forwardRef((props, ref) => {
 
     const createTestEvent = () => {
         let event = new Event("Test Event", [
-            new Game("Quiz Show", "bla bla", "quiz", false, {}),
+            new Game("Quiz Show", "bla bla", "quiz", false, {
+                scoreWin: 5,
+                scoreSpecWin: 2,
+                scoreLose: 0,
+                scoreSpecLose: 0,
+                questions: [
+                    {
+                        question: "Who is Obama?!",
+                        url: "",
+                        urlType: "none",
+                        answerType: "preset",
+                        randomize: true,
+                        presetAnswers: [
+                            {
+                                correct: false,
+                                text: "Shrek",
+                                url: "",
+                                urlType: "none"
+                            },
+                            {
+                                correct: true,
+                                text: "Obama",
+                                url: "",
+                                urlType: "none"
+                            },
+                            {
+                                correct: false,
+                                text: "Trump",
+                                url: "",
+                                urlType: "none"
+                            },
+                            {
+                                correct: true,
+                                text: "Simba",
+                                url: "",
+                                urlType: "none"
+                            }
+                        ]
+                    }
+            ]
+            }),
             new Game("Bingo", "bla bla bla", "bingo", true, {}),
             new Game("Text erraten", "bla bla bla", "queue", false, {
                 scoreWin: 4,
