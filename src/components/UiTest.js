@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import useToggle from "../tools/useToggle";
 import ChatComponent from "./ChatComponent";
 import MainButton from "./MainButton";
+import ResultWindow from "./ResultWindow";
 
 const UiTest = props => {
 
@@ -114,6 +115,16 @@ const UiTest = props => {
                 return(
                     <ChatComponent chat={testChat}></ChatComponent>
                 );
+            case 'result':
+                return (
+                    <ResultWindow
+                        username={"Username"}
+                        score={5}
+                        change={2}
+                        msg={"true answer is bruh-moment"}
+                        initShow={true}
+                    />
+                );
             default:
                 return(
                     <p>
@@ -134,6 +145,7 @@ const UiTest = props => {
                         <li onClick={() => setCurrentElement('panel-states')}>panel-states</li>
                         <li onClick={() => setCurrentElement('lobby-screen')}>lobby-screen</li>
                         <li onClick={() => setCurrentElement('chat')}>chat</li>
+                        <li onClick={() => setCurrentElement('result')}>result</li>
                         <li>scoreboard</li>
                     </ul>
                 </div>

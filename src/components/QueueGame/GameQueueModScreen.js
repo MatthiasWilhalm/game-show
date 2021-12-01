@@ -1,10 +1,16 @@
 import BuzzerTriggerEventComponent from "./BuzzerTriggerEventComponent";
 import MainButton from "../MainButton";
+import ResultWindow from "../ResultWindow";
+import { useRef, useState } from "react";
 
 const GameQueueModScreen = props => {
 
     const game = props.eventData?.games[props.eventStatus?.gameStatus?.findIndex(g => g.current)];
     const gameState = props.eventStatus?.gameStatus?.find(g => g.current);
+
+    const [roundWinner, setRoundWinner] = useState(null);
+
+    const refResult = useRef(null);
 
     const updateStatus = () => {
         props.send('seteventstatus', props.eventStatus);
@@ -63,9 +69,12 @@ const GameQueueModScreen = props => {
         let ngs = gameState?.playerProgress[getBuzzerClickedPlayer().playerId];
         if(ngs) {
             ngs.score += game.content.scoreWin;
+            setRoundWinner({username: getBuzzerClickedPlayer().username, score: ngs.score, change: game.content.scoreWin, msg: ""});
+            resetBuzzerEvent();
+            closeRound();
+            refResult?.current?.showWindow();
+            updateStatus();
         }
-        updateStatus();
-        resetBuzzerEvent();
     }
 
     const buzzerEventWrong = () => {
@@ -190,6 +199,14 @@ const GameQueueModScreen = props => {
 
     return (
         <div>
+            <ResultWindow 
+                username={roundWinner?.username}
+                score={roundWinner?.score}
+                change={roundWinner?.change}
+                msg={roundWinner?.msg}
+                autoHide={true}
+                ref={refResult}
+            />
             {isInRound()?
                 renderHintSelectScreen()
             :

@@ -73,7 +73,7 @@ const Main = () => {
                     if(getUsername()==="") {
                         storeUsername(msg.payload.username);
                     }
-                    refHome?.current.updateUsername();
+                    refHome?.current?.updateUsername();
                     send('updateplayerdata', {oldPlayerId: msg.payload.playerId, username: getUsername()});
                     break;
                 case 'updateplayerdata':

@@ -1,6 +1,7 @@
 import { getPlayerId } from "../../tools/tools";
 import BuzzerTriggerEventComponent from "./BuzzerTriggerEventComponent";
 import MainButton from "../MainButton";
+import ResultWindow from "../ResultWindow";
 
 const GameQueuePlayerScreen = props => {
 
@@ -53,46 +54,60 @@ const GameQueuePlayerScreen = props => {
         return props.eventPlayerList?.find(a => a.playerId === getPlayerId())?.playerState === props.PlayerStates.SPECTATOR;
     }
 
+    const getRoundWinner = () => {
+        //TODO
+    }
+
     return (
-        <div className="lobby-mod-grid">
-            <div className="game-title">
-                <h1>
-                    {game.title}
-                </h1>
-            </div>
-            <div></div>
-            <div className="double panel centered-panel">
-                <ul className="large-list">
-                    {getActiveHints().map(a => 
-                        <li>
-                            <div>{a.text}</div>
-                            <div></div>
-                            <div></div>
-                        </li>    
-                    )}
-                </ul>
-            </div>
-            <div></div>
-            {(showBuzzer() && !isSpectator())?
-                <div className="buzzer" onClick={buzzer}>
-                    <h3>Buzzer</h3>
-                    <p>(space)</p>
+        <div>
+            {/* <ResultWindow
+                username={roundWinner?.username}
+                score={roundWinner?.score}
+                change={roundWinner?.change}
+                msg={roundWinner?.msg}
+                autoHide={true}
+                ref={refResult}
+            /> */}
+            <div className="lobby-mod-grid">
+                <div className="game-title">
+                    <h1>
+                        {game.title}
+                    </h1>
                 </div>
-            :
-                ''
-            }
-            {getBuzzerClickedUsername()?
-                <BuzzerTriggerEventComponent username={getBuzzerClickedUsername()}/>
-            :
-                ''
-            }
-            {getBuzzerClickedUsername()?
-                <div className="buttom-right-button">
-                    <MainButton className={"locked"} text={getBuzzerClickedUsername()+" speaks"}/>
+                <div></div>
+                <div className="double panel centered-panel">
+                    <ul className="large-list">
+                        {getActiveHints().map(a => 
+                            <li>
+                                <div>{a.text}</div>
+                                <div></div>
+                                <div></div>
+                            </li>    
+                        )}
+                    </ul>
                 </div>
-            :
-                ''
-            }
+                <div></div>
+                {(showBuzzer() && !isSpectator())?
+                    <div className="buzzer" onClick={buzzer}>
+                        <h3>Buzzer</h3>
+                        <p>(space)</p>
+                    </div>
+                :
+                    ''
+                }
+                {getBuzzerClickedUsername()?
+                    <BuzzerTriggerEventComponent username={getBuzzerClickedUsername()}/>
+                :
+                    ''
+                }
+                {getBuzzerClickedUsername()?
+                    <div className="buttom-right-button">
+                        <MainButton className={"locked"} text={getBuzzerClickedUsername()+" speaks"}/>
+                    </div>
+                :
+                    ''
+                }
+            </div>
         </div>
     );
 }
