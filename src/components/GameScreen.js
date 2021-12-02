@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect, useRef, createRef, forwardRef,useImperativeHandle } from 'react';
+import React, { Component, useState, useEffect, useRef, createRef, forwardRef,useImperativeHandle, useReducer } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -15,6 +15,7 @@ import GameQueueModScreen from './QueueGame/GameQueueModScreen';
 import GameQuizMod from './QuizGame/GameQuizMod';
 import GameQuizPlayer from './QuizGame/GameQuizPlayer';
 import ScoreboardWindow from './ScoreboardWindow';
+import ResultWindow from './ResultWindow';
 
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');
@@ -26,8 +27,11 @@ const GameScreen = forwardRef((props, ref) => {
     const navigate = useNavigate();
 
     const chatRef = useRef(null);
+    const refResult = useRef(null);
 
     const [showScoreboard, setShowScoreboard] = useState(false);
+
+    const [result, setResult] = useState(null);
 
     useEffect(() => {
         if(!props.eventData) {
@@ -39,11 +43,15 @@ const GameScreen = forwardRef((props, ref) => {
             document.removeEventListener('keydown', keyDownEvents);
             document.removeEventListener('keyup', keyUpEvents);
         }
-    }, [showScoreboard]);
+    }, [showScoreboard, result]);
 
     useImperativeHandle(ref, () => ({
         triggerChat() {
             chatRef?.current.newMsg();
+        },
+        triggerResultScreen(resultData) {
+            setResult(resultData);
+            refResult?.current.showWindow();
         }
     }));
 
@@ -118,6 +126,14 @@ const GameScreen = forwardRef((props, ref) => {
             {showScoreboard?
                 <ScoreboardWindow {...props}/>
             :''}
+            <ResultWindow 
+                username={result?.username}
+                score={result?.score}
+                change={result?.change}
+                msg={result?.msg}
+                autoHide={true}
+                ref={refResult}
+            />
             <ChatComponent {...props} ref={chatRef}/>
         </div>
     );

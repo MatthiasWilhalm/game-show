@@ -37,7 +37,12 @@ const GameQuizMod = props => {
             let ngs = gameState.roundStatus;
             let oldRound = ngs?.find(a => a.roundId === selectedQuestion);
             if(!oldRound) {
-                ngs.push({roundId: selectedQuestion, currentPlayerId: selectedPlayer, current: true, playersAnswer: null});
+                ngs.push({
+                    roundId: selectedQuestion,
+                    currentPlayerId: selectedPlayer,
+                    current: true,
+                    playersAnswer: null
+                });
             } else {
                 oldRound.current = true;
             }
@@ -51,6 +56,22 @@ const GameQuizMod = props => {
 
     const getCurrentQuestion = () => {
         return game.content.questions[selectedQuestion] || null;
+    }
+
+    const getEstimateValue = playerId => {
+        return gameState?.playerProgress?.[playerId]?.selection ?? -1;
+    }
+    
+    const getAskedPlayer = () => {
+        let g = gameState.roundStatus.find(a => a.current);
+        if(g) {
+            return props.eventPlayerList.find(a => a.playerId === g.currentPlayerId) || null;
+        }
+        return null;
+    }
+
+    const getQuestionSelection = () => {
+        return gameState.playerProgress?.[gameState.roundStatus?.find(a => a.current)?.currentPlayerId]?.selection;
     }
 
     const renderSelectScreen = () => {
@@ -103,15 +124,18 @@ const GameQuizMod = props => {
                 </div>
                 <div className="sidepanel panel double-r">
                     <ul className="small-list">
-                        {props.eventPlayerList?.filter(b => b.playerState === props.PlayerStates.PLAYER).map(a => 
-                            <li>
+                        {props.eventPlayerList?.filter(b => (b.playerState === props.PlayerStates.PLAYER && b.playerId !== getAskedPlayer()?.playerId)).map(a => 
+                            <li className={getEstimateValue(a.playerId)===0?'wrong':(getEstimateValue(a.playerId)===1?'right':'')}>
                                 <div>{a.username}</div>
                                 <div></div>
                             </li>
                         )}
                     </ul>
                 </div>
-                <QuestionComponent question={getCurrentQuestion()}/>
+                <QuestionComponent 
+                    question={getCurrentQuestion()}
+                    selection={getQuestionSelection()}
+                />
             </div>
         );
     }

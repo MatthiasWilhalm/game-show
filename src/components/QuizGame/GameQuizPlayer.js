@@ -6,6 +6,10 @@ const GameQuizPlayer = props => {
     const game = props.eventData?.games[props.eventStatus?.gameStatus?.findIndex(g => g.current)];
     const gameState = props.eventStatus?.gameStatus?.find(g => g.current);
 
+    const updateStatus = () => {
+        props.send('seteventstatus', props.eventStatus);
+    }
+
     const isInRound = () => {
         return !!gameState.roundStatus.find(a => a.current);
     }
@@ -21,6 +25,24 @@ const GameQuizPlayer = props => {
     const isAskedPlayer = () => {
         let g = gameState.roundStatus.find(a => a.current);
         return g && g.currentPlayerId === getPlayerId();
+    }
+
+    const setSelection = value => {
+        let ng = gameState.playerProgress[getPlayerId()];
+        if(ng) {
+            ng.selection = value;
+            console.log(ng.selection);
+            updateStatus();
+        }
+
+    }
+
+    const getQuestionSelection = () => {
+        return gameState.playerProgress?.[gameState.roundStatus?.find(a => a.current)?.currentPlayerId]?.selection;
+    }
+
+    const getEstimateValue = () => {
+        return gameState?.playerProgress?.[getPlayerId()]?.selection ?? -1;
     }
 
     const renderWaitingScreen = () => {
@@ -47,11 +69,16 @@ const GameQuizPlayer = props => {
                     </h1>
                 </div>
                 <div className="question-container">
-                    <QuestionComponent question={getCurrentQuestion()} asking={isAskedPlayer()}/>
+                    <QuestionComponent 
+                        question={getCurrentQuestion()}
+                        asking={isAskedPlayer()}
+                        callback={isAskedPlayer()?setSelection:null}
+                        selection={getQuestionSelection()}
+                    />
                     {!isAskedPlayer()?
                         <div className="true-false-buttons">
-                            <button className="right">true</button>
-                            <button className="wrong">false</button>
+                            <button className={getEstimateValue()===1?"selected":"right"} onClick={() => setSelection(1)}>true</button>
+                            <button className={getEstimateValue()===0?"selecetd":"wrong"} onClick={() => setSelection(0)}>false</button>
                         </div>
                     :''}
                 </div>                

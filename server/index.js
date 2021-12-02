@@ -92,6 +92,9 @@ function handleRequest(reqest) {
     case 'seteventstatus':
       updateEventStatus(client.event, msg.payload);
       break;
+    case 'triggerresultscreen':
+      handleResultScreenTrigger(client.event, msg.playerId, msg.payload);
+      break;
     case 'chat':
       handleChatMsg(client.event, msg.playerId, msg.payload);
       break;
@@ -386,4 +389,8 @@ function handleChatMsg(eventId, playerId, chatMsg) {
   }
   if(shouldSend)
     sendToAllInEvent(eventId, DataPackage('chat', playerId, chatMsg));
+}
+
+function handleResultScreenTrigger(eventId, playerId, roundDataObj) {
+  sendToAllInEvent(eventId, DataPackage('triggerresultscreen', playerId, roundDataObj));
 }

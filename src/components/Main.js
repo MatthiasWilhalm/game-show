@@ -96,6 +96,9 @@ const Main = () => {
                 case 'updateplayerlist':
                     handlePlayerList(msg);
                     break;
+                case 'triggerresultscreen':
+                    refGame?.current.triggerResultScreen(msg.payload);
+                    break;
                 case 'chat':
                     handleChatUpdate(msg);
                     break;
