@@ -34,7 +34,6 @@ const GameQuizPlayer = props => {
             console.log(ng.selection);
             updateStatus();
         }
-
     }
 
     const getQuestionSelection = () => {

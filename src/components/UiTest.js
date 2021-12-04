@@ -3,6 +3,7 @@ import useToggle from "../tools/useToggle";
 import ChatComponent from "./ChatComponent";
 import MainButton from "./MainButton";
 import ResultWindow from "./ResultWindow";
+import TeamCreateWindow from "./TeamCreateWindow";
 
 const UiTest = props => {
 
@@ -125,6 +126,10 @@ const UiTest = props => {
                         initShow={true}
                     />
                 );
+            case 'createteam':
+                return (
+                    <TeamCreateWindow></TeamCreateWindow>
+                );
             default:
                 return(
                     <p>
@@ -146,6 +151,7 @@ const UiTest = props => {
                         <li onClick={() => setCurrentElement('lobby-screen')}>lobby-screen</li>
                         <li onClick={() => setCurrentElement('chat')}>chat</li>
                         <li onClick={() => setCurrentElement('result')}>result</li>
+                        <li onClick={() => setCurrentElement('createteam')}>createteam</li>
                         <li>scoreboard</li>
                     </ul>
                 </div>

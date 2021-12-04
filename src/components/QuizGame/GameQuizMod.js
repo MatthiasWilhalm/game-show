@@ -73,6 +73,72 @@ const GameQuizMod = props => {
     const getQuestionSelection = () => {
         return gameState.playerProgress?.[gameState.roundStatus?.find(a => a.current)?.currentPlayerId]?.selection;
     }
+    
+    const setAnswerForAskedPlayer = value => {
+        let ng = gameState.playerProgress[getAskedPlayer().playerId];
+        if(ng) {
+            ng.selection = value;
+            console.log(ng.selection);
+            updateStatus();
+        }
+    }
+
+    const triggerCloseRound = () => {
+        // let s = props.eventStatus.globalScores[getAskedPlayer().playerId];
+        let s = gameState.playerProgress?.[getAskedPlayer().playerId];
+        let c = 0;
+        let correct = getCurrentQuestion()?.presetAnswers[getQuestionSelection()]?.correct;
+        if(correct) {
+            c = game.content.scoreWin;
+        } else {
+            c = game.content.scoreLose;
+        }
+        if(s.score===undefined) {
+            s.score = c;
+        } else {
+            s.score += c;
+        }
+        updateSpecStatus(correct);
+        triggerRoundWindow(s.score, c);
+        closeRound();
+    }
+
+    const triggerRoundWindow = (score, change) => {
+        props.send('triggerresultscreen', {username: getAskedPlayer()?.username, score, change: change, msg: getCorrectAnswerAsString()});
+    }
+
+    const getCorrectAnswerAsString = () => {
+        let ret = "";
+        getCurrentQuestion().presetAnswers.filter(a => a.correct).forEach(a => {
+            ret+=a.text+"; ";
+        });
+        return ret;
+    }
+
+    const updateSpecStatus = answerWasCorret => {
+        Object.keys(gameState.playerProgress).filter(a => a !== getAskedPlayer()?.playerId).forEach(a => {
+            let b = gameState.playerProgress[a];
+            if((answerWasCorret && b.selection===1) || (!answerWasCorret && b.selection===0)) {
+                if(b.score!==undefined)
+                    b.score += game.content.scoreSpecWin;
+                else 
+                    b.score = game.content.scoreSpecWin;
+            } else {
+                if(b.score!==undefined)
+                    b.score += game.content.scoreSpecLose;
+                else 
+                    b.score = game.content.scoreSpecLose;
+            }
+        });
+        updateStatus();
+    }
+
+    const closeRound = () => {
+        let ngs = gameState.roundStatus;
+        let e = ngs.find(i => i.roundId === selectedQuestion);
+        e.current = false;
+        updateStatus();
+    }
 
     const renderSelectScreen = () => {
         return (
@@ -135,7 +201,16 @@ const GameQuizMod = props => {
                 <QuestionComponent 
                     question={getCurrentQuestion()}
                     selection={getQuestionSelection()}
+                    callback={setAnswerForAskedPlayer}
                 />
+                
+                <div className="buttom-right-button">
+                    <MainButton 
+                        text={"show result"}
+                        className={getQuestionSelection()===-1?'locked':''}
+                        onClick={() => getQuestionSelection()===-1?null:triggerCloseRound()}
+                    ></MainButton>
+                </div>
             </div>
         );
     }

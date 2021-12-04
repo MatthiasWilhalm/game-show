@@ -18,6 +18,8 @@
   --default-button-box: 6px 7px 8px -2px #00000088;
   --default-inner-box-shadow: inset 0px 0px 15px -5px #000000;
   --default-border: 5px solid black;
+  --team-color-a: #ff6f6f;
+  --team-color-b: #50cdff;
 }
 
 body {
@@ -652,6 +654,14 @@ body {
   cursor: pointer;
 }
 
+.mod-menu-button img {
+  position: relative;
+  left: 0;
+  top: 0;
+  width: 100px;
+  height: auto;
+}
+
 .buzzer {
   position: fixed;
   right: -50px;
@@ -953,4 +963,85 @@ body {
     transform: translatex(100%);
     opacity: 0;
   }
+}
+
+
+.team-create-window {
+  position: absolute;
+  width: 80%;
+  height: max-content;
+  min-height: 200px;
+  height: 70%;
+  max-height: 70%;
+  overflow-y: auto;
+  left: 50%;
+  top: 10%;
+  transform: translateX(-50%);
+  background: var(--default-bg);
+  display: grid;
+  grid-template-columns: 45% 10% 45%;
+  grid-template-rows: min-content min-content auto;
+  overflow: hidden;
+}
+
+.team-create-window .mod-menu-button {
+  justify-self: center;
+  align-self: center;
+}
+
+.team-create-window h1 {
+  grid-column: span 3;
+  text-align: center;
+}
+
+.team-create-window h2 {
+  text-align: center;
+  margin: 0;
+}
+
+.team-create-window-panel {
+  justify-self: center;
+  width: 70%;
+  height: 90%;
+  position: relative;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.team-a {
+  background-color: var(--team-color-a);
+}
+
+.team-b {
+  background-color: var(--team-color-b);
+}
+
+.arrow-right {
+  justify-self: end;
+  width: 0; 
+  height: 0; 
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 10px solid rgb(0, 0, 0);
+  transition: transform 100ms ease-out;
+}
+
+.arrow-left {
+  justify-self: start;
+  width: 0; 
+  height: 0; 
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 10px solid rgb(0, 0, 0);
+  transition: transform 100ms ease-out;
+}
+
+.arrow-left-click:hover {
+  cursor: pointer;
+  transform: translateX(-2px);  
+}
+
+.arrow-right-click:hover {
+  cursor: pointer;
+  transform: translateX(2px);  
 }
