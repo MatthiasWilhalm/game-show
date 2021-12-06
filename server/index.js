@@ -69,7 +69,13 @@ function handleRequest(reqest) {
 
   switch (msg.type) {
     case 'updateplayerdata':
-      updatePlayerData(msg.payload.oldPlayerId, msg.playerId, msg.payload.username, msg.payload.playerState);
+      updatePlayerData(
+        msg.payload.oldPlayerId,
+        msg.playerId,
+        msg.payload.username,
+        msg.payload.playerState,
+        msg.payload.team
+      );
       debugListClients();
       break;
     case 'createandjoinevent':
@@ -126,7 +132,7 @@ function handleDisconnect(playerId) {
  * @param {String} playerId 
  */
 function storeConnection(connection, playerId) {
-  let client = { event: null, socket: connection, username: '', playerState: PlayerStates.PLAYER};
+  let client = { event: null, socket: connection, username: '', playerState: PlayerStates.PLAYER, team: ''};
   clients.set(playerId, client);
 
   console.log('connected: ' + playerId);
@@ -288,7 +294,7 @@ function debugListEvents() {
   }
 }
 
-function updatePlayerData(oldPlayerId, newPlayerId, username, playerState) {
+function updatePlayerData(oldPlayerId, newPlayerId, username, playerState, team) {
   let c = clients.get(oldPlayerId);
   if (c) {
     if (oldPlayerId !== newPlayerId) {
@@ -300,6 +306,8 @@ function updatePlayerData(oldPlayerId, newPlayerId, username, playerState) {
         nc.username = username;
       if(playerState)
         nc.playerState = playerState;
+      if(team)
+        nc.team = team;
       clients.set(newPlayerId, nc);
       clients.delete(oldPlayerId);
     } else {

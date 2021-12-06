@@ -99,7 +99,47 @@ const Home = forwardRef((props, ref) => {
                     }
             ]
             }),
-            new Game("Bingo", "bla bla bla", "bingo", true, {}),
+            new Game("Bingo", "bla bla bla", "bingo", true, {
+                columCount: 3,
+                questions: [
+                    {
+                        category: "ses",
+                        question: {
+                            question: "Who is Obama?!",
+                            url: "",
+                            urlType: "none",
+                            answerType: "preset",
+                            randomize: true,
+                            presetAnswers: [
+                                {
+                                    correct: false,
+                                    text: "Shrek",
+                                    url: "",
+                                    urlType: "none"
+                                },
+                                {
+                                    correct: true,
+                                    text: "Obama",
+                                    url: "",
+                                    urlType: "none"
+                                },
+                                {
+                                    correct: false,
+                                    text: "Trump",
+                                    url: "",
+                                    urlType: "none"
+                                },
+                                {
+                                    correct: true,
+                                    text: "Simba",
+                                    url: "",
+                                    urlType: "none"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }),
             new Game("Text erraten", "bla bla bla", "queue", false, {
                 scoreWin: 4,
                 scoreLose: -2,

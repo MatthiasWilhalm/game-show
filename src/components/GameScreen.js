@@ -16,6 +16,8 @@ import GameQuizMod from './QuizGame/GameQuizMod';
 import GameQuizPlayer from './QuizGame/GameQuizPlayer';
 import ScoreboardWindow from './ScoreboardWindow';
 import ResultWindow from './ResultWindow';
+import GameBingoMod from './BingoGame/GameBingoMod';
+import GameBingoPlayer from './BingoGame/GameBingoPlayer';
 
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');
@@ -81,12 +83,16 @@ const GameScreen = forwardRef((props, ref) => {
                         return (<GameQueueModScreen {...props}/>);
                     else
                         return (<GameQueuePlayerScreen {...props}/>);
-            
                 case "quiz":
                     if(isMod)
                         return(<GameQuizMod {...props}/>);
                     else
                         return (<GameQuizPlayer {...props}/>);
+                case "bingo":
+                    if(isMod)
+                        return(<GameBingoMod {...props}/>)
+                    else
+                        return (<GameBingoPlayer {...props}/>);
                 default:
                     return(
                         <div>

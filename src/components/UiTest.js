@@ -29,7 +29,19 @@ const UiTest = props => {
         {"username": "Bob", "text": "Hi there"},
         {"username": "Hans", "text": "Moin"},
         {"username": "Reeeeeeeeeeeeeeee", "text": "Moinnnnnnnnnnnnnnnnnnnnnn nnnnnnnnnnnnnnnnnnnnnnnnnn nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn"},
-    ]
+    ];
+
+    const [testPlayerlist, setTestPlayerlist] = useState([
+        {playerId: "0", username: "Hans", team: 0},
+        {playerId: "1", username: "Emma", team: 0},
+        {playerId: "2", username: "Monika", team: 0},
+        {playerId: "3", username: "Moriz", team: 0},
+        {playerId: "4", username: "Felix", team: 0},
+        {playerId: "5", username: "Orsus", team: 1},
+        {playerId: "6", username: "Leia", team: 1},
+        {playerId: "7", username: "Luis", team: 1},
+        {playerId: "8", username: "Marisa", team: 1}
+    ]);
 
     const renderElement = () => {
         console.log(currentElement);
@@ -128,7 +140,11 @@ const UiTest = props => {
                 );
             case 'createteam':
                 return (
-                    <TeamCreateWindow></TeamCreateWindow>
+                    <TeamCreateWindow 
+                        eventPlayerList={testPlayerlist}
+                        callback={setTestPlayerlist}
+                        isMod={true}
+                    />
                 );
             default:
                 return(
