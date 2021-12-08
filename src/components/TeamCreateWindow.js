@@ -115,7 +115,7 @@ const TeamCreateWindow = props => {
             </div>
             {props.isMod?
                 <div className="buttom-right-button">
-                    <MainButton text="Start"></MainButton>
+                    <MainButton text="Start" onClick={props.confirmCallback}></MainButton>
                 </div>
             :''}
         </div>

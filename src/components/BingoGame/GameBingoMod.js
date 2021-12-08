@@ -25,6 +25,12 @@ const GameBingoMod = props => {
         }
     }
 
+    const teamWindowConfirmCallback = () => {
+        props.send('updateteams', getPlayerlist());
+        gameState.teamsCreated = true;
+        updateStatus();
+    }
+
     const getPlayerlist = () => {
         let pl = JSON.parse(JSON.stringify(props.eventPlayerList?.filter(a => a.playerState === props.PlayerStates.PLAYER)));
         pl.map(a => {
@@ -41,6 +47,7 @@ const GameBingoMod = props => {
                     eventPlayerList={getPlayerlist()}
                     isMod={true}
                     callback={teamWindowCallback}
+                    confirmCallback={teamWindowConfirmCallback}
                 />
             :
                 ''

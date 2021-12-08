@@ -101,6 +101,10 @@ function handleRequest(reqest) {
     case 'triggerresultscreen':
       handleResultScreenTrigger(client.event, msg.playerId, msg.payload);
       break;
+    case 'updateteams':
+      updateTeams(msg.payload);
+      updateEventPlayerList(client.event);
+      break;
     case 'chat':
       handleChatMsg(client.event, msg.playerId, msg.payload);
       break;
@@ -279,7 +283,7 @@ function getPlayerByStateInEvent(eventId, playerState) {
 function debugListClients() {
   Array.from(clients.keys()).forEach(a => {
     if (clients.get(a))
-      console.log('uid: ' + a + ' event: ' + clients.get(a).event + ' user: ' + clients.get(a).username);
+      console.log('uid: ' + a + ' event: ' + clients.get(a).event + ' user: ' + clients.get(a).username + ' team: ' + clients.get(a).team);
   });
 }
 
@@ -320,6 +324,21 @@ function updatePlayerData(oldPlayerId, newPlayerId, username, playerState, team)
       updateEventPlayerList(c.event);
     }
   }
+}
+
+/**
+ * playerarray with playerId and Team
+ * @param {Array} playerArray 
+ */
+function updateTeams(playerArray) {
+  playerArray.forEach(a => {
+    if(a.playerId !== undefined && a.team !== undefined) {
+      let c = clients.get(a.playerId);
+      if(c) {
+        c.team = a.team;
+      }
+    }
+  });
 }
 
 function createAndJoinEvent(rawEvent, playerId) {

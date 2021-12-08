@@ -3,7 +3,7 @@ import chatIcon from "../assets/chat.svg";
 import closeIcon from "../assets/close.svg";
 import sendIcon from "../assets/send.svg";
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { getUsername } from "../tools/tools";
+import { getPlayerId, getUsername } from "../tools/tools";
 
 const ChatComponent = forwardRef((props, ref) => {
 
@@ -13,14 +13,19 @@ const ChatComponent = forwardRef((props, ref) => {
         HIDE: "hide"
     };
 
+    const TeamNames = ["Team A", "Team B"];
+
     const maxMsgLength = 200;
 
     const [showState, setShowState] = useState(ShowStates.INIT);
     const [currentMsg, setCurrentMsg] = useState("");
     const [isUnRead, setUnRead] = useState(false);
+    const [chatroom, setChatroom] = useState(-1);
 
     const inputRef = useRef(null);
     const logRef = useRef(null);
+
+    const gameState = props.eventStatus?.gameStatus?.find(g => g.current);
 
     useEffect(() => {
         document.addEventListener('keydown', keyDownEvent);
@@ -65,7 +70,7 @@ const ChatComponent = forwardRef((props, ref) => {
 
     const sendMsg = () => {
         if(currentMsg!=="") {
-            props.send('chat', {username: getUsername(), text: currentMsg});
+            props.send('chat', {username: getUsername(), text: currentMsg, usercolor: '', team: chatroom});
             setCurrentMsg("");
         }
     }
@@ -74,6 +79,36 @@ const ChatComponent = forwardRef((props, ref) => {
         if(txt.length < maxMsgLength || txt.length < currentMsg) {
             setCurrentMsg(txt);
         }
+    }
+
+    const getPlayerlist = () => {
+        let pl = JSON.parse(JSON.stringify(props.eventPlayerList?.filter(a => a.playerState === props.PlayerStates.PLAYER)));
+        pl.map(a => {
+            a.team = gameState?.playerProgress?.[a.playerId]?.team;
+            return a;
+        });
+        return pl;
+    }
+
+    /**
+     * -1 = Global
+     * 0 = Team A
+     * 1 = Team B
+     * @param {Number} team 
+     * @returns 
+     */
+    const getChat = team => {
+        return props.chat.filter(a => a.team === team);
+    }
+
+    const getTeamFromPlayer = () => {
+        return getPlayerlist()?.find(a => a.playerId === getPlayerId())?.team ?? -1;
+    }
+
+    const getAvailableTeams = () => {
+        let t = [];
+        getPlayerlist().forEach(a => a.team!==undefined && a.team !==-1 ? t.push(a.team) : null);
+        return [... new Set(t)];
     }
 
     /**
@@ -93,6 +128,20 @@ const ChatComponent = forwardRef((props, ref) => {
         }
     }));
 
+    const renderTeamList = team => {
+        let t = getTeamFromPlayer();
+        if(gameState?.teamsCreated && ((props.isMod && getAvailableTeams().length>0) || t === team)) {
+            return (
+                <li 
+                    onClick={() => setChatroom(team)}
+                    className={chatroom===team?"selected":""}
+                >
+                    {TeamNames[team]}
+                </li>
+            );
+        } else return null;
+    }
+
     return(
         <div className={"chat chat-state-"+showState}>
             <div className="chat-button" onClick={toggleShow}>
@@ -101,16 +150,18 @@ const ChatComponent = forwardRef((props, ref) => {
             </div>
             <div className="chat-main">
                 <lu className="chat-tabs">
-                    <li>Global</li>
-                    <li>Team A</li>
-                    <li>Team B</li>
+                    <li onClick={() => setChatroom(-1)} className={chatroom===-1?"selected":""}>Global</li>
+                    {renderTeamList(0)}
+                    {renderTeamList(1)}
                 </lu>
                 <div className="chat-msgs" ref={logRef}>
-                    {props.chat?props.chat.map(a => 
-                        <div className="chat-item">
-                            <diV>{a.username+": "+a.text}</diV>
-                        </div>
-                    ):""}
+                    {props.chat?
+                        getChat(chatroom).map(a => 
+                            <div className="chat-item">
+                                <diV>{a.username+": "+a.text}</diV>
+                            </div>
+                        )
+                    :""}
                     {/* <div className="chat-item"></div> */}
                 </div>
                 <div className="chat-textfield">

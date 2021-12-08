@@ -140,7 +140,7 @@ const GameScreen = forwardRef((props, ref) => {
                 autoHide={true}
                 ref={refResult}
             />
-            <ChatComponent {...props} ref={chatRef}/>
+            <ChatComponent {...props} ref={chatRef} isMod={getPlayerState()===props.PlayerStates?.MOD}/>
         </div>
     );
 });
