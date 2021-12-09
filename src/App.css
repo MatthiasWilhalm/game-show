@@ -283,7 +283,7 @@ body {
   justify-content: center;
 }
 
-.clickable-list li:hover {
+.clickable-list li:hover, .clickable:hover {
   background: var(--default-hover-bg);
   cursor: pointer;
   transform: translate(2px, 2px);
@@ -1010,11 +1010,11 @@ body {
 }
 
 .team-a {
-  background-color: var(--team-color-a);
+  background: var(--team-color-a) !important;
 }
 
 .team-b {
-  background-color: var(--team-color-b);
+  background: var(--team-color-b) !important;
 }
 
 .arrow-right {
@@ -1045,4 +1045,22 @@ body {
 .arrow-right-click:hover {
   cursor: pointer;
   transform: translateX(2px);  
+}
+
+.bingo-board {
+  display: grid;
+  grid-template-columns: min-content;
+  gap: 20px;
+  justify-self: center;
+}
+
+.bingo-board-item {
+  display: grid;
+  background: var(--default-bg);
+  box-shadow: var(--button-box-shadow);
+  width: 200px;
+  height: 200px;
+  text-align: center;
+  align-content: center;
+  font-size: 15pt;
 }

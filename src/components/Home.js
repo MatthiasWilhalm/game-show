@@ -137,6 +137,42 @@ const Home = forwardRef((props, ref) => {
                                 }
                             ]
                         }
+                    },
+                    {
+                        category: "sas",
+                        question: {
+                            question: "Who is Obama?!",
+                            url: "",
+                            urlType: "none",
+                            answerType: "preset",
+                            randomize: true,
+                            presetAnswers: [
+                                {
+                                    correct: false,
+                                    text: "Shrek",
+                                    url: "",
+                                    urlType: "none"
+                                },
+                                {
+                                    correct: true,
+                                    text: "Obama",
+                                    url: "",
+                                    urlType: "none"
+                                },
+                                {
+                                    correct: false,
+                                    text: "Trump",
+                                    url: "",
+                                    urlType: "none"
+                                },
+                                {
+                                    correct: true,
+                                    text: "Simba",
+                                    url: "",
+                                    urlType: "none"
+                                }
+                            ]
+                        }
                     }
                 ]
             }),
