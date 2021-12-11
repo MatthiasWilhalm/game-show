@@ -1,5 +1,6 @@
 import { useState } from "react";
 import MainButton from "../MainButton";
+import QuestionComponent from "../QuestionComponent";
 import TeamCreateWindow from "../TeamCreateWindow";
 import BingoBoard from "./BingoBoard";
 
@@ -98,13 +99,145 @@ const GameBingoMod = props => {
         return !!gameState.roundStatus.find(a => a.current);
     }
 
+    const getCurrentQuestion = () => {
+        let g = gameState.roundStatus.find(a => a.current);
+        if(g) {
+            return game.content.questions[g.roundId]?.question || null;
+        }
+        return null;
+    }
+
+    const getCurrentTeam = () => {
+        return gameState.roundStatus?.find(a => a.current)?.currentTeam ?? -1;
+    }
+
+    const setSelection = value => {
+        let ng = gameState.roundStatus.find(a => a.current);
+        if(ng) {
+            ng.teamsAnswer = value;
+            console.log(ng.teamsAnswer);
+            updateStatus();
+        }
+    }
+
+    const getQuestionSelection = () => {
+        return gameState.roundStatus.find(a => a.current)?.teamsAnswer ?? -1;
+    }
+
+    const triggerCloseRound = () => {
+        // let s = props.eventStatus.globalScores[getAskedPlayer().playerId];
+        // let p = gameState.roundStatus.find(a => a.current)?.teamsAnswer;
+        let s = [];
+        console.log(getCurrentTeam());
+        Object.keys(gameState.playerProgress).forEach(a => {
+            console.log(gameState.playerProgress[a]);
+            if(gameState.playerProgress[a].team === getCurrentTeam()) {
+                console.log(a);
+                s.push(gameState.playerProgress[a]);
+            }
+        });
+        let c = 0;
+        let correct = getCurrentQuestion()?.presetAnswers[getQuestionSelection()]?.correct;
+        let displayScore = 0;
+        if(correct) {
+            c = game.content.scoreWin;
+        } else {
+            c = game.content.scoreLose;
+        }
+        if(s) {
+            s.forEach(a => {
+                if(a.score===undefined) {
+                    a.score = c;
+                } else {
+                    a.score += c;
+                }
+                displayScore = a.score;
+            });
+        }
+        updateStatus();
+        updateSpecStatus(correct);
+        triggerRoundWindow(displayScore, c);
+        closeRound();
+    }
+
+    const updateSpecStatus = answerWasCorret => {
+        Object.keys(gameState.playerProgress).filter(a => gameState.playerProgress[a].team !== getCurrentTeam()).forEach(a => {
+            let b = gameState.playerProgress[a];
+            if(!answerWasCorret) {
+                if(b.score!==undefined)
+                    b.score += game.content.scoreSpecWin;
+                else 
+                    b.score = game.content.scoreSpecWin;
+            } else {
+                if(b.score!==undefined)
+                    b.score += game.content.scoreSpecLose;
+                else 
+                    b.score = game.content.scoreSpecLose;
+            }
+        });
+        updateStatus();
+    }
+
+    const triggerRoundWindow = (score, change) => {
+        props.send('triggerresultscreen', {username: TeamNames[getCurrentTeam()], score: score, change: change, msg: getCorrectAnswerAsString()});
+    }
+
+    const getCorrectAnswerAsString = () => {
+        let ret = "";
+        getCurrentQuestion().presetAnswers.filter(a => a.correct).forEach(a => {
+            ret+=a.text+"; ";
+        });
+        return ret;
+    }
+
+    const closeRound = () => {
+        let ngs = gameState.roundStatus;
+        let e = ngs.find(i => i.roundId === selectedRound);
+        e.current = false;
+        updateStatus();
+    }
+
+    const closeGame = () => {
+        setWinner();
+        gameState.current = false;
+        gameState.done = true;
+        updateStatus();
+    }
+
+    const setWinner = () => {
+        let winner = [];
+        let maxScore = Number.MIN_SAFE_INTEGER;
+        Object.keys(gameState.playerProgress).forEach(ps => {
+            if(gameState.playerProgress[ps].score>maxScore)
+                maxScore = gameState.playerProgress[ps].score;
+        });
+        Object.keys(gameState.playerProgress).forEach(ps => {
+            if(gameState.playerProgress[ps].score===maxScore)
+                winner.push(ps);
+        });
+        let gs = props.eventStatus.globalScores;
+        winner.forEach(w => {
+            if(gs[w]) {
+                gs[w] += 1;
+            } else {
+                gs[w] = 1;
+            }
+        });
+        updateStatus();
+    }
+
     const renderSelect = () => {
         return (
             <div className="lobby-mod-grid">
-                <div className="game-title">
-                    <h1>
-                        {game?.title}
-                    </h1>
+                <div className="mod-title">
+                    <div className="game-title">
+                        <h1>
+                            {game?.title}
+                        </h1>
+                    </div>
+                    <div className="mod-menu-button-array-2">
+                        <div className="mod-menu-button" onClick={closeGame}>Lobby</div>
+                    </div>
                 </div>
                 <div className="sidepanel panel double-r">
                     <ul className="small-list clickable-list">
@@ -133,7 +266,38 @@ const GameBingoMod = props => {
 
     const renderRound = () => {
         return (
-            <div></div>
+            <div className="lobby-mod-grid">
+                <div className="game-title">
+                    <h1>
+                        {game?.title}
+                    </h1>
+                </div>
+                <div className="sidepanel panel double-r">
+                    <ul className="small-list clickable-list">
+                        {getAvailableTeams().map(a => 
+                            <li onClick={() => selectTeam(a)} className={(a===selectedTeam?"selected ":TeamClasses[a])}>
+                                <div>{TeamNames[a]}</div>
+                                <div></div>
+                            </li>
+                        )}
+                    </ul>
+                </div>
+                <div className="question-container">
+                    <QuestionComponent 
+                        question={getCurrentQuestion()}
+                        asking={false}
+                        callback={setSelection}
+                        selection={getQuestionSelection()}
+                    />
+                </div>
+                <div className="buttom-right-button">
+                    <MainButton 
+                        text={"show result"}
+                        className={getQuestionSelection()===-1?'locked':''}
+                        onClick={() => getQuestionSelection()===-1?null:triggerCloseRound()}
+                    ></MainButton>
+                </div>
+            </div>
         );
     }
 

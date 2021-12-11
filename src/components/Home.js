@@ -100,6 +100,10 @@ const Home = forwardRef((props, ref) => {
             ]
             }),
             new Game("Bingo", "bla bla bla", "bingo", true, {
+                scoreWin: 4,
+                scoreSpecWin: 2,
+                scoreLose: -1,
+                scoreSpecLose: 0,
                 columCount: 3,
                 questions: [
                     {

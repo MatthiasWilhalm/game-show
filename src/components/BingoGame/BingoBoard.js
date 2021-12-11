@@ -16,8 +16,12 @@ const BingoBoard = props => {
         }
     }
 
-    const getSelection = index => {
-
+    const getTeamClass = index => {
+        const TeamClass = ["team-a", "team-b"];
+        let t  = props.gameState?.roundStatus?.[index]?.currentTeam ?? -1;
+        if(t!==-1)
+            return TeamClass[t];
+        else return "";
     }
 
 
@@ -26,7 +30,7 @@ const BingoBoard = props => {
         <div className="bingo-board" style={getColumnsStyle()}>
             {props.game?.content?.questions?.map((a,i) =>
                 <div 
-                    className={"bingo-board-item"+(props.isMod?" clickable":"")+(props.selected===i?" selected":"")}
+                    className={"bingo-board-item"+(props.isMod?" clickable":"")+(props.selected===i?" selected":"")+" "+getTeamClass(i)}
                     onClick={() => selectCategory(i)}
                 >{a.category}</div>
                 

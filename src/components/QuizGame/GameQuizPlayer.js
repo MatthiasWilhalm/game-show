@@ -49,7 +49,7 @@ const GameQuizPlayer = props => {
             <div className="lobby-grid">
                 <div className="game-title">
                     <h1>
-                        {props.eventData?.title}
+                        {game?.title}
                     </h1>
                 </div>
                 <div className="scoreboard-embedded">
@@ -64,7 +64,7 @@ const GameQuizPlayer = props => {
             <div className="lobby-grid">
                 <div className="game-title">
                     <h1>
-                        {props.eventData?.title}
+                        {game?.title}
                     </h1>
                 </div>
                 <div className="question-container">

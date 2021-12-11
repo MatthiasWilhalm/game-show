@@ -104,7 +104,7 @@ const GameQuizMod = props => {
     }
 
     const triggerRoundWindow = (score, change) => {
-        props.send('triggerresultscreen', {username: getAskedPlayer()?.username, score, change: change, msg: getCorrectAnswerAsString()});
+        props.send('triggerresultscreen', {username: getAskedPlayer()?.username, score: score, change: change, msg: getCorrectAnswerAsString()});
     }
 
     const getCorrectAnswerAsString = () => {
@@ -140,24 +140,58 @@ const GameQuizMod = props => {
         updateStatus();
     }
 
+    const closeGame = () => {
+        setWinner();
+        gameState.current = false;
+        gameState.done = true;
+        updateStatus();
+    }
+
+    const setWinner = () => {
+        let winner = [];
+        let maxScore = Number.MIN_SAFE_INTEGER;
+        Object.keys(gameState.playerProgress).forEach(ps => {
+            if(gameState.playerProgress[ps].score>maxScore)
+                maxScore = gameState.playerProgress[ps].score;
+        });
+        Object.keys(gameState.playerProgress).forEach(ps => {
+            if(gameState.playerProgress[ps].score===maxScore)
+                winner.push(ps);
+        });
+        let gs = props.eventStatus.globalScores;
+        winner.forEach(w => {
+            if(gs[w]) {
+                gs[w] += 1;
+            } else {
+                gs[w] = 1;
+            }
+        });
+        updateStatus();
+    }
+
     const renderSelectScreen = () => {
         return (
             <div className="lobby-mod-grid">
-                <div className="game-title">
-                    <h1>
-                        {props.eventData?.title}
-                    </h1>
+                <div className="mod-title">
+                    <div className="game-title">
+                        <h1>
+                            {game?.title}
+                        </h1>
+                    </div>
+                    <div className="mod-menu-button-array-2">
+                        <div className="mod-menu-button" onClick={closeGame}>Lobby</div>
+                    </div>
                 </div>
-                <div className="sidepanel panel double-r">
-                    <ul className="small-list clickable-list">
-                        {props.eventPlayerList?.filter(b => b.playerState === props.PlayerStates.PLAYER).map(a => 
-                            <li onClick={() => selectPlayer(a.playerId)} className={a.playerId===selectedPlayer?"selected":""}>
-                                <div>{a.username}</div>
-                                <div></div>
-                            </li>
-                        )}
-                    </ul>
-                </div>
+                    <div className="sidepanel panel double-r">
+                        <ul className="small-list clickable-list">
+                            {props.eventPlayerList?.filter(b => b.playerState === props.PlayerStates.PLAYER).map(a => 
+                                <li onClick={() => selectPlayer(a.playerId)} className={a.playerId===selectedPlayer?"selected":""}>
+                                    <div>{a.username}</div>
+                                    <div></div>
+                                </li>
+                            )}
+                        </ul>
+                    </div>
                 <div className="panel">
                     <ul className="large-list clickable-list">
                         {game.content.questions.map((a,i) =>
@@ -185,7 +219,7 @@ const GameQuizMod = props => {
             <div className="lobby-mod-grid">
                 <div className="game-title">
                     <h1>
-                        {props.eventData?.title}
+                        {game?.title}
                     </h1>
                 </div>
                 <div className="sidepanel panel double-r">

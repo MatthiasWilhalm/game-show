@@ -1,3 +1,5 @@
+import { getPlayerId } from "../../tools/tools";
+import QuestionComponent from "../QuestionComponent";
 import TeamCreateWindow from "../TeamCreateWindow";
 import BingoBoard from "./BingoBoard";
 
@@ -16,6 +18,10 @@ const GameBingoPlayer = props => {
         return !gameState.teamsCreated;
     }
 
+    const getPlayersTeam = () => {
+        return gameState?.playerProgress[getPlayerId()].team ?? -1;
+    }
+
     const getPlayerlist = () => {
         let pl = JSON.parse(JSON.stringify(props.eventPlayerList?.filter(a => a.playerState === props.PlayerStates.PLAYER)));
         pl.map(a => {
@@ -27,6 +33,32 @@ const GameBingoPlayer = props => {
 
     const isInRound = () => {
         return !!gameState.roundStatus.find(a => a.current);
+    }
+
+    const getCurrentQuestion = () => {
+        let g = gameState.roundStatus.find(a => a.current);
+        if(g) {
+            return game.content.questions[g.roundId]?.question || null;
+        }
+        return null;
+    }
+
+    const isAskedPlayer = () => {
+        let g = gameState.roundStatus.find(a => a.current);
+        return g && g.currentTeam === getPlayersTeam();
+    }
+
+    const setSelection = value => {
+        let ng = gameState.roundStatus.find(a => a.current);
+        if(ng) {
+            ng.teamsAnswer = value;
+            console.log(ng.teamsAnswer);
+            updateStatus();
+        }
+    }
+
+    const getQuestionSelection = () => {
+        return gameState.roundStatus.find(a => a.current)?.teamsAnswer ?? -1;
     }
 
     const renderSelect = () => {
@@ -45,7 +77,21 @@ const GameBingoPlayer = props => {
 
     const renderRound = () => {
         return (
-            <div></div>
+            <div className="lobby-grid">
+                <div className="game-title">
+                    <h1>
+                        {game?.title}
+                    </h1>
+                </div>
+                <div className="question-container">
+                    <QuestionComponent 
+                        question={getCurrentQuestion()}
+                        asking={isAskedPlayer()}
+                        callback={isAskedPlayer()?setSelection:null}
+                        selection={getQuestionSelection()}
+                    />
+                </div>
+            </div>
         );
     }
 

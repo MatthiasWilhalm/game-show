@@ -27,7 +27,10 @@ const ResultWindow = forwardRef((props, ref) => {
 
     const hide = () => {
         if(!hiding) {
-            setTimeout(() => setShow(false), 250);
+            setTimeout(() => {
+                setShow(false);
+                setHiding(false);
+            }, 250);
             setHiding(true);
         }
     }
