@@ -123,7 +123,7 @@ const ChatComponent = forwardRef((props, ref) => {
 
     useImperativeHandle(ref, () => ({
         newMsg() {
-            updateScrollbar();
+            // updateScrollbar();
             triggerUnRead();
         }
     }));
@@ -156,7 +156,7 @@ const ChatComponent = forwardRef((props, ref) => {
                 </lu>
                 <div className="chat-msgs" ref={logRef}>
                     {props.chat?
-                        getChat(chatroom).map(a => 
+                        getChat(chatroom).reverse().map(a => 
                             <div className="chat-item">
                                 <diV>{a.username+": "+a.text}</diV>
                             </div>

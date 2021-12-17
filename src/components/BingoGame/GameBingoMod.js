@@ -182,6 +182,10 @@ const GameBingoMod = props => {
         props.send('triggerresultscreen', {username: TeamNames[getCurrentTeam()], score: score, change: change, msg: getCorrectAnswerAsString()});
     }
 
+    const triggerGameEndWindow = (winnerUsername, score, change) => {
+        props.send('triggerresultscreen', {username: winnerUsername, score: score, change: change, title: "winner of this game", msg: ""});
+    }
+
     const getCorrectAnswerAsString = () => {
         let ret = "";
         getCurrentQuestion().presetAnswers.filter(a => a.correct).forEach(a => {
@@ -204,6 +208,18 @@ const GameBingoMod = props => {
         updateStatus();
     }
 
+    const generatePlayerArrayToString = player => {
+        let ret = "";
+        if(player instanceof Array && player.length) {
+            player.forEach((a, i) => {
+                ret += a.username;
+                if(i<player.length-1)
+                    ret += ", ";
+            });
+        }
+        return ret;
+    }
+
     const setWinner = () => {
         let winner = [];
         let maxScore = Number.MIN_SAFE_INTEGER;
@@ -216,13 +232,16 @@ const GameBingoMod = props => {
                 winner.push(ps);
         });
         let gs = props.eventStatus.globalScores;
+        let displayScore = "";
         winner.forEach(w => {
             if(gs[w]) {
                 gs[w] += 1;
             } else {
                 gs[w] = 1;
             }
+            displayScore += gs[w]+"; ";
         });
+        triggerGameEndWindow(generatePlayerArrayToString(props.eventPlayerList.filter(a => winner.includes(a.playerId))), displayScore, 1);
         updateStatus();
     }
 

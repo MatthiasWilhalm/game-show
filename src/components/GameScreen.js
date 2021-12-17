@@ -136,6 +136,7 @@ const GameScreen = forwardRef((props, ref) => {
                 username={result?.username}
                 score={result?.score}
                 change={result?.change}
+                title={result?.title}
                 msg={result?.msg}
                 autoHide={true}
                 ref={refResult}

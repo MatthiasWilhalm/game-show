@@ -59,7 +59,7 @@ const ResultWindow = forwardRef((props, ref) => {
     return (
         <div className="window-bg" onClick={hide} style={show?null:getStyle()}>
             <h1 className={"result-window-title "+(hiding?"result-window-content-end":"")}>
-                Round has ended
+                {props.title || "Round has ended"}
             </h1>
             <div className={"result-window "+(hiding?"result-window-end":"")}>
                 <h3 className={hiding?"result-window-content-end":""}>
