@@ -98,6 +98,9 @@ function handleRequest(reqest) {
     case 'seteventstatus':
       updateEventStatus(client.event, msg.payload);
       break;
+    case 'closeevent':
+      closeEvent(client.event);
+      break;
     case 'triggerresultscreen':
       handleResultScreenTrigger(client.event, msg.playerId, msg.payload);
       break;
@@ -119,14 +122,25 @@ function handleRequest(reqest) {
  * @param {String} playerId 
  */
 function handleDisconnect(playerId) {
+  console.log(playerId);
   console.log(playerId + " disconnected");
   let c = clients.get(playerId);
   let eventId = null;
-  if (c && c.event)
-    eventId = c.event;
+  let username = '';
+  if (c) {
+    username = c.username;
+    if(c.event) {
+      eventId = c.event;
+    }
+  }
   clients.delete(playerId);
-  if (!eventId)
+  if (eventId) {
+    console.log("event: "+eventId);
     updateEventPlayerList(eventId);
+    sendToAllInEvent(eventId, DataPackage('chat', playerId, {
+      username: username+">", text: "disconnected", usercolor: '', team: -1
+    }));
+  }
   console.log(clients.size + " clients connected");
 }
 
@@ -306,6 +320,7 @@ function updatePlayerData(oldPlayerId, newPlayerId, username, playerState, team)
       let nc = {};
       Object.assign(nc, [c]);
       nc.socket = c.socket;
+      nc.socket.on('close', () => handleDisconnect(newPlayerId));
       if(username)
         nc.username = username;
       if(playerState)
@@ -391,6 +406,23 @@ function joinEvent(playerId, eventId) {
 function updateEventStatus(eventId, status) {
   eventStatus.set(eventId, status);
   sendEventStatusToAllInEvent(eventId);
+}
+
+function closeEvent(eventId) {
+  sendToAllInEvent(eventId, DataPackage('closeevent', '', null));
+  let c = [];
+  clients.forEach((a, k) => {
+    if(a.event === eventId) {
+      c.push(k);
+    }
+  });
+  c.forEach(a => {
+    let r = clients.get(a);
+    r.event = null;
+    clients.set(a, r);
+  });
+  events.delete(eventId);
+  debugListClients();
 }
 
 function handleChatMsg(eventId, playerId, chatMsg) {

@@ -66,12 +66,21 @@ const LobbyModScreen = props => {
         return !!props.eventStatus?.gameStatus[i]?.done;
     }
 
+    const closeEvent = () => {
+        props.send('closeevent', null);
+    }
+
     return (
         <div className="lobby-mod-grid">
-            <div className="game-title">
-                <h1>
-                    {props.eventData?.title}
-                </h1>
+            <div className="mod-title">
+                <div className="game-title">
+                    <h1>
+                        {props.eventData?.title}
+                    </h1>
+                </div>
+                <div className="mod-menu-button-array-2">
+                    <div className="mod-menu-button" onClick={closeEvent}>close Event</div>
+                </div>
             </div>
             <div className="sidepanel panel double-r">
                 <ul className="small-list">

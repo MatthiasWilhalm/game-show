@@ -93,6 +93,9 @@ const Main = () => {
                         refHome.current.setEvents(msg.payload);
                     }
                     break;
+                case 'closeevent':
+                    handleEventCloseEvent();
+                    break;
                 case 'updateplayerlist':
                     handlePlayerList(msg);
                     break;
@@ -117,7 +120,14 @@ const Main = () => {
         setEventData(msg.payload);
         if(!window.location.pathname.includes('game'))
             navigate('/game');
-    } 
+    }
+
+    const handleEventCloseEvent = () => {
+        if(eventData && window.location.pathname.includes('game')) {
+            setEventData(null);
+            navigate('/home');
+        }
+    }
 
     const handleEventStatusUpdate = msg => {
         console.log(msg.payload);
