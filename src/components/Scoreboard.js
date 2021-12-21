@@ -7,6 +7,34 @@ import { getPlayerState } from "../tools/tools"
 
 const Scoreboard = props => {
 
+    const addGlobalScore = (playerId, amount) => {
+        if(props.eventStatus?.globalScores?.[playerId]!==undefined) {
+            props.eventStatus.globalScores[playerId]+=amount;
+            props.send("seteventstatus", props.eventStatus);
+        }
+    }
+
+    const addCoins = (playerId, amount) => {
+        let p = props.eventStatus?.gameStatus?.find(b => b.current)?.playerProgress[playerId];
+        if(p?.score !== undefined) {
+            p.score+=amount;
+            props.send("seteventstatus", props.eventStatus);
+        }
+    }
+
+    const showRoundStatus = () => {
+        return !!props.eventStatus?.gameStatus?.find(b => b.current)?.roundStatus?.[0]?.currentPlayerId;
+    }
+
+    const getRoundStatus = playerId => {
+        let ret = 0;
+        props.eventStatus?.gameStatus?.find(b => b.current)?.roundStatus?.forEach(a => {
+            if(a.currentPlayerId === playerId)
+                ret++;
+        });
+        return ret;
+    }
+
     const renderPlayerItem = (a, i) => {
         let m = getPlayerState() === props.PlayerStates.MOD;
         let global = props.eventStatus?.globalScores?.[a.playerId] ?? '-';
@@ -18,14 +46,14 @@ const Scoreboard = props => {
                 <div>{i+". "+a.username}</div>
                 <div className="scoreboard-score-data">
                     {m?
-                        <button className="score-up">
+                        <button className="score-up" onClick={() => addGlobalScore(a.playerId, 1)}>
                             <img src={upIcon}></img>
                         </button>
                     :''}
                     <p>{global}</p>
                     <img className="scoreboard-score-data" src={trophyIcon}></img>
                     {m?
-                        <button className="score-down">
+                        <button className="score-down" onClick={() => addGlobalScore(a.playerId, -1)}>
                             <img src={downIcon}></img>
                         </button>
                     :''}
@@ -33,23 +61,25 @@ const Scoreboard = props => {
                 {isInGame?
                     <div className="scoreboard-score-data">
                         {m?
-                            <button className="score-up">
+                            <button className="score-up" onClick={() => addCoins(a.playerId, 1)}>
                                 <img src={upIcon}></img>
                             </button>
                         :''}
                         <p>{coins}</p>
                         <img className="scoreboard-score-data" src={coinsIcon}></img>
                         {m?
-                            <button className="score-down">
+                            <button className="score-down" onClick={() => addCoins(a.playerId, -1)}>
                                 <img src={downIcon}></img>
                             </button>
                         :''}
                     </div>
                 :''}
-                <div className="scoreboard-score-data">
-                    <p>5</p>
-                    <img className="scoreboard-score-data" src={roundIcon}></img>
-                </div>
+                {showRoundStatus()?
+                    <div className="scoreboard-score-data">
+                        <p>{getRoundStatus(a.playerId)}</p>
+                        <img className="scoreboard-score-data" src={roundIcon}></img>
+                    </div>
+                :''}
             </li>
         );
     }
