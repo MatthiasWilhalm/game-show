@@ -19,7 +19,7 @@ const GameBingoPlayer = props => {
     }
 
     const getPlayersTeam = () => {
-        return gameState?.playerProgress[getPlayerId()].team ?? -1;
+        return gameState?.playerProgress[getPlayerId()]?.team ?? -1;
     }
 
     const getPlayerlist = () => {

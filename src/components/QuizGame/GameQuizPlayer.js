@@ -1,4 +1,4 @@
-import { getPlayerId } from "../../tools/tools";
+import { getPlayerId, getPlayerState } from "../../tools/tools";
 import QuestionComponent from "../QuestionComponent";
 import Scoreboard from "../Scoreboard";
 
@@ -25,6 +25,10 @@ const GameQuizPlayer = props => {
     const isAskedPlayer = () => {
         let g = gameState.roundStatus.find(a => a.current);
         return g && g.currentPlayerId === getPlayerId();
+    }
+
+    const isSpec = () => {
+        return getPlayerState() === props.PlayerStates?.SPECTATOR;
     }
 
     const setSelection = value => {
@@ -74,7 +78,7 @@ const GameQuizPlayer = props => {
                         callback={isAskedPlayer()?setSelection:null}
                         selection={getQuestionSelection()}
                     />
-                    {!isAskedPlayer()?
+                    {(!isAskedPlayer() && !isSpec())?
                         <div className="true-false-buttons">
                             <button className={getEstimateValue()===1?"selected":"right"} onClick={() => setSelection(1)}>true</button>
                             <button className={getEstimateValue()===0?"selecetd":"wrong"} onClick={() => setSelection(0)}>false</button>

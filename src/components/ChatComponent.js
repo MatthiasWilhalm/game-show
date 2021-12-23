@@ -3,7 +3,7 @@ import chatIcon from "../assets/chat.svg";
 import closeIcon from "../assets/close.svg";
 import sendIcon from "../assets/send.svg";
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { getPlayerId, getUsername } from "../tools/tools";
+import { getPlayerId, getPlayerState, getUsername } from "../tools/tools";
 
 const ChatComponent = forwardRef((props, ref) => {
 
@@ -26,6 +26,10 @@ const ChatComponent = forwardRef((props, ref) => {
     const logRef = useRef(null);
 
     const gameState = props.eventStatus?.gameStatus?.find(g => g.current);
+
+    const isSpec = () => {
+        return getPlayerState() === props.PlayerStates?.SPECTATOR;
+    }
 
     useEffect(() => {
         document.addEventListener('keydown', keyDownEvent);
@@ -170,6 +174,7 @@ const ChatComponent = forwardRef((props, ref) => {
                         value={currentMsg}
                         onChange={e => setMsg(e.target.value)}
                         ref={inputRef}
+                        disabled={isSpec()}
                     ></input>
                     <button onClick={sendMsg}>
                         <img src={sendIcon}></img>
