@@ -67,7 +67,10 @@ const LobbyModScreen = props => {
     }
 
     const closeEvent = () => {
-        props.send('closeevent', null);
+        props.eventStatus.finished = true;
+        props.send('seteventstatus', props.eventStatus); //deletes event
+
+        // props.send('closeevent', null); //deletes event
     }
 
     return (
@@ -79,7 +82,7 @@ const LobbyModScreen = props => {
                     </h1>
                 </div>
                 <div className="mod-menu-button-array-2">
-                    <div className="mod-menu-button" onClick={closeEvent}>close Event</div>
+                    <div className="mod-menu-button" onClick={closeEvent}>end Event</div>
                 </div>
             </div>
             <div className="sidepanel panel double-r">

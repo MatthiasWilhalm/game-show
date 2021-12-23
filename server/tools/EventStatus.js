@@ -4,6 +4,8 @@
 class EventStatus {
     constructor(modId) {
         this.modId = modId;
+        this.joinable = true;
+        this.finished = false;
         this.globalScores = {};
         this.gameStatus = []; // GameStatus
     }

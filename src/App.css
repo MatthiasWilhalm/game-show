@@ -1088,3 +1088,16 @@ body {
   align-content: center;
   font-size: 15pt;
 }
+
+.first-player-item {
+  background: rgb(255, 233, 39) !important;
+  height: 70px !important;
+}
+
+.second-player-item {
+background: rgb(158, 158, 158) !important;
+}
+
+.third-player-item {
+  background: rgb(202, 74, 0) !important;
+}

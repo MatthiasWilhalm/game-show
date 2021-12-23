@@ -18,6 +18,7 @@ import ScoreboardWindow from './ScoreboardWindow';
 import ResultWindow from './ResultWindow';
 import GameBingoMod from './BingoGame/GameBingoMod';
 import GameBingoPlayer from './BingoGame/GameBingoPlayer';
+import EndScreen from './EndScreen';
 
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');
@@ -110,7 +111,11 @@ const GameScreen = forwardRef((props, ref) => {
         
         const isMod = getPlayerState()===props.PlayerStates?.MOD;
 
-        if(!!props.eventStatus?.gameStatus?.find(a => a.current)) {
+        if(props.eventStatus?.finished) {
+            return (
+                <EndScreen {...props} />
+            );
+        } else if(!!props.eventStatus?.gameStatus?.find(a => a.current)) {
             return renderGameScreen(isMod);
         } else {
             return (
