@@ -428,18 +428,19 @@ function closeEvent(eventId) {
 function handleChatMsg(eventId, playerId, chatMsg) {
   let shouldSend = true;
   if(chatMsg.text.startsWith('/')) {
+    chatMsg.type = "cmd";
     let cmd = chatMsg.text.substring(1);
     switch (cmd) {
       case 'roll':
         let r = Math.trunc(Math.random()*100);
-        chatMsg.username = ">" + chatMsg.username;
-        chatMsg.text = "rolled "+r;
+        // chatMsg.username = ">" + chatMsg.username;
+        chatMsg.text = chatMsg.username + " rolled "+r;
         break;
 
       case 'flip':
         let r2 = Math.round(Math.random());
-        chatMsg.username = ">" + chatMsg.username;
-        chatMsg.text = "flipped "+(r2?"tail":"head");
+        // chatMsg.username = ">" + chatMsg.username;
+        chatMsg.text = chatMsg.username +" flipped "+(r2?"tail":"head");
         break;
       default:
         shouldSend = false;

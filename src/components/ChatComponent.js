@@ -40,10 +40,6 @@ const ChatComponent = forwardRef((props, ref) => {
 
     const keyDownEvent = k => {
         switch (k.key) {
-            case 'c':
-                if(showState!==ShowStates.SHOW)               
-                    toggleShow();
-                break;
             case 'Enter':
                 if(showState!==ShowStates.SHOW)
                     toggleShow();
@@ -63,8 +59,10 @@ const ChatComponent = forwardRef((props, ref) => {
         if(showState!==ShowStates.SHOW) {
             setUnRead(false);
             inputRef?.current.focus();
+            setShowState(ShowStates.SHOW);
+        } else {
+            setShowState(ShowStates.HIDE);
         }
-        setShowState(showState===ShowStates.SHOW?ShowStates.HIDE:ShowStates.SHOW);
     }
 
     const triggerUnRead = () => {
@@ -73,14 +71,14 @@ const ChatComponent = forwardRef((props, ref) => {
     }
 
     const sendMsg = () => {
-        if(currentMsg!=="") {
-            props.send('chat', {username: getUsername(), text: currentMsg, usercolor: '', team: chatroom});
+        if(currentMsg!=="" && showState===ShowStates.SHOW) {
+            props.send('chat', {username: getUsername(), type: null, text: currentMsg, usercolor: '', team: chatroom});
             setCurrentMsg("");
         }
     }
 
     const setMsg = txt => {
-        if(txt.length < maxMsgLength || txt.length < currentMsg) {
+        if(showState===ShowStates.SHOW && (txt.length < maxMsgLength || txt.length < currentMsg)) {
             setCurrentMsg(txt);
         }
     }
@@ -146,6 +144,24 @@ const ChatComponent = forwardRef((props, ref) => {
         } else return null;
     }
 
+    const renderChatMsg = msg => {
+        switch (msg.type) {
+            case 'cmd':
+                return (
+                    <div className="chat-item">
+                        <diV><i>{msg.text}</i></diV>
+                    </div>
+                );                
+        
+            default:
+                return (
+                    <div className="chat-item">
+                        <diV>{msg.username+": "+msg.text}</diV>
+                    </div>
+                );
+        }
+    }
+
     return(
         <div className={"chat chat-state-"+showState}>
             <div className="chat-button" onClick={toggleShow}>
@@ -161,9 +177,7 @@ const ChatComponent = forwardRef((props, ref) => {
                 <div className="chat-msgs" ref={logRef}>
                     {props.chat?
                         getChat(chatroom).reverse().map(a => 
-                            <div className="chat-item">
-                                <diV>{a.username+": "+a.text}</diV>
-                            </div>
+                            renderChatMsg(a)
                         )
                     :""}
                     {/* <div className="chat-item"></div> */}
