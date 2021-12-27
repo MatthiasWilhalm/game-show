@@ -150,9 +150,8 @@ const Main = () => {
     }
 
     const handleChatUpdate = msg => {
-        console.log("update chat: "+msg.payload.text);
         let log = chatLog;
-        if(chatLog.length>100)
+        if(log.length>100)
             log.shift();
         log.push(msg.payload);
         setchatLog(log);

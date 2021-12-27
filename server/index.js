@@ -138,7 +138,7 @@ function handleDisconnect(playerId) {
     console.log("event: "+eventId);
     updateEventPlayerList(eventId);
     sendToAllInEvent(eventId, DataPackage('chat', playerId, {
-      username: username+">", text: "disconnected", usercolor: '', team: -1
+      username: username, text: username+" disconnected", type: 'cmd', usercolor: '', team: -1
     }));
   }
   console.log(clients.size + " clients connected");
@@ -150,11 +150,28 @@ function handleDisconnect(playerId) {
  * @param {String} playerId 
  */
 function storeConnection(connection, playerId) {
-  let client = { event: null, socket: connection, username: '', playerState: PlayerStates.PLAYER, team: ''};
+  let client = { 
+    event: getPlayersCurrentEventFromState(playerId),
+    socket: connection,
+    username: '',
+    playerState: PlayerStates.PLAYER,
+    team: ''
+  };
   clients.set(playerId, client);
 
   console.log('connected: ' + playerId);
   console.log(clients.size + " clients connected");
+}
+
+function getPlayersCurrentEventFromState(playerId) {
+  let ret = null;
+  eventStatus.forEach((a, k) => {
+    let r = a.globalScores[playerId];
+    if(r!==undefined) {
+      ret = r;
+    }
+  });
+  return ret;
 }
 
 /**
@@ -391,13 +408,16 @@ function joinEvent(playerId, eventId) {
       c.event = eventId;
       c.playerState = PlayerStates.PLAYER;
 
-      es.globalScores[playerId] = 0;
+      if(!es.globalScores[playerId])
+        es.globalScores[playerId] = 0;
   
       sendEvent(playerId, eventId);
       sendEventStatusToAllInEvent(eventId);
       sendToClient(DataPackage('updateplayerdata', playerId, {playerState: PlayerStates.PLAYER}));
       updateEventPlayerList(eventId);
-
+      sendToAllInEvent(eventId, DataPackage('chat', playerId, {
+        username: c.username, text: c.username+" joined", type: 'cmd', usercolor: '', team: -1
+      }));
     }
 
   }

@@ -100,7 +100,6 @@ const GameScreen = forwardRef((props, ref) => {
                             {"null"}
                         </div>
                     );
-                    break;
             }
         }
 
