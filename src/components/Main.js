@@ -1,5 +1,5 @@
 import useWebSocket from 'react-use-websocket';
-import React, { Component, useState, useEffect, useRef, createRef } from 'react';
+import React, { Component, useState, useEffect, useRef, createRef, useReducer } from 'react';
 
 import {
     BrowserRouter as Router,
@@ -31,6 +31,8 @@ const Main = () => {
         PLAYER: "player",
         SPECTATOR: "spectator"
     }
+
+    const [, forceUpdate] = useReducer(x => x + 1, 0);
 
     const refHome = createRef();
     const refGame = createRef();
@@ -158,6 +160,11 @@ const Main = () => {
         refGame?.current.triggerChat();
     }
 
+    const removeChatUpdate = chat => {
+        setchatLog(chat);
+        forceUpdate();
+    }
+
 
     return (
         <div>
@@ -173,6 +180,7 @@ const Main = () => {
                         eventPlayerList={eventPlayerList}
                         PlayerStates={PlayerStates}
                         chat={chatLog}
+                        setChat={removeChatUpdate}
                     />
                 }></Route>
                 <Route path="/uitest" element={<UiTest/>}></Route>

@@ -434,6 +434,24 @@ body {
   min-height: 18px;
 }
 
+.chat-item-button-array {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+}
+
+.chat-item-button-array button {
+  margin: 0;
+  border: 0;
+  height: 20px;
+  margin-right: 5px;
+  font-family: var(--default-font);
+}
+
+.chat-item-button-array button:hover {
+  cursor: pointer;
+  background: var(--default-hover-bg) !important;
+}
+
 /* .chat-item:last-child {
   margin-bottom: 18px;
 } */
@@ -638,12 +656,13 @@ body {
   top: 20px;
 }
 
-.mod-menu-button-array * {
+.mod-menu-button-array *,.mod-menu-button-array-2 * {
   margin-right: 5px;
 }
 
 .mod-menu-button-array-2 {
   position: relative;
+  display: flex;
   top: 20px;
 }
 

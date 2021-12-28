@@ -95,6 +95,9 @@ function handleRequest(reqest) {
     case 'joinevent':
       joinEvent(msg.playerId, msg.payload.eventId);
       break;
+    case 'forcejoinevent':
+      forceJoinEventAsPlayer(msg.payload.playerId, client.event);
+      break;
     case 'seteventstatus':
       updateEventStatus(client.event, msg.payload);
       break;
@@ -406,20 +409,42 @@ function joinEvent(playerId, eventId) {
     let es = eventStatus.get(eventId);
     if(es) {
       c.event = eventId;
-      c.playerState = PlayerStates.PLAYER;
+      let ps = null;
+      if(es.joinable || es.globalScores[playerId]!==undefined)
+        ps = PlayerStates.PLAYER;
+      else
+        ps = PlayerStates.SPECTATOR;
+      
+      c.playerState = ps;
 
       if(!es.globalScores[playerId])
         es.globalScores[playerId] = 0;
   
       sendEvent(playerId, eventId);
       sendEventStatusToAllInEvent(eventId);
-      sendToClient(DataPackage('updateplayerdata', playerId, {playerState: PlayerStates.PLAYER}));
+      sendToClient(DataPackage('updateplayerdata', playerId, {playerState: ps}));
       updateEventPlayerList(eventId);
       sendToAllInEvent(eventId, DataPackage('chat', playerId, {
         username: c.username, text: c.username+" joined", type: 'cmd', usercolor: '', team: -1
       }));
     }
 
+  }
+}
+
+function forceJoinEventAsPlayer(playerId, eventId) {
+  let c = clients.get(playerId);
+  if (c) {
+    let es = eventStatus.get(eventId);
+    if(es) {
+      c.playerState = PlayerStates.PLAYER;
+      if(!es.globalScores[playerId])
+        es.globalScores[playerId] = 0;
+      sendEvent(playerId, eventId);
+      sendEventStatusToAllInEvent(eventId);
+      sendToClient(DataPackage('updateplayerdata', playerId, {playerState: PlayerStates.PLAYER}));
+      updateEventPlayerList(eventId);
+    }
   }
 }
 

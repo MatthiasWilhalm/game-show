@@ -1,7 +1,10 @@
-import { getPlayerId, getPlayerState, storePlayerState } from "../tools/tools";
+import { useState } from "react";
+import { getPlayerId, getPlayerState, getUsername, storePlayerState } from "../tools/tools";
 import MainButton from "./MainButton";
 
 const LobbyPlayerScreen = props => {
+
+    const [cooldownOnRequest, setCooldownOnRequest] = useState(false);
 
     const getSelectedGameIndex = () => {
         return props.eventStatus?.gameStatus?.findIndex(g => g.selected);
@@ -20,6 +23,12 @@ const LobbyPlayerScreen = props => {
         storePlayerState(props.PlayerStates.SPECTATOR);
     }
 
+    const requestToPlay = () => {
+        props.send('chat', {username: getUsername(), type: 'playrequest', text: getPlayerId(), usercolor: '', team: -1});
+        setCooldownOnRequest(true);
+        setTimeout(() => setCooldownOnRequest(false), 5000);
+    }
+
 
     return (
         <div className="lobby-grid">
@@ -34,7 +43,11 @@ const LobbyPlayerScreen = props => {
                 {(getPlayerState() === props.PlayerStates.PLAYER+'')?
                     <MainButton text={"switch to spectator"} onClick={changeToSpectator}></MainButton>
                 :
-                    <MainButton text={"request to play"}></MainButton>
+                    <MainButton 
+                        text={"request to play"}
+                        onClick={cooldownOnRequest?null:requestToPlay}
+                        className={cooldownOnRequest?'locked':''}
+                    ></MainButton>
                 }
             </div>
         </div>

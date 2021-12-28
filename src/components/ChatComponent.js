@@ -113,6 +113,18 @@ const ChatComponent = forwardRef((props, ref) => {
         return [... new Set(t)];
     }
 
+    const acceptJoinRequest = (chatIndex, playerId) => {
+        console.log(props.chat[chatIndex].text);
+        props.chat[chatIndex].text = 1;
+        props.setChat(props.chat);
+        props.send('forcejoinevent', {playerId: playerId});
+    }
+
+    const denyJoinRequest = chatIndex => {
+        props.chat[chatIndex].text = -1;
+        props.setChat(props.chat);
+    }
+
     /**
      * 
      * @param {HTMLElement} e 
@@ -144,7 +156,8 @@ const ChatComponent = forwardRef((props, ref) => {
         } else return null;
     }
 
-    const renderChatMsg = msg => {
+    const renderChatMsg = (msg, reversedIndex) => {
+        const index = getChat(chatroom).length - reversedIndex - 1;
         switch (msg.type) {
             case 'cmd':
                 return (
@@ -152,7 +165,24 @@ const ChatComponent = forwardRef((props, ref) => {
                         <diV><i>{msg.text}</i></diV>
                     </div>
                 );                
-        
+            case 'playrequest':
+                if(props.isMod)
+                    return (
+                        <div className="chat-item">
+                            <diV>{msg.username+" wants to play"}</diV>
+                            {msg.text===1?
+                                <div>{"request accepted"}</div>
+                            :(msg.text===-1?
+                                <div>{"request denyed"}</div>                                
+                            :
+                                <div className="chat-item-button-array">
+                                    <button className="right" onClick={() => acceptJoinRequest(index, msg.text)}>Accept</button>
+                                    <button className="wrong" onClick={() => denyJoinRequest(index)}>Deny</button>
+                                </div>
+                            )}
+                        </div>
+                    );
+                else return null;
             default:
                 return (
                     <div className="chat-item">
@@ -176,11 +206,10 @@ const ChatComponent = forwardRef((props, ref) => {
                 </lu>
                 <div className="chat-msgs" ref={logRef}>
                     {props.chat?
-                        getChat(chatroom).reverse().map(a => 
-                            renderChatMsg(a)
+                        getChat(chatroom).reverse().map((a, i) => 
+                            renderChatMsg(a, i)
                         )
                     :""}
-                    {/* <div className="chat-item"></div> */}
                 </div>
                 <div className="chat-textfield">
                     <input 

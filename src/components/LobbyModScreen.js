@@ -36,6 +36,11 @@ const LobbyModScreen = props => {
         }
     }
 
+    const toggleJoinable = () => {
+        props.eventStatus.joinable = !props.eventStatus?.joinable;
+        props.send('seteventstatus', props.eventStatus);
+    }
+
     const setupPlayerProgress = () => {
         if(getSelectedGame()) {
             let pg = {};
@@ -83,6 +88,9 @@ const LobbyModScreen = props => {
                 </div>
                 <div className="mod-menu-button-array-2">
                     <div className="mod-menu-button" onClick={closeEvent}>end Event</div>
+                    <div className="mod-menu-button" onClick={toggleJoinable}>
+                        {props.eventStatus?.joinable?"close joining phase":"open joining phase"}
+                    </div>
                 </div>
             </div>
             <div className="sidepanel panel double-r">
