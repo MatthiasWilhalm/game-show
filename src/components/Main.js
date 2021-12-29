@@ -16,6 +16,7 @@ import { Game } from '../tools/Game';
 import Home from './Home';
 import GameScreen from './GameScreen';
 import UiTest from './UiTest';
+import Editor from './Editor';
 
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');
@@ -183,6 +184,7 @@ const Main = () => {
                         setChat={removeChatUpdate}
                     />
                 }></Route>
+                <Route path="/editor" element={<Editor/>}></Route>
                 <Route path="/uitest" element={<UiTest/>}></Route>
             </Routes>
         </div>

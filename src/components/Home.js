@@ -280,7 +280,9 @@ const Home = forwardRef((props, ref) => {
                 </div>
                 <div className="home-main-button-array">
                     <MainButton onClick={createTestEvent} text={"Open Event"}/>
-                    <MainButton onClick={null} text={"Editor"}/>
+                    <Link to={"/editor"}>
+                        <MainButton onClick={null} text={"Editor"}/>
+                    </Link>
                 </div>
                 <div style={displayNone()}>
                     <input 

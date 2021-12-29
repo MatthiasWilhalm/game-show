@@ -27,6 +27,15 @@ body {
   background: var(--screen-bg);
 }
 
+a  {
+  text-decoration: none;
+  color: black;
+}
+
+a:visited {
+  color: black;
+}
+
 .uitest-sidepanel {
   position: fixed;
   z-index: 1;
@@ -1119,4 +1128,51 @@ background: rgb(158, 158, 158) !important;
 
 .third-player-item {
   background: rgb(202, 74, 0) !important;
+}
+
+.small-button {
+  height: 40px;
+  width: 40px;
+  background: var(--default-bg);
+  border: var(--default-border);
+  transition: background 100ms ease-out;
+  text-align: center;
+  padding: 0;
+  font-weight: bold;
+}
+
+.small-button:hover {
+  background: var(--default-hover-bg);
+}
+
+.editor-side-list input, .editor-side-list select {
+  border: 0;
+  border-radius: 0;
+  height: 30px;
+  font-family: var(--default-font);
+}
+
+.editor-side-list {
+  list-style-type: none;
+  padding-right: 5%;
+  padding-left: 5%;
+
+}
+
+.editor-side-list li {
+  display: grid;
+  grid-template-columns: 80% 20%;
+  background: var(--default-bg);
+  min-height: 40px;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 5px;
+  box-shadow: var(--default-button-box);
+}
+
+.editor-side-list textarea {
+  max-height: 200px;
+  width: auto;
+  resize: vertical;
 }
