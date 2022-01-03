@@ -36,6 +36,11 @@ a:visited {
   color: black;
 }
 
+hr {
+  width: 100%;
+  border: 2px solid black;
+}
+
 .uitest-sidepanel {
   position: fixed;
   z-index: 1;
@@ -284,6 +289,14 @@ a:visited {
 
 .double {
   grid-column: span 2;
+}
+
+.triple-r {
+  grid-row: span 3;
+}
+
+.triple {
+  grid-column: span 3;
 }
 
 .center {
@@ -1145,14 +1158,14 @@ background: rgb(158, 158, 158) !important;
   background: var(--default-hover-bg);
 }
 
-.editor-side-list input, .editor-side-list select {
+.editor-side-list input, .editor-side-list select, .editor-main-list input, .editor-main-list select {
   border: 0;
   border-radius: 0;
   height: 30px;
   font-family: var(--default-font);
 }
 
-.editor-side-list {
+.editor-side-list, .editor-main-list {
   list-style-type: none;
   padding-right: 5%;
   padding-left: 5%;
@@ -1175,4 +1188,49 @@ background: rgb(158, 158, 158) !important;
   max-height: 200px;
   width: auto;
   resize: vertical;
+}
+
+.editor-main-list li {
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  background: var(--default-bg);
+  min-height: 40px;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 5px;
+  box-shadow: var(--default-button-box);
+}
+
+.editor-main-inner-list li {
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  min-height: 40px;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 5px;
+  box-shadow: none !important;
+  background: none !important;
+}
+
+.normal-button {
+  height: 40px;
+  background: var(--default-bg);
+  font-family: var(--default-font);
+  font-size: 20pt;
+  border: var(--default-border);
+  box-shadow: var(--button-box-shadow);
+  transition: transform ease-out 100ms; 
+}
+
+.normal-button:hover {
+  transform: translate(0px, 2px);
+  cursor: pointer;
+  background: var(--default-hover-bg);
+}
+
+.editor-add-button {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
