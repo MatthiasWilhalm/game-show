@@ -104,6 +104,9 @@ function handleRequest(reqest) {
     case 'closeevent':
       closeEvent(client.event);
       break;
+    case 'leaveevent':
+      handleDisconnect(msg.playerId);
+      break;
     case 'triggerresultscreen':
       handleResultScreenTrigger(client.event, msg.playerId, msg.payload);
       break;

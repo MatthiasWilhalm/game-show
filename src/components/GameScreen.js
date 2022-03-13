@@ -20,6 +20,8 @@ import GameBingoMod from './BingoGame/GameBingoMod';
 import GameBingoPlayer from './BingoGame/GameBingoPlayer';
 import EndScreen from './EndScreen';
 
+import closeIcon from '../assets/close.svg'
+
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');
 /**

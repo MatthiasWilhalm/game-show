@@ -179,6 +179,7 @@ const Main = () => {
                         eventData={eventData}
                         eventStatus={eventStatus}
                         eventPlayerList={eventPlayerList}
+                        leaveEvent={handleEventCloseEvent}
                         PlayerStates={PlayerStates}
                         chat={chatLog}
                         setChat={removeChatUpdate}

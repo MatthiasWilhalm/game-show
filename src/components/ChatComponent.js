@@ -125,6 +125,11 @@ const ChatComponent = forwardRef((props, ref) => {
         props.setChat(props.chat);
     }
 
+    const leaveEvent = () => {
+        props.send('leaveevent', null);
+        props.leaveEvent();
+    }
+
     /**
      * 
      * @param {HTMLElement} e 
@@ -194,9 +199,16 @@ const ChatComponent = forwardRef((props, ref) => {
 
     return(
         <div className={"chat chat-state-"+showState}>
-            <div className="chat-button" onClick={toggleShow}>
-                {isUnRead?<div className="chat-unread"></div>:''}
-                <img src={(showState===ShowStates.SHOW)?closeIcon:chatIcon}></img>
+            <div className="chat-header">
+                <div className="chat-button" onClick={toggleShow}>
+                    {isUnRead?<div className="chat-unread"></div>:''}
+                    <img src={(showState===ShowStates.SHOW)?closeIcon:chatIcon}></img>
+                </div>
+                {(showState===ShowStates.SHOW)?
+                    <div className="chat-button-right" onClick={leaveEvent}>
+                        Leave Event
+                    </div>
+                :""}
             </div>
             <div className="chat-main">
                 <lu className="chat-tabs">
