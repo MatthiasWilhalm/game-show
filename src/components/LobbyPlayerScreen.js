@@ -18,6 +18,10 @@ const LobbyPlayerScreen = props => {
         return null;
     }
 
+    const getModName = () => {
+        return props.eventPlayerList?.find(a => a.playerId === props.eventStatus.modId)?.username; 
+    }
+
     const changeToSpectator = () => {
         props.send('updateplayerdata', {oldPlayerId: getPlayerId(), playerState: props.PlayerStates.SPECTATOR});
         storePlayerState(props.PlayerStates.SPECTATOR);
@@ -36,7 +40,7 @@ const LobbyPlayerScreen = props => {
             <div className="lobby-screen">
                 <h1>{props.eventData?.title}</h1>
                 <h2>{getSelectedGame()?.title ?? "Game starts soon..."}</h2>
-                <h3>Mod: Hugo</h3>
+                <h3>{"Mod: "+getModName()}</h3>
                 <p>{props.eventPlayerList?.length+" online"}</p>
             </div>
             <div className="buttom-right-button">

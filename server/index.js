@@ -413,7 +413,9 @@ function joinEvent(playerId, eventId) {
     if(es) {
       c.event = eventId;
       let ps = null;
-      if(es.joinable || es.globalScores[playerId]!==undefined)
+      if(es.modId === playerId)
+        ps = PlayerStates.MOD;
+      else if(es.joinable || es.globalScores[playerId] !== undefined)
         ps = PlayerStates.PLAYER;
       else
         ps = PlayerStates.SPECTATOR;
