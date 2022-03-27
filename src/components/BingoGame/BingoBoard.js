@@ -21,7 +21,7 @@ const BingoBoard = props => {
         const TeamClass = ["team-a", "team-b"];
         let r = props.gameState?.roundStatus?.find(a => a.roundId === index);
         if(r) {
-            return TeamClass[r.roundId];
+            return TeamClass[r.currentTeam];
         }
         else return "";
     }

@@ -288,6 +288,10 @@ hr {
   background: var(--default-hover-bg) !important;
 }
 
+.selected-2 {
+  border: var(--default-border);
+}
+
 .double-r {
   grid-row: span 2;
 }
@@ -480,7 +484,6 @@ hr {
 
 .chat-item {
   border-bottom: 1px solid black;
-  min-height: 18px;
 }
 
 .chat-item-button-array {

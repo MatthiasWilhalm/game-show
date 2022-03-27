@@ -83,6 +83,19 @@ const GameQuizMod = props => {
         }
     }
 
+    const isAlreadyAskedQuestion = i => {
+        return !!gameState.roundStatus.find(a => a.roundId === i);
+    }
+
+    const clearSelectionfromAllPlayers = () => {
+        if(gameState.playerProgress) {
+            Object.keys(gameState.playerProgress).forEach(a => {
+                gameState.playerProgress[a].selection = -1;
+            });
+        }
+        updateStatus();
+    }
+
     const triggerCloseRound = () => {
         // let s = props.eventStatus.globalScores[getAskedPlayer().playerId];
         let s = gameState.playerProgress?.[getAskedPlayer().playerId];
@@ -100,6 +113,7 @@ const GameQuizMod = props => {
         }
         updateSpecStatus(correct);
         triggerRoundWindow(s.score, c);
+        clearSelectionfromAllPlayers();
         closeRound();
     }
 
@@ -214,7 +228,9 @@ const GameQuizMod = props => {
                 <div className="panel">
                     <ul className="large-list clickable-list">
                         {game.content.questions.map((a,i) =>
-                            <li onClick={() => selectQuestion(i)} className={i===selectedQuestion?"selected":""}>
+                            <li 
+                                onClick={() => selectQuestion(i)}
+                                className={(i===selectedQuestion?"selected ":"")+(isAlreadyAskedQuestion(i)?"locked":"")}>
                                 <div>{a.question}</div>
                                 <div></div>
                                 <div></div>

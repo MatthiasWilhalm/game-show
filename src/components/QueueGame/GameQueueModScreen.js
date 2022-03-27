@@ -179,7 +179,7 @@ const GameQueueModScreen = props => {
             <div className="lobby-mod-grid">
                 <div className="game-title">
                     <h1>
-                        {game.title}
+                        {getCurrentRound()?.answer}
                     </h1>
                 </div>
                 <div className="mod-menu-button-array">

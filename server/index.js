@@ -308,6 +308,31 @@ function getEventList() {
   return eventlist;
 }
 
+function isInGame(eventId) {
+  let event = eventStatus.get(eventId);
+  let ret = false;
+  if(event) {
+    event.gameStatus.forEach(a => {
+      ret = ret || a.current;
+    });
+  }
+  return ret;
+}
+
+function getOpenGame(eventId) {
+  let event = eventStatus.get(eventId);
+  let ret = null;
+  if(event) {
+    ret = event.gameStatus.find(a => a.current) || ret;
+  }
+  return ret;
+}
+
+function isPlayerInOpenGame(eventId, playerId) {
+  let openGame = getOpenGame(eventId);
+  return openGame && !!openGame.playerProgress[playerId];
+}
+
 function getPlayerByStateInEvent(eventId, playerState) {
   let ret = [];
   clients.forEach((c, id) => {
@@ -413,17 +438,20 @@ function joinEvent(playerId, eventId) {
     if(es) {
       c.event = eventId;
       let ps = null;
-      if(es.modId === playerId)
+      if(es.modId === playerId) {
         ps = PlayerStates.MOD;
-      else if(es.joinable || es.globalScores[playerId] !== undefined)
+      } else if(
+          (es.joinable && !isInGame(eventId)) || 
+          (es.globalScores[playerId] !== undefined && isPlayerInOpenGame(eventId, playerId))
+        ) {
         ps = PlayerStates.PLAYER;
-      else
+        if(!es.globalScores[playerId])
+          es.globalScores[playerId] = 0;
+      } else {
         ps = PlayerStates.SPECTATOR;
+      }
       
       c.playerState = ps;
-
-      if(!es.globalScores[playerId])
-        es.globalScores[playerId] = 0;
   
       sendEvent(playerId, eventId);
       sendEventStatusToAllInEvent(eventId);

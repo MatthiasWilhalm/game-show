@@ -261,7 +261,7 @@ const GameBingoMod = props => {
                 <div className="sidepanel panel double-r">
                     <ul className="small-list clickable-list">
                         {getAvailableTeams().map(a => 
-                            <li onClick={() => selectTeam(a)} className={(a===selectedTeam?"selected ":TeamClasses[a])}>
+                            <li onClick={() => selectTeam(a)} className={((a===selectedTeam?"selected-2 ":"")+TeamClasses[a])}>
                                 <div>{TeamNames[a]}</div>
                                 <div></div>
                             </li>
@@ -294,7 +294,7 @@ const GameBingoMod = props => {
                 <div className="sidepanel panel double-r">
                     <ul className="small-list clickable-list">
                         {getAvailableTeams().map(a => 
-                            <li onClick={() => selectTeam(a)} className={(a===selectedTeam?"selected ":TeamClasses[a])}>
+                            <li className={((a===selectedTeam?"selected-2 ":"")+TeamClasses[a])}>
                                 <div>{TeamNames[a]}</div>
                                 <div></div>
                             </li>
