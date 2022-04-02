@@ -21,6 +21,8 @@ import GameBingoPlayer from './BingoGame/GameBingoPlayer';
 import EndScreen from './EndScreen';
 
 import closeIcon from '../assets/close.svg'
+import GameModMenu from './GameModMenu';
+import Timer from './Timer';
 
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');
@@ -32,7 +34,8 @@ const GameScreen = forwardRef((props, ref) => {
     const navigate = useNavigate();
 
     const chatRef = useRef(null);
-    const refResult = useRef(null);
+    const resultRef = useRef(null);
+    const timerRef = useRef(null);
 
     const [showScoreboard, setShowScoreboard] = useState(false);
 
@@ -56,7 +59,10 @@ const GameScreen = forwardRef((props, ref) => {
         },
         triggerResultScreen(resultData) {
             setResult(resultData);
-            refResult?.current.showWindow();
+            resultRef?.current.showWindow();
+        },
+        triggerTimer(endTime) {
+            timerRef?.current.triggerTimer(endTime);
         }
     }));
 
@@ -74,6 +80,10 @@ const GameScreen = forwardRef((props, ref) => {
         if(k.key === 'Tab') {
             setShowScoreboard(false);
         }
+    }
+
+    const isMod = () => {
+        return getPlayerState()===props.PlayerStates?.MOD;
     }
 
     const renderGameScreen = isMod => {
@@ -110,18 +120,16 @@ const GameScreen = forwardRef((props, ref) => {
 
     const renderScreenState = () => {
         
-        const isMod = getPlayerState()===props.PlayerStates?.MOD;
-
         if(props.eventStatus?.finished) {
             return (
                 <EndScreen {...props} />
             );
         } else if(!!props.eventStatus?.gameStatus?.find(a => a.current)) {
-            return renderGameScreen(isMod);
+            return renderGameScreen(isMod());
         } else {
             return (
                 <div>
-                    {isMod?
+                    {isMod()?
                         <LobbyModScreen {...props}/>
                         
                     :
@@ -134,6 +142,9 @@ const GameScreen = forwardRef((props, ref) => {
 
     return (
         <div>
+            {isMod()?
+                <GameModMenu {...props}/>
+            :null}
             {renderScreenState()}
             {showScoreboard?
                 <ScoreboardWindow {...props}/>
@@ -145,9 +156,17 @@ const GameScreen = forwardRef((props, ref) => {
                 title={result?.title}
                 msg={result?.msg}
                 autoHide={true}
-                ref={refResult}
+                ref={resultRef}
             />
-            <ChatComponent {...props} ref={chatRef} isMod={getPlayerState()===props.PlayerStates?.MOD}/>
+            <ChatComponent 
+                {...props}
+                ref={chatRef}
+                isMod={isMod}
+            />
+            <Timer 
+                {...props}
+                ref={timerRef}
+            />
         </div>
     );
 });

@@ -343,14 +343,12 @@ hr {
   font-size: 2vw;
   width: 100%;
   text-align: center;
-  padding-top: 60px;
 }
 
 .lobby-screen p {
   font-size: 1.5vw;
   width: 100%;
   text-align: center;
-  padding-top: 20px;
 }
 
 .lobby-screen button {
@@ -1263,4 +1261,91 @@ background: rgb(158, 158, 158) !important;
 .editor-add-button {
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+.mod-toggle-menu {
+  position: fixed;
+  z-index: 5;
+  width: 30%;
+  top: 0;
+  left: 50%;
+  transition: transform 200ms ease-in-out;
+}
+
+.mod-toggle-menu-init, .mod-toggle-menu-hide {
+  transform: translate(-50%, -100px);
+}
+
+.mod-toggle-menu-show {
+  transform: translate(-50%, 0px);
+}
+
+
+
+.mod-toggle-menu-menu {
+  width: 100%;
+  height: 100px;
+  background: #575757e8;
+  /* display: grid; */
+}
+
+.mod-toggle-menu-menu hr {
+  margin: 0;
+  border: 0;
+  border-bottom: 2px solid black;
+  height: 1px;
+}
+
+.mod-toggle-menu-element {
+  /* border: #000000 solid 2px; */
+  width: 99%;
+  height: max-content;
+  min-height: 50px;
+  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  justify-self: center;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.mod-toggle-menu-element button {
+  background: var(--default-bg);
+  border: 0;
+  font-family: var(--default-font);
+  height: 30px;
+  font-size: 15pt;
+}
+
+.mod-toggle-menu-element input {
+  display: flex;
+  align-self: center;
+  width: 100px;
+  border: 0;
+  padding: 0;
+  padding-left: 5px;
+  background-color: #ffffffaf;
+  font-size: 15pt;
+  font-family: var(--default-font);
+  margin-left: 5px;
+}
+
+.mod-toggle-menu-header {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  background: var(--default-bg);
+  border: var(--default-border);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.timer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  font-size: 20pt;
+  font-family: var(--default-font);
+  font-weight: bold;
+  font-style: italic;
 }

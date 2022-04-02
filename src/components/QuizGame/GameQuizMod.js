@@ -113,8 +113,8 @@ const GameQuizMod = props => {
         }
         updateSpecStatus(correct);
         triggerRoundWindow(s.score, c);
-        clearSelectionfromAllPlayers();
         closeRound();
+        clearSelectionfromAllPlayers();
     }
 
     const triggerRoundWindow = (score, change) => {

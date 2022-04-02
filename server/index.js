@@ -117,6 +117,9 @@ function handleRequest(reqest) {
     case 'chat':
       handleChatMsg(client.event, msg.playerId, msg.payload);
       break;
+    case 'timer':
+      handleTimer(client.event, msg.playerId, msg.payload);
+      break;
     default:
       break;
   }
@@ -409,7 +412,7 @@ function createAndJoinEvent(rawEvent, playerId) {
   if (player && rawEvent) {
     let games = [];
     rawEvent.games.forEach(game => {
-      games.push(Game(game.title, game.desciption, game.type, game.useTeams, game.content));
+      games.push(Game(game.title, game.description, game.type, game.useTeams, game.content));
     });
     let event = Event(rawEvent.title, games);
     let eventId = generateEventId();
@@ -531,4 +534,12 @@ function handleChatMsg(eventId, playerId, chatMsg) {
 
 function handleResultScreenTrigger(eventId, playerId, roundDataObj) {
   sendToAllInEvent(eventId, DataPackage('triggerresultscreen', playerId, roundDataObj));
+}
+
+function handleTimer(eventId, playerId, payload) {
+  let event = events.get(eventId);
+  if(event && payload.endTime) {
+    event.timer = payload.endTime;
+    sendToAllInEvent(eventId, DataPackage('timer', playerId, payload));
+  }
 }

@@ -13,6 +13,7 @@ const LobbyPlayerScreen = props => {
     const getSelectedGame = () => {
         let id = getSelectedGameIndex();
         if(id!==-1) {
+            console.log(props.eventData?.games[id]);
             return props.eventData?.games[id];
         }
         return null;
@@ -40,12 +41,16 @@ const LobbyPlayerScreen = props => {
             <div className="lobby-screen">
                 <h1>{props.eventData?.title}</h1>
                 <h2>{getSelectedGame()?.title ?? "Game starts soon..."}</h2>
-                <h3>{"Mod: "+getModName()}</h3>
+                <p>{getSelectedGame()?.description ?? ""}</p>
+                <h3>{"Host: "+getModName()}</h3>
                 <p>{props.eventPlayerList?.length+" online"}</p>
             </div>
             <div className="buttom-right-button">
                 {(getPlayerState() === props.PlayerStates.PLAYER+'')?
-                    <MainButton text={"switch to spectator"} onClick={changeToSpectator}></MainButton>
+                    <MainButton 
+                        text={"switch to spectator"}
+                        onClick={changeToSpectator}
+                    ></MainButton>
                 :
                     <MainButton 
                         text={"request to play"}

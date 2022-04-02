@@ -108,6 +108,9 @@ const Main = () => {
                 case 'chat':
                     handleChatUpdate(msg);
                     break;
+                case 'timer':
+                    refGame?.current.triggerTimer(msg.payload?.endTime ?? -1);
+                    break;
                 default:
                     break;
             }

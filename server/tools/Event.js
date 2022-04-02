@@ -9,6 +9,7 @@ class Event {
     constructor(title, games) {
         this.title = title;
         this.games = games;
+        this.timer = -1;
     }
 }
 
