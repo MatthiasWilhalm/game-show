@@ -109,7 +109,7 @@ const Main = () => {
                     handleChatUpdate(msg);
                     break;
                 case 'timer':
-                    refGame?.current.triggerTimer(msg.payload?.endTime ?? -1);
+                    refGame?.current.triggerTimer(msg.payload);
                     break;
                 default:
                     break;

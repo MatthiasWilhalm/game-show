@@ -1344,8 +1344,18 @@ background: rgb(158, 158, 158) !important;
   position: fixed;
   left: 0;
   bottom: 0;
-  font-size: 20pt;
+  font-size: 30pt;
   font-family: var(--default-font);
   font-weight: bold;
   font-style: italic;
+}
+
+.timer-blinking {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }

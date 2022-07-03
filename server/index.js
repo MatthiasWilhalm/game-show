@@ -538,8 +538,11 @@ function handleResultScreenTrigger(eventId, playerId, roundDataObj) {
 
 function handleTimer(eventId, playerId, payload) {
   let event = events.get(eventId);
-  if(event && payload.endTime) {
-    event.timer = payload.endTime;
+  if(event && payload) {
+    if(event.endTime)
+      event.timer = payload.endTime;
+    if(payload.pause !== undefined)
+      event.pause = !!payload.pause;
     sendToAllInEvent(eventId, DataPackage('timer', playerId, payload));
   }
 }

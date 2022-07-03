@@ -10,6 +10,7 @@ class Event {
         this.title = title;
         this.games = games;
         this.timer = -1;
+        this.timerPaused = false;
     }
 }
 

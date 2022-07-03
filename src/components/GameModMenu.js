@@ -1,4 +1,4 @@
-import { useState, forwardRef } from 'react';
+import { useState, forwardRef, useEffect } from 'react';
 
 
 const GameModMenu = forwardRef((props, ref) => {
@@ -9,12 +9,31 @@ const GameModMenu = forwardRef((props, ref) => {
         HIDE: "hide"
     };
 
+    const TimerStates = {
+        STOP: "stop",
+        RUNNING: "running",
+        PAUSED: "paused"
+    }
+
     const [min, setMin] = useState(2);
     const [sec, setSec] = useState(0);
     const [state, setState] = useState(ShowStates.INIT);
+    const [timerState, setTimerState] = useState(TimerStates.STOP);
+    const [currentEndTime, setCurrentEndTime] = useState(0);
+
+
+    useEffect(() => {
+    
+      return () => {}
+    }, [state, timerState, min, sec]);
+    
 
     const getTime = () => {
         return parseInt(sec) + parseInt(min)*60;
+    }
+
+    const getAbsoluteEndTime = () => {
+        return Math.floor(new Date().getTime() / 1000) + getTime();
     }
 
     const setSecs = s => {
@@ -31,7 +50,32 @@ const GameModMenu = forwardRef((props, ref) => {
     }
 
     const startTimer = () => {
-        props.send('timer', {endTime: Math.floor(new Date().getTime() / 1000) + getTime()});
+        console.log(timerState);
+        if(timerState === TimerStates.STOP) {
+            setTimerState(TimerStates.RUNNING);
+            const time = getAbsoluteEndTime();
+            setCurrentEndTime(time);
+            props.send('timer', {endTime: time});
+        } else if (timerState === TimerStates.RUNNING) {
+            pauseTimer();
+        } else if (timerState === TimerStates.PAUSED) {
+            resumeTimer();
+        }
+    }
+
+    const pauseTimer = () => {
+        setTimerState(TimerStates.PAUSED);
+        props.send('timer', {pause: true});
+    }
+
+    const resumeTimer = () => {
+        setTimerState(TimerStates.RUNNING);
+        props.send('timer', {pause: false});
+    }
+    
+    const resetTimer = () => {
+        setTimerState(TimerStates.STOP);
+        props.send('timer', {endTime: -1, pause: false});
     }
 
     return (
@@ -39,7 +83,18 @@ const GameModMenu = forwardRef((props, ref) => {
             <div className="mod-toggle-menu-menu">
                 <div className="mod-toggle-menu-element">
                     <label>Timer</label>
-                    <button onClick={startTimer}>Start</button>
+                    {timerState===TimerStates.PAUSED?
+                        <button 
+                            onClick={resetTimer}
+                        >
+                            Reset
+                        </button>
+                    :null}
+                    <button 
+                        onClick={startTimer}
+                    >
+                        {timerState===TimerStates.RUNNING?'Pause':'Start'}
+                    </button>
                     <input 
                         placeholder="Min..."
                         value={min}

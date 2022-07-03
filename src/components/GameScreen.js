@@ -61,8 +61,8 @@ const GameScreen = forwardRef((props, ref) => {
             setResult(resultData);
             resultRef?.current.showWindow();
         },
-        triggerTimer(endTime) {
-            timerRef?.current.triggerTimer(endTime);
+        triggerTimer(timerData) {
+            timerRef?.current.triggerTimer(timerData);
         }
     }));
 

@@ -7,12 +7,13 @@ const Timer = forwardRef((props, ref) => {
     const [endTime, setEndTime] = useState(-1);
     const [time, setTime] = useState(-1);
     const [displayTime, setDisplayTime] = useState("0:00");
+    const [isPaused, setIsPaused] = useState(false);
 
     useEffect(() => {
-        if(time>=0 && !timerFkt) {
+        if(time>=0 && !timerFkt && !isPaused) {
             setTimerFkt(setTimeout(refreshTimer, 1000));
         }
-    }, [timerFkt, endTime, time, displayTime]);
+    }, [timerFkt, endTime, time, displayTime, isPaused]);
 
     const showTimer = () => {
         return props.timer && props.timer > 0;
@@ -23,10 +24,22 @@ const Timer = forwardRef((props, ref) => {
     }
 
     useImperativeHandle(ref, () => ({
-        triggerTimer(et) {
-            et = parseInt(et);
-            setEndTime(et);
-            setTime(getRelativeTime(et));
+        triggerTimer(data) {
+            if(!data) return;
+            if(data.endTime) {
+                const endTime = parseInt(data.endTime);
+                const relativeTime = getRelativeTime(endTime);
+                setEndTime(endTime);
+                setTime(relativeTime);
+                updateDisplayTime(relativeTime);
+            }
+            if(parseInt(data.endTime) !== -1) {
+                if(data.pause) {
+                    pauseTimer();
+                } else if(!timerFkt) {
+                    resumeTimer();
+                }
+            }
         }
     }));
 
@@ -52,8 +65,19 @@ const Timer = forwardRef((props, ref) => {
         setDisplayTime(m+":"+(s<10?"0":"")+s);
     }
 
+    const pauseTimer = () => {
+        setIsPaused(true);
+        clearTimeout(timerFkt);
+        setTimerFkt(null);
+    }
+
+    const resumeTimer = () => {
+        setIsPaused(false);
+        setTimerFkt(setTimeout(refreshTimer, 1000));
+    }
+
     return (
-        <div className='timer'>
+        <div className={`timer ${isPaused?'timer-blinking':''}`}>
             {endTime!==-1 ? displayTime : ""}
         </div>
     );
