@@ -31,6 +31,25 @@ const GameQuizPlayer = props => {
         return getPlayerState() === props.PlayerStates?.SPECTATOR;
     }
 
+    const getAskedPlayer = () => {
+        let g = gameState.roundStatus.find(a => a.current);
+        if(g) {
+            return props.eventPlayerList.find(a => a.playerId === g.currentPlayerId) || null;
+        }
+        return null;
+    }
+
+    const getPlayerGameState = playerId => {
+        return gameState.playerProgress?.[playerId];
+    }
+
+    
+    const getAvaiableJoker = playerId => {
+        const playerState = getPlayerGameState(playerId);
+        if(!playerState) return;
+        return playerState.special.joker;
+    }
+
     const setSelection = value => {
         let ng = gameState.playerProgress[getPlayerId()];
         if(ng) {
@@ -74,6 +93,7 @@ const GameQuizPlayer = props => {
                 <div className="question-container">
                     <QuestionComponent 
                         question={getCurrentQuestion()}
+                        joker={getAvaiableJoker(getAskedPlayer()?.playerId)}
                         asking={isAskedPlayer()}
                         callback={isAskedPlayer()?setSelection:null}
                         selection={getQuestionSelection()}

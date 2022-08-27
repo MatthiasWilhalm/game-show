@@ -1,3 +1,9 @@
+import fiftyfifty from "../assets/fiftyfifty.png";
+
+const jokerAssets = {
+    "fiftyfifty": fiftyfifty
+}
+
 const renderMediaContent = (url, type, className) => {
     switch (type) {
         case "image":
@@ -21,10 +27,24 @@ const renderMediaContent = (url, type, className) => {
     }
 };
 
+const renderJoker = (joker, callback) => {
+    if(!joker) return null;
+    return (
+        <div className="joker-content">
+            {Object.keys(joker).map(a => 
+                joker[a] > 0 ?
+                    <img src={jokerAssets[a]} onClick={callback ? () => callback(a) : null}></img>
+                :
+                    null
+            )}
+        </div>
+    );
+}
 
 const QuestionComponent = props => {
     return (
         <div className="question-grid">
+            {renderJoker(props.joker, props.jokerCallback)}
             <div className="question-content">
                 {props.question.url?
                     renderMediaContent(props.question.url, props.question.urlType, "question-content-img")

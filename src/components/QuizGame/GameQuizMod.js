@@ -1,6 +1,11 @@
 import { useState } from "react";
 import MainButton from "../MainButton";
 import QuestionComponent from "../QuestionComponent";
+import fiftyfifty from "../../assets/fiftyfifty.png";
+
+const jokerIcons = {
+    "fiftyfifty": fiftyfifty
+}
 
 const GameQuizMod = props => {
     const game = props.eventData?.games[props.eventStatus?.gameStatus?.findIndex(g => g.current)];
@@ -70,12 +75,40 @@ const GameQuizMod = props => {
         return null;
     }
 
+    const getPlayerGameState = playerId => {
+        return gameState.playerProgress?.[playerId];
+    }
+
+    
+    const getAvaiableJoker = playerId => {
+        const playerState = getPlayerGameState(playerId);
+        if(!playerState) return;
+        return playerState.special.joker;
+    }
+
+    const jokerCallback = jokerName => {
+        let ng = getPlayerGameState(getAskedPlayer()?.playerId);
+        if(ng?.special?.joker?.[jokerName] > 0) {
+            ng.special.joker[jokerName] -= 1;
+            updateStatus();
+        }
+    }
+
+    triggerJokerEvent = jokerName => {
+        const jokerEvents = {
+            fiftyfifty: () => {
+                // TODO: execute fiftyfifty event
+            }
+        }
+        jokerEvents[jokerName]();
+    }
+
     const getQuestionSelection = () => {
         return gameState.playerProgress?.[gameState.roundStatus?.find(a => a.current)?.currentPlayerId]?.selection;
     }
     
     const setAnswerForAskedPlayer = value => {
-        let ng = gameState.playerProgress[getAskedPlayer().playerId];
+        let ng = getPlayerGameState(getAskedPlayer()?.playerId);
         if(ng) {
             ng.selection = value;
             console.log(ng.selection);
@@ -98,7 +131,7 @@ const GameQuizMod = props => {
 
     const triggerCloseRound = () => {
         // let s = props.eventStatus.globalScores[getAskedPlayer().playerId];
-        let s = gameState.playerProgress?.[getAskedPlayer().playerId];
+        let s = getPlayerGameState(getAskedPlayer()?.playerId);
         let c = 0;
         let correct = getCurrentQuestion()?.presetAnswers[getQuestionSelection()]?.correct;
         if(correct) {
@@ -118,11 +151,22 @@ const GameQuizMod = props => {
     }
 
     const triggerRoundWindow = (score, change) => {
-        props.send('triggerresultscreen', {username: getAskedPlayer()?.username, score: score, change: change, msg: getCorrectAnswerAsString()});
+        props.send('triggerresultscreen', {
+            username: getAskedPlayer()?.username,
+            score: score,
+            change: change,
+            msg: getCorrectAnswerAsString()
+        });
     }
 
     const triggerGameEndWindow = (winnerUsername, score, change) => {
-        props.send('triggerresultscreen', {username: winnerUsername, score: score, change: change, title: "winner of this game", msg: ""});
+        props.send('triggerresultscreen', {
+            username: winnerUsername,
+            score: score,
+            change: change,
+            title: "winner of this game",
+            msg: ""
+        });
     }
 
     const getCorrectAnswerAsString = () => {
@@ -218,9 +262,19 @@ const GameQuizMod = props => {
                     <div className="sidepanel panel double-r">
                         <ul className="small-list clickable-list">
                             {props.eventPlayerList?.filter(b => b.playerState === props.PlayerStates.PLAYER).map(a => 
-                                <li onClick={() => selectPlayer(a.playerId)} className={a.playerId===selectedPlayer?"selected":""}>
+                                <li 
+                                    onClick={() => selectPlayer(a.playerId)}
+                                    className={a.playerId===selectedPlayer?"selected":""}
+                                >
                                     <div>{a.username}</div>
-                                    <div></div>
+                                    <div>
+                                        {Object.keys(getAvaiableJoker(a.playerId)).map(joker => 
+                                            getAvaiableJoker(a.playerId)[joker]>0 ? 
+                                                <img src={jokerIcons[joker]} title={joker}></img>
+                                            :
+                                                null
+                                        )}
+                                    </div>
                                 </li>
                             )}
                         </ul>
@@ -269,6 +323,8 @@ const GameQuizMod = props => {
                 </div>
                 <QuestionComponent 
                     question={getCurrentQuestion()}
+                    joker={getAvaiableJoker(getAskedPlayer()?.playerId)}
+                    jokerCallback={jokerCallback}
                     selection={getQuestionSelection()}
                     callback={setAnswerForAskedPlayer}
                 />
