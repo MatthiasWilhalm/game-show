@@ -94,7 +94,7 @@ const GameQuizMod = props => {
         }
     }
 
-    triggerJokerEvent = jokerName => {
+    const triggerJokerEvent = jokerName => {
         const jokerEvents = {
             fiftyfifty: () => {
                 // TODO: execute fiftyfifty event
