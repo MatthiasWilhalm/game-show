@@ -4,6 +4,26 @@ const jokerAssets = {
     "fiftyfifty": fiftyfifty
 }
 
+const wrongAnswerIndex = (answers, index) => {
+    const answersWId = answers.map((a, i) => {
+        return {...a, id: i};
+    });
+    const wrong = answersWId.filter((a) => !a.correct);
+    let ret = -1;
+    wrong.forEach((a, i) => {
+        if(a.id === index) {
+            ret = i;
+        }
+    });
+    return ret;    
+}
+
+const isHiddenAwnser = (answers, index, hiddenAwnsers) => {
+    const w = wrongAnswerIndex(answers, index);
+    const ret = !!hiddenAwnsers?.includes(w);
+    return ret;
+}
+
 const renderMediaContent = (url, type, className) => {
     switch (type) {
         case "image":
@@ -42,6 +62,7 @@ const renderJoker = (joker, callback) => {
 }
 
 const QuestionComponent = props => {
+    const awnsers = props.question?.presetAnswers;
     return (
         <div className="question-grid">
             {renderJoker(props.joker, props.jokerCallback)}
@@ -51,15 +72,15 @@ const QuestionComponent = props => {
                 :''}
                 {props.question.question}
             </div>
-            {props.question?.presetAnswers?.map((a, i) =>
+            {awnsers?.map((a, i) =>
                 <div 
                     className={"question-answer"+(props.asking?" question-answer-asking":"")+(props.selection===i?' selected':'')}
-                    onClick={() => props.callback?props.callback(i):null}
+                    onClick={() => (props.callback && !isHiddenAwnser(awnsers, i, props.hiddenAwnsers)) ? props.callback(i) : null}
                 >
-                    {a.url?
+                    {a.url && !isHiddenAwnser(awnsers, i, props.hiddenAwnsers)?
                         renderMediaContent(a.url, a.urlType, "question-answer-img")
                     :''}
-                    {a.text}
+                    {!isHiddenAwnser(awnsers, i, props.hiddenAwnsers) ? a.text : ''}
                 </div>
             )}
         </div>

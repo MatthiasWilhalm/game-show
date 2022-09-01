@@ -56,7 +56,11 @@ const GameQuizMod = props => {
     }
 
     const isInRound = () => {
-        return !!gameState.roundStatus.find(a => a.current);
+        return !!getCurrentRoundStatus();
+    }
+
+    const getCurrentRoundStatus = () => {
+        return gameState.roundStatus.find(a => a.current);
     }
 
     const getCurrentQuestion = () => {
@@ -91,16 +95,47 @@ const GameQuizMod = props => {
         if(ng?.special?.joker?.[jokerName] > 0) {
             ng.special.joker[jokerName] -= 1;
             updateStatus();
+            triggerJokerEvent(jokerName);
         }
     }
 
     const triggerJokerEvent = jokerName => {
         const jokerEvents = {
             fiftyfifty: () => {
-                // TODO: execute fiftyfifty event
+                let roundState = getCurrentRoundStatus();
+                if(roundState) {
+                    const length = getCurrentQuestion()?.presetAnswers?.filter(a => {
+                        return !a.correct;
+                    }).length;
+                    const half = Math.floor(getCurrentQuestion()?.presetAnswers?.length/2);
+                    const hiddenAwnsers = shuffle(length).splice(0, half);
+                    roundState.hiddenAwnsers = hiddenAwnsers;
+                    updateStatus();
+                }
             }
         }
         jokerEvents[jokerName]();
+    }
+
+    /**
+     * returns a array with number from 0 - max in a random order
+     * @param {Number} max 
+     * @returns {Array<Number>}
+     */
+    const shuffle = max => {
+        let ret = [];
+        let arr = [];
+        for (let i = 0; i < max; i++) arr.push(i);
+        while (max > 0) {
+            let ran = parseInt(Math.random() * max);
+            ret.push(arr.splice(ran, 1)[0]);
+            max--;
+        }
+        return ret;
+    }
+
+    const getCurrentHiddenAwnsers = () => {
+        return getCurrentRoundStatus()?.hiddenAwnsers ?? [];
     }
 
     const getQuestionSelection = () => {
@@ -325,6 +360,7 @@ const GameQuizMod = props => {
                     question={getCurrentQuestion()}
                     joker={getAvaiableJoker(getAskedPlayer()?.playerId)}
                     jokerCallback={jokerCallback}
+                    hiddenAwnsers={getCurrentHiddenAwnsers()}
                     selection={getQuestionSelection()}
                     callback={setAnswerForAskedPlayer}
                 />

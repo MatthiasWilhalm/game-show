@@ -879,6 +879,7 @@ hr {
   align-content: center;
   height: fit-content;
   max-height: 200px;
+  min-height: 18px;
   overflow-y: auto;
   padding-top: 10px;
   padding-bottom: 10px;
