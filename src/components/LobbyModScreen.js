@@ -46,13 +46,22 @@ const LobbyModScreen = props => {
             let pg = {};
             props.eventPlayerList.forEach(p => {
                 if(p.playerState === props.PlayerStates.PLAYER) {
-                    pg[p.playerId] = {score: 0, team: -1, special: 0}
+                    pg[p.playerId] = {
+                        score: 0,
+                        team: -1,
+                        special: getGameSpecials(getSelectedGame())
+                    }
                 }
             });
             let es = props.eventStatus;
             es.gameStatus[getSelectedGameIndex()].playerProgress = pg;
             props.send('seteventstatus', es);
         }
+    }
+
+    const getGameSpecials = game => {
+        if(!game?.content) return;
+        return game.content.joker ? {joker: game.content.joker} : 0;
     }
 
     const getSelectedGame = () => {
