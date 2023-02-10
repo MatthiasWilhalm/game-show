@@ -1,4 +1,5 @@
 import { useState, forwardRef, useEffect } from 'react';
+import menuIcon from "../assets/menu.svg";
 
 
 const GameModMenu = forwardRef((props, ref) => {
@@ -118,7 +119,7 @@ const GameModMenu = forwardRef((props, ref) => {
                 className="mod-toggle-menu-header"
                 onClick={toggleState}
             >
-                M
+                <img src={menuIcon}></img>
             </div>
         </div>
     );

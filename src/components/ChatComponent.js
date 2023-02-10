@@ -167,14 +167,14 @@ const ChatComponent = forwardRef((props, ref) => {
             case 'cmd':
                 return (
                     <div className="chat-item">
-                        <diV><i>{msg.text}</i></diV>
+                        <div><i>{msg.text}</i></div>
                     </div>
                 );                
             case 'playrequest':
                 if(props.isMod)
                     return (
                         <div className="chat-item">
-                            <diV>{msg.username+" wants to play"}</diV>
+                            <div>{msg.username+" wants to play"}</div>
                             {msg.text===1?
                                 <div>{"request accepted"}</div>
                             :(msg.text===-1?
@@ -191,7 +191,7 @@ const ChatComponent = forwardRef((props, ref) => {
             default:
                 return (
                     <div className="chat-item">
-                        <diV>{msg.username+": "+msg.text}</diV>
+                        <div>{msg.username+": "+msg.text}</div>
                     </div>
                 );
         }
@@ -211,11 +211,11 @@ const ChatComponent = forwardRef((props, ref) => {
                 :""}
             </div>
             <div className="chat-main">
-                <lu className="chat-tabs">
+                <ul className="chat-tabs">
                     <li onClick={() => setChatroom(-1)} className={chatroom===-1?"selected":""}>Global</li>
                     {renderTeamList(0)}
                     {renderTeamList(1)}
-                </lu>
+                </ul>
                 <div className="chat-msgs" ref={logRef}>
                     {props.chat?
                         getChat(chatroom).reverse().map((a, i) => 

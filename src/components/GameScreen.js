@@ -161,7 +161,7 @@ const GameScreen = forwardRef((props, ref) => {
             <ChatComponent 
                 {...props}
                 ref={chatRef}
-                isMod={isMod}
+                isMod={isMod()}
             />
             <Timer 
                 {...props}
