@@ -29,3 +29,11 @@ export function storePlayerState(playerState) {
 export function getPlayerState() {
     return sessionStorage.getItem('playerState');
 }
+
+export function storeModerationEvent(event) {
+    sessionStorage.setItem('moderationEvent', JSON.stringify(event));
+}
+
+export function getModerationEvent() {
+    return JSON.parse(sessionStorage.getItem('moderationEvent'));
+}

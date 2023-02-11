@@ -1,7 +1,8 @@
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { Link } from "react-router-dom";
 import { Event } from "../tools/Event";
 import { Game } from "../tools/Game";
+import { getModerationEvent, storeModerationEvent } from "../tools/tools";
 
 const Editor = props => {
 
@@ -10,6 +11,10 @@ const Editor = props => {
     const [event, setEvent] = useState(new Event("", []));
     const [newGameSelector, setNewGameSelector] = useState("quiz");
     const [focusedGame, setFocusedGame] = useState(0);
+
+    useEffect(() => {
+        setEvent(getModerationEvent() ?? new Event("", []));
+    }, []);
 
     const handleUpdate = (name, value) => {
         event[name] = value;
@@ -641,7 +646,7 @@ const Editor = props => {
         const element = document.createElement("a");
         const file = new Blob([JSON.stringify(event)], {type: 'text/plain'});
         element.href = URL.createObjectURL(file);
-        element.download = "event.json";
+        element.download = `${event?.title?.replace(' ', '_') ?? 'event'}.json`;
         document.body.appendChild(element); // Required for this to work in FireFox
         element.click();
     }
@@ -655,6 +660,10 @@ const Editor = props => {
             setEvent(result);
         }
     }
+
+    const saveEvent = () => {
+        storeModerationEvent(event);
+    };
 
     const triggerUpload = () => {
         document.getElementById('upload').click();
@@ -678,6 +687,9 @@ const Editor = props => {
                     </div>
                     <div className="mod-menu-button" onClick={downloadEvent}>
                         Down load
+                    </div>
+                    <div className="mod-menu-button" onClick={saveEvent}>
+                        Save
                     </div>
                 </div>
             </div>

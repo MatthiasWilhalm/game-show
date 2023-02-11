@@ -86,7 +86,7 @@ const GameQuizMod = props => {
     
     const getAvaiableJoker = playerId => {
         const playerState = getPlayerGameState(playerId);
-        if(!playerState) return;
+        if(!playerState) return {};
         return playerState.special.joker;
     }
 
@@ -303,6 +303,7 @@ const GameQuizMod = props => {
                                 >
                                     <div>{a.username}</div>
                                     <div>
+                                        {console.log(a)}
                                         {Object.keys(getAvaiableJoker(a.playerId)).map(joker => 
                                             getAvaiableJoker(a.playerId)[joker]>0 ? 
                                                 <img src={jokerIcons[joker]} title={joker}></img>
