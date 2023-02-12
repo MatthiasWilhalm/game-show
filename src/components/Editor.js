@@ -80,6 +80,7 @@ const Editor = props => {
                     scoreSpecWin: 2,
                     scoreLose: 0,
                     scoreSpecLose: 0,
+                    joker: {"fiftyfifty": 1},
                     questions: []        
                 };
                 break;
@@ -275,6 +276,15 @@ const Editor = props => {
                                 value={game.content?.scoreSpecLose}
                                 placeholder="Score Spec Lose"
                                 onChange={e => updateContent("scoreSpecLose", e.target.value, game)}
+                                className="double"
+                            ></input>
+                            {/* only placeholder until we add more joker */}
+                            <label>fiftyfifty amount</label>
+                            <input 
+                                type={"number"}
+                                value={game.content?.joker?.fiftyfifty}
+                                placeholder="Score Spec Lose"
+                                onChange={e => updateContent("joker", {fiftyfifty: e.target.value}, game)}
                                 className="double"
                             ></input>
                             <button onClick={() => removeGame(index)} className="small-button">-</button>

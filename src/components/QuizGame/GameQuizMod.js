@@ -86,7 +86,7 @@ const GameQuizMod = props => {
     
     const getAvaiableJoker = playerId => {
         const playerState = getPlayerGameState(playerId);
-        if(!playerState) return {};
+        if(!playerState) return;
         return playerState.special.joker;
     }
 
