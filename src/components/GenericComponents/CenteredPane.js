@@ -9,11 +9,19 @@ import MainButton from '../MainButton';
 
 const CenteredPane = forwardRef((props, ref) => {
 
+    const { title, subtitle, children, overwriteStyle, onClick } = props;
+
+
+    console.log('overwriteStyle', overwriteStyle);
     return (
-        <div className="centered-pane">
-            {props.title && <h1>{props.title}</h1>}
-            {props.subtitle && <h3>{props.subtitle}</h3>}
-            {props.children}
+        <div 
+            style={overwriteStyle}
+            className="centered-pane"
+            onClick={onClick}
+        >
+            {title && <h1>{title}</h1>}
+            {subtitle && <h3>{subtitle}</h3>}
+            {children}
         </div>
     );
 });

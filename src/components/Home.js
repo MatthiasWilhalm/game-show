@@ -13,6 +13,9 @@ import MainButton from './MainButton';
 
 import iconUser from '../assets/user.svg';
 import HomeSidePanel from './SidePanel/HomeSidePanel';
+import EventSelectComponent from './EventSelectComponent/EventSelectComponent';
+
+import logo from '../assets/favicon.png';
 
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');
@@ -30,7 +33,7 @@ const Home = forwardRef((props, ref) => {
     const refUpload = createRef();
 
     useEffect(() => {
-        props.send('geteventlist', {});
+        refresh();
     }, []);
 
     useImperativeHandle(ref, () => ({
@@ -41,6 +44,10 @@ const Home = forwardRef((props, ref) => {
             setEventList(eventList ?? []);
         }
     }));
+
+    const refresh = () => {
+        props.send('geteventlist', {});
+    }
 
     const saveNewUsername = () => {
         if(newUsername!==getUsername()) {
@@ -75,19 +82,17 @@ const Home = forwardRef((props, ref) => {
                 </button>
             </div>
             <div className="home-grid">
-                <div></div>
-                <div className="panel centered-panel">
-                    <ul className="small-list clickable-list">
-                        {eventList.map(a =>
-                            <li onClick={() => joinEvent(a.eventId)}>
-                                <div>{a.title}</div>
-                                <div>
-                                    {a.online}
-                                    <img src={iconUser}></img>
-                                </div>
-                            </li>    
-                        )}
-                    </ul>
+                <img src={logo} className="home-logo" alt="logo" />
+                <div className='home-centerd-pane'>
+                    <EventSelectComponent
+                        eventList={eventList}
+                        joinCallback={joinEvent}
+                    />
+                    <MainButton
+                        text={"refresh"}
+                        onClick={refresh}
+                        style={{marginTop: '10px'}}
+                    />
                 </div>
             </div>
             <div className="buttom-right-button">

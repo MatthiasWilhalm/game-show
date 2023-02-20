@@ -97,6 +97,14 @@ hr {
 .home-grid {
   position: absolute;
   display: grid;
+  grid-template-rows: 40% auto 200px;
+  height: 100%;
+  width: 100%;
+}
+
+.end-grid {
+  position: absolute;
+  display: grid;
   grid-template-rows: 200px auto 40%;
   height: 100%;
   width: 100%;
@@ -131,6 +139,13 @@ hr {
 
 .home-main-button-array * {
   margin-bottom: 20px;
+}
+
+.home-logo {
+  justify-self: center;
+  align-self: center;
+  height: 95%;
+  aspect-ratio: 1/1;
 }
 
 .change-username {
@@ -1422,4 +1437,14 @@ background: rgb(158, 158, 158) !important;
   text-align: center;
   background:  var(--default-bg);
   border: var(--default-border);
+}
+
+.home-centerd-pane {
+  justify-self: center;
+  align-self: center;
+  height: fit-content;
+  display: grid;
+  justify-items: center;
+  width: 100%;
+  height: 100%;
 }
