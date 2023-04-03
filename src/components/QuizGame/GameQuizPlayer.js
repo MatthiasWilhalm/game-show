@@ -14,6 +14,10 @@ const GameQuizPlayer = props => {
         return !!gameState.roundStatus.find(a => a.current);
     }
 
+    const getCurrentRoundStatus = () => {
+        return gameState.roundStatus.find(a => a.current);
+    }
+
     const getCurrentQuestion = () => {
         let g = gameState.roundStatus.find(a => a.current);
         if(g) {
@@ -59,6 +63,10 @@ const GameQuizPlayer = props => {
         }
     }
 
+    const getCurrentHiddenAwnsers = () => {
+        return getCurrentRoundStatus()?.hiddenAwnsers ?? [];
+    }
+
     const getQuestionSelection = () => {
         return gameState.playerProgress?.[gameState.roundStatus?.find(a => a.current)?.currentPlayerId]?.selection;
     }
@@ -94,6 +102,7 @@ const GameQuizPlayer = props => {
                     <QuestionComponent 
                         question={getCurrentQuestion()}
                         joker={getAvaiableJoker(getAskedPlayer()?.playerId)}
+                        hiddenAwnsers={getCurrentHiddenAwnsers()}
                         asking={isAskedPlayer()}
                         callback={isAskedPlayer()?setSelection:null}
                         selection={getQuestionSelection()}
