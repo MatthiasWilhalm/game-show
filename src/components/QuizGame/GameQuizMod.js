@@ -360,6 +360,7 @@ const GameQuizMod = props => {
                 <QuestionComponent 
                     question={getCurrentQuestion()}
                     joker={getAvaiableJoker(getAskedPlayer()?.playerId)}
+                    currentPlayerName={getAskedPlayer()?.username}
                     jokerCallback={jokerCallback}
                     hiddenAwnsers={getCurrentHiddenAwnsers()}
                     selection={getQuestionSelection()}

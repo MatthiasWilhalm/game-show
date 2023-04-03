@@ -102,6 +102,7 @@ const GameQuizPlayer = props => {
                     <QuestionComponent 
                         question={getCurrentQuestion()}
                         joker={getAvaiableJoker(getAskedPlayer()?.playerId)}
+                        currentPlayerName={getAskedPlayer()?.username}
                         hiddenAwnsers={getCurrentHiddenAwnsers()}
                         asking={isAskedPlayer()}
                         callback={isAskedPlayer()?setSelection:null}

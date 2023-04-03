@@ -56,6 +56,16 @@ const GameBingoMod = props => {
         return [... new Set(t)];
     }
 
+    const getCurrentRoundName = () => {
+        let g = gameState.roundStatus.find(a => a.current);
+        console.log(game.content.questions[g.roundId]);
+        if(g) {
+            return game.content.questions[g.roundId]?.category || null;
+        }
+        return null;
+    }
+
+
     const startRound = () => {
         if(isReady()) {
             let ngs = gameState.roundStatus;
@@ -307,6 +317,7 @@ const GameBingoMod = props => {
                         asking={false}
                         callback={setSelection}
                         selection={getQuestionSelection()}
+                        currentPlayerName={`(${getCurrentRoundName()}) ${TeamNames[getCurrentTeam()]}`}
                     />
                 </div>
                 <div className="buttom-right-button">

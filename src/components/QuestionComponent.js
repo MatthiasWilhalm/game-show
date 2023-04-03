@@ -48,7 +48,9 @@ const renderMediaContent = (url, type, className) => {
 };
 
 const renderJoker = (joker, callback) => {
-    if(!joker) return null;
+    if(!joker) return (
+        <div className="joker-content"></div>
+    );
     return (
         <div className="joker-content">
             {Object.keys(joker).map(a => 
@@ -66,6 +68,9 @@ const QuestionComponent = props => {
     return (
         <div className="question-grid">
             {renderJoker(props.joker, props.jokerCallback)}
+            <div className="players-turn">
+                {props.currentPlayerName && `${props.currentPlayerName}'s turn`}
+            </div>
             <div className="question-content">
                 {props.question.url?
                     renderMediaContent(props.question.url, props.question.urlType, "question-content-img")
