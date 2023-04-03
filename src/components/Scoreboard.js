@@ -9,7 +9,7 @@ const Scoreboard = props => {
 
     const addGlobalScore = (playerId, amount) => {
         if(props.eventStatus?.globalScores?.[playerId]!==undefined) {
-            props.eventStatus.globalScores[playerId]+=amount;
+            props.eventStatus.globalScores[playerId] = parseInt(props.eventStatus.globalScores[playerId]) + amount;
             props.send("seteventstatus", props.eventStatus);
         }
     }
@@ -17,7 +17,7 @@ const Scoreboard = props => {
     const addCoins = (playerId, amount) => {
         let p = props.eventStatus?.gameStatus?.find(b => b.current)?.playerProgress[playerId];
         if(p?.score !== undefined) {
-            p.score+=amount;
+            p.score = parseInt(p.score) + amount;
             props.send("seteventstatus", props.eventStatus);
         }
     }

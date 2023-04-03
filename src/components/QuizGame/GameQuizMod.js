@@ -217,14 +217,14 @@ const GameQuizMod = props => {
             let b = gameState.playerProgress[a];
             if((answerWasCorret && b.selection===1) || (!answerWasCorret && b.selection===0)) {
                 if(b.score!==undefined)
-                    b.score += game.content.scoreSpecWin;
+                    b.score = parseInt(b.score) + parseInt(game.content.scoreSpecWin);
                 else 
-                    b.score = game.content.scoreSpecWin;
+                    b.score = parseInt(game.content.scoreSpecWin);
             } else {
                 if(b.score!==undefined)
-                    b.score += game.content.scoreSpecLose;
+                    b.score = parseInt(b.score) + parseInt(game.content.scoreSpecLose);
                 else 
-                    b.score = game.content.scoreSpecLose;
+                    b.score = parseInt(game.content.scoreSpecLose);
             }
         });
         updateStatus();
@@ -271,9 +271,9 @@ const GameQuizMod = props => {
         let displayScore = "";
         winner.forEach(w => {
             if(gs[w]) {
-                gs[w] += 1;
+                gs[w] = parseInt(gs[w]) + 1;
             } else {
-                gs[w] = 1;
+                gs[w] = parseInt(gs[w]) + 1;
             }
             displayScore += gs[w]+"; ";
         });
