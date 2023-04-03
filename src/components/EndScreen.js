@@ -45,7 +45,7 @@ const EndScreen = props => {
     }
     
     return (
-        <div className="home-grid">
+        <div className="end-grid">
             <div className="mod-title">
                 <div className="game-title">
                     <h1>

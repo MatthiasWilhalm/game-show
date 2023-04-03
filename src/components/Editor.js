@@ -1,7 +1,8 @@
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { Link } from "react-router-dom";
 import { Event } from "../tools/Event";
 import { Game } from "../tools/Game";
+import { getModerationEvent, storeModerationEvent } from "../tools/tools";
 
 const Editor = props => {
 
@@ -10,6 +11,10 @@ const Editor = props => {
     const [event, setEvent] = useState(new Event("", []));
     const [newGameSelector, setNewGameSelector] = useState("quiz");
     const [focusedGame, setFocusedGame] = useState(0);
+
+    useEffect(() => {
+        setEvent(getModerationEvent() ?? new Event("", []));
+    }, []);
 
     const handleUpdate = (name, value) => {
         event[name] = value;
@@ -75,6 +80,7 @@ const Editor = props => {
                     scoreSpecWin: 2,
                     scoreLose: 0,
                     scoreSpecLose: 0,
+                    joker: {"fiftyfifty": 1},
                     questions: []        
                 };
                 break;
@@ -270,6 +276,15 @@ const Editor = props => {
                                 value={game.content?.scoreSpecLose}
                                 placeholder="Score Spec Lose"
                                 onChange={e => updateContent("scoreSpecLose", e.target.value, game)}
+                                className="double"
+                            ></input>
+                            {/* only placeholder until we add more joker */}
+                            <label>fiftyfifty amount</label>
+                            <input 
+                                type={"number"}
+                                value={game.content?.joker?.fiftyfifty}
+                                placeholder="Score Spec Lose"
+                                onChange={e => updateContent("joker", {fiftyfifty: e.target.value}, game)}
                                 className="double"
                             ></input>
                             <button onClick={() => removeGame(index)} className="small-button">-</button>
@@ -641,7 +656,7 @@ const Editor = props => {
         const element = document.createElement("a");
         const file = new Blob([JSON.stringify(event)], {type: 'text/plain'});
         element.href = URL.createObjectURL(file);
-        element.download = "event.json";
+        element.download = `${event?.title?.replace(' ', '_') ?? 'event'}.json`;
         document.body.appendChild(element); // Required for this to work in FireFox
         element.click();
     }
@@ -655,6 +670,10 @@ const Editor = props => {
             setEvent(result);
         }
     }
+
+    const saveEvent = () => {
+        storeModerationEvent(event);
+    };
 
     const triggerUpload = () => {
         document.getElementById('upload').click();
@@ -678,6 +697,9 @@ const Editor = props => {
                     </div>
                     <div className="mod-menu-button" onClick={downloadEvent}>
                         Down load
+                    </div>
+                    <div className="mod-menu-button" onClick={saveEvent}>
+                        Save
                     </div>
                 </div>
             </div>
