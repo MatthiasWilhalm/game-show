@@ -170,14 +170,14 @@ const GameQuizMod = props => {
         let c = 0;
         let correct = getCurrentQuestion()?.presetAnswers[getQuestionSelection()]?.correct;
         if(correct) {
-            c = game.content.scoreWin;
+            c = parseInt(game.content.scoreWin);
         } else {
-            c = game.content.scoreLose;
+            c = parseInt(game.content.scoreLose);
         }
         if(s.score===undefined) {
             s.score = c;
         } else {
-            s.score += c;
+            s.score = parseInt(s.score) + c;
         }
         updateSpecStatus(correct);
         triggerRoundWindow(s.score, c);
