@@ -64,7 +64,10 @@ const GameQueueModScreen = props => {
     const buzzerEventRight = () => {
         let ngs = gameState?.playerProgress[getBuzzerClickedPlayer().playerId];
         if(ngs) {
-            ngs.score += game.content.scoreWin;
+            if(ngs.score)
+                ngs.score = parseInt(ngs.score) + parseInt(game.content.scoreWin);
+            else
+                ngs.score = parseInt(game.content.scoreWin);
             triggerRoundWindow(ngs.score);
             resetBuzzerEvent();
             closeRound();
@@ -83,7 +86,10 @@ const GameQueueModScreen = props => {
     const buzzerEventWrong = () => {
         let ngs = gameState?.playerProgress[getBuzzerClickedPlayer().playerId];
         if(ngs) {
-            ngs.score += game.content.scoreLose;
+            if(ngs.score)
+                ngs.score = parseInt(ngs.score) + parseInt(game.content.scoreLose);
+            else
+                ngs.score = parseInt(game.content.scoreLose);
         }
         updateStatus();
         resetBuzzerEvent();
@@ -138,9 +144,9 @@ const GameQueueModScreen = props => {
         let displayScore = "";
         winner.forEach(w => {
             if(gs[w]) {
-                gs[w] += 1;
+                gs[w] = parseInt(gs[w]) + 1;
             } else {
-                gs[w] = 1;
+                gs[w] = parseInt(gs[w]) + 1;
             }
             displayScore += gs[w]+"; ";
         });

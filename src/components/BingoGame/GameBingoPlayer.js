@@ -5,6 +5,7 @@ import BingoBoard from "./BingoBoard";
 
 const GameBingoPlayer = props => {
 
+    const TeamNames = ["Team A", "Team B"];
     
     const game = props.eventData?.games[props.eventStatus?.gameStatus?.findIndex(g => g.current)];
     const gameState = props.eventStatus?.gameStatus?.find(g => g.current);
@@ -57,6 +58,10 @@ const GameBingoPlayer = props => {
         }
     }
 
+    const getCurrentTeam = () => {
+        return gameState.roundStatus?.find(a => a.current)?.currentTeam ?? -1;
+    }
+
     const getQuestionSelection = () => {
         return gameState.roundStatus.find(a => a.current)?.teamsAnswer ?? -1;
     }
@@ -89,6 +94,7 @@ const GameBingoPlayer = props => {
                         asking={isAskedPlayer()}
                         callback={isAskedPlayer()?setSelection:null}
                         selection={getQuestionSelection()}
+                        currentPlayerName={TeamNames[getCurrentTeam()]}
                     />
                 </div>
             </div>

@@ -170,14 +170,14 @@ const GameQuizMod = props => {
         let c = 0;
         let correct = getCurrentQuestion()?.presetAnswers[getQuestionSelection()]?.correct;
         if(correct) {
-            c = game.content.scoreWin;
+            c = parseInt(game.content.scoreWin);
         } else {
-            c = game.content.scoreLose;
+            c = parseInt(game.content.scoreLose);
         }
         if(s.score===undefined) {
             s.score = c;
         } else {
-            s.score += c;
+            s.score = parseInt(s.score) + c;
         }
         updateSpecStatus(correct);
         triggerRoundWindow(s.score, c);
@@ -217,14 +217,14 @@ const GameQuizMod = props => {
             let b = gameState.playerProgress[a];
             if((answerWasCorret && b.selection===1) || (!answerWasCorret && b.selection===0)) {
                 if(b.score!==undefined)
-                    b.score += game.content.scoreSpecWin;
+                    b.score = parseInt(b.score) + parseInt(game.content.scoreSpecWin);
                 else 
-                    b.score = game.content.scoreSpecWin;
+                    b.score = parseInt(game.content.scoreSpecWin);
             } else {
                 if(b.score!==undefined)
-                    b.score += game.content.scoreSpecLose;
+                    b.score = parseInt(b.score) + parseInt(game.content.scoreSpecLose);
                 else 
-                    b.score = game.content.scoreSpecLose;
+                    b.score = parseInt(game.content.scoreSpecLose);
             }
         });
         updateStatus();
@@ -271,9 +271,9 @@ const GameQuizMod = props => {
         let displayScore = "";
         winner.forEach(w => {
             if(gs[w]) {
-                gs[w] += 1;
+                gs[w] = parseInt(gs[w]) + 1;
             } else {
-                gs[w] = 1;
+                gs[w] = parseInt(gs[w]) + 1;
             }
             displayScore += gs[w]+"; ";
         });
@@ -360,6 +360,7 @@ const GameQuizMod = props => {
                 <QuestionComponent 
                     question={getCurrentQuestion()}
                     joker={getAvaiableJoker(getAskedPlayer()?.playerId)}
+                    currentPlayerName={getAskedPlayer()?.username}
                     jokerCallback={jokerCallback}
                     hiddenAwnsers={getCurrentHiddenAwnsers()}
                     selection={getQuestionSelection()}

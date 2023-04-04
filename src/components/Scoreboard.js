@@ -7,9 +7,11 @@ import { getPlayerState } from "../tools/tools"
 
 const Scoreboard = props => {
 
+    const TeamClasses = ["team-a", "team-b"];
+
     const addGlobalScore = (playerId, amount) => {
         if(props.eventStatus?.globalScores?.[playerId]!==undefined) {
-            props.eventStatus.globalScores[playerId]+=amount;
+            props.eventStatus.globalScores[playerId] = parseInt(props.eventStatus.globalScores[playerId]) + amount;
             props.send("seteventstatus", props.eventStatus);
         }
     }
@@ -17,7 +19,7 @@ const Scoreboard = props => {
     const addCoins = (playerId, amount) => {
         let p = props.eventStatus?.gameStatus?.find(b => b.current)?.playerProgress[playerId];
         if(p?.score !== undefined) {
-            p.score+=amount;
+            p.score = parseInt(p.score) + amount;
             props.send("seteventstatus", props.eventStatus);
         }
     }
@@ -35,6 +37,12 @@ const Scoreboard = props => {
         return ret;
     }
 
+    const getPlayersTeamStylClass = playerId => {
+        let team = props.eventStatus?.gameStatus?.find(b => b.current)?.playerProgress[playerId]?.team;
+        return TeamClasses[team] || "";
+    }
+
+
     const renderPlayerItem = (a, i) => {
         let m = getPlayerState() === props.PlayerStates.MOD;
         let global = props.eventStatus?.globalScores?.[a.playerId] ?? '-';
@@ -42,7 +50,7 @@ const Scoreboard = props => {
         let isInGame = coins!==undefined;
 
         return (
-            <li className="scoreboard-item-player">
+            <li className={`scoreboard-item-player ${getPlayersTeamStylClass(a.playerId)}`}>
                 <div>{i+". "+a.username}</div>
                 <div className="scoreboard-score-data">
                     {m?
@@ -110,7 +118,7 @@ const Scoreboard = props => {
                 <div className="list-spacer"></div>
                 {props.eventPlayerList?.
                 filter(b => b.playerState === props.PlayerStates.PLAYER).
-                sort((b, c) => props.eventStatus?.globalScores?.[c.playerId] - props.eventStatus?.globalScores?.[b.playerId]).
+                sort((b, c) =>  parseInt(props.eventStatus?.globalScores?.[c.playerId]) - parseInt(props.eventStatus?.globalScores?.[b.playerId])).
                 map((a,i) => 
                     renderPlayerItem(a,i+1)
                 )}

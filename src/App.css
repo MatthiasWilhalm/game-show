@@ -852,13 +852,14 @@ hr {
   gap: 10px;
 }
 
-.joker-content {
-  grid-column: span 2;
-}
-
 .joker-content img {
   height: 70px;
   width: auto;
+}
+
+.players-turn {
+  justify-self: end;
+  align-self: end;
 }
 
 .question-content {
