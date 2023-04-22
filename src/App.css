@@ -279,7 +279,6 @@ hr {
   grid-template-columns: 80% 20%;
   background: var(--default-bg);
   min-height: 80px;
-  max-height: 200px;
   height: max-content;
   align-items: center;
   padding-left: 10px;
@@ -287,6 +286,24 @@ hr {
   margin-bottom: 5px;
   box-shadow: var(--default-button-box);
   font-size: 15pt;
+}
+
+.no-grid {
+  display: block !important;
+}
+
+.large-list li img,
+.large-list li video,
+.large-list li iframe,
+.large-list li audio {
+  max-height: 300px;
+  max-width: 100%;
+  justify-self: center;
+}
+
+.list-content {
+  display: grid;
+  width: 100%;
 }
 
 .locked {
