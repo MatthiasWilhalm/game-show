@@ -58,6 +58,29 @@ const GameQueuePlayerScreen = props => {
         //TODO
     }
 
+    const renderMediaContent = (url, type, className) => {
+        switch (type) {
+            case "image":
+                return (
+                    <img src={url} className={className || ""}></img>
+                );            
+            case "video":
+                return (
+                    <video src={url} className={className || ""}></video>
+                );
+            case "audio":
+                return (
+                    <audio src={url} className={className || ""}></audio>
+                );
+            case "iframe":
+                return (
+                    <iframe src={url} className={className || ""}></iframe>
+                );
+            default:
+                return null;
+        }
+    };
+
     return (
         <div>
             {/* <ResultWindow
@@ -78,10 +101,11 @@ const GameQueuePlayerScreen = props => {
                 <div className="double panel centered-panel">
                     <ul className="large-list">
                         {getActiveHints().map(a => 
-                            <li>
-                                <div>{a.text}</div>
-                                <div></div>
-                                <div></div>
+                            <li className="no-grid">
+                                <div className="list-content">
+                                    {a.text}
+                                    {renderMediaContent(a.url, a.urlType, "")}
+                                </div>
                             </li>    
                         )}
                     </ul>

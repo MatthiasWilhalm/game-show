@@ -154,6 +154,29 @@ const GameQueueModScreen = props => {
         updateStatus();
     }
 
+    const renderMediaContent = (url, type, className) => {
+        switch (type) {
+            case "image":
+                return (
+                    <img src={url} className={className || ""}></img>
+                );            
+            case "video":
+                return (
+                    <video src={url} className={className || ""}></video>
+                );
+            case "audio":
+                return (
+                    <audio src={url} className={className || ""}></audio>
+                );
+            case "iframe":
+                return (
+                    <iframe src={url} className={className || ""}></iframe>
+                );
+            default:
+                return null;
+        }
+    };
+
     const renderRoundSelectScreen = () => {
         return (
             <div className="lobby-mod-grid">
@@ -194,10 +217,14 @@ const GameQueueModScreen = props => {
                 <div className="double panel centered-panel clickable-list">
                     <ul className="large-list">
                         {getCurrentRound()?.hints?.map((a, i) => 
-                            <li onClick={() => openHint(i)} className={isHintLocked(i)?"locked":""}>
-                                <div>{a.text}</div>
-                                <div></div>
-                                <div></div>
+                            <li 
+                                onClick={() => openHint(i)}
+                                className={`no-grid ${isHintLocked(i)?"locked":""}`}
+                            >
+                                <div className="list-content">
+                                    {a.text}
+                                    {renderMediaContent(a.url, a.urlType, "")}
+                                </div>
                             </li>
                         )}
                     </ul>
