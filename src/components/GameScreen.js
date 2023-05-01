@@ -23,6 +23,8 @@ import EndScreen from './EndScreen';
 import closeIcon from '../assets/close.svg'
 import GameModMenu from './GameModMenu';
 import Timer from './Timer';
+import GamePokerMod from './PokerGame/GamePokerMod';
+import GamePoker from './PokerGame/GamePoker';
 
 
 //const client = new W3CWebSocket('ws://127.0.0.1:3001');
@@ -94,18 +96,20 @@ const GameScreen = forwardRef((props, ref) => {
                 case "queue":
                     if(isMod)
                         return (<GameQueueModScreen {...props}/>);
-                    else
-                        return (<GameQueuePlayerScreen {...props}/>);
+                    return (<GameQueuePlayerScreen {...props}/>);
                 case "quiz":
                     if(isMod)
                         return(<GameQuizMod {...props}/>);
-                    else
-                        return (<GameQuizPlayer {...props}/>);
+                    return (<GameQuizPlayer {...props}/>);
                 case "bingo":
                     if(isMod)
                         return(<GameBingoMod {...props}/>)
-                    else
-                        return (<GameBingoPlayer {...props}/>);
+                    return (<GameBingoPlayer {...props}/>);
+                case "poker":
+                    if(isMod)
+                        return (<GamePokerMod {...props}/>);
+                    return (<GamePoker {...props}/>)
+
                 default:
                     return(
                         <div>
