@@ -81,10 +81,10 @@ const GamePokerMod = (props) => {
         updateStatus();
     }
 
-    const concludeRound = () => {
+    const setConclutionState = (newState) => {
         let ngs = gameState.roundStatus;
         let e = ngs.find(i => i.roundId === getCurrentRoundId());
-        e.conclude = true;
+        e.conclude = newState;
         updateStatus();
     }
 
@@ -149,6 +149,41 @@ const GamePokerMod = (props) => {
             });
         }
         return ret;
+    }
+
+    const getFisrtNumberOutOfText = text => {
+        const match = text.match(/\d+/);
+        if(match)
+            return match[0];
+        return null;
+    }
+
+    const autoCalculateNearestGuess = () => {
+        let nearest = [];
+        let nearestDiff = Number.MAX_SAFE_INTEGER;
+        Object.keys(gameState.playerProgress).forEach(ps => {
+            const playerProgess = gameState.playerProgress[ps];
+            if(!playerProgess) return;
+            const guessAsNumber = getFisrtNumberOutOfText(playerProgess.selection);
+            if(guessAsNumber === null) return;
+            const diff =  Math.abs(guessAsNumber - getAwnserAsNumber());
+            if(diff < nearestDiff) {
+                nearestDiff = diff;
+                nearest = [ps];
+            } else if(diff === nearestDiff) {
+                nearest.push(ps);
+            }
+        });
+        if(nearest.length) {
+            nearest.forEach(ps => {
+                gameState.playerProgress[ps].nearest = true;
+            });
+            updateStatus();
+        }
+    }
+
+    const getAwnserAsNumber = () => {
+        return getFisrtNumberOutOfText(getCurrentRound()?.answer);
     }
 
     const closeRound = () => {
@@ -234,7 +269,20 @@ const GamePokerMod = (props) => {
                     </h1>
                 </div>
                 <div className="mod-menu-button-array">
-                    <div className="mod-menu-button" onClick={closeGame}>Lobby</div>
+                    <div 
+                        className="mod-menu-button"
+                        onClick={closeGame}
+                    >
+                        Lobby
+                    </div>
+                    {getCurrentRoundData()?.conclude && 
+                        <div 
+                            className="mod-menu-button"
+                            onClick={() => setConclutionState(false)}
+                        >
+                            back to guess
+                        </div>
+                    }
                 </div>
                 <div className="double panel centered-panel clickable-list">
                     <ul className="large-list">
@@ -282,6 +330,7 @@ const GamePokerMod = (props) => {
                         {props.eventPlayerList?.filter(a => a.playerState === props.PlayerStates.PLAYER).map(a => 
                             <li 
                                 className={isPlayerNearest(a.playerId) ? 'selected' : ''}
+                                key={a.playerId}
                             >
                                 <div className="poker-user-list-item">
                                     <h4
@@ -307,13 +356,15 @@ const GamePokerMod = (props) => {
                         <div className="buttom-right-button">
                             <MainButton 
                                 text={"Conclude"}
-                                onClick={concludeRound}
+                                onClick={() => setConclutionState(true)}
                             ></MainButton>
                         </div>
                     :
                         <div className="buttom-right-button">
                             <MainButton
                                 text={"Auto calc nearest"}
+                                onClick={autoCalculateNearestGuess}
+                                locked={getAwnserAsNumber() === null}
                             ></MainButton>
                             <MainButton
                                 text={"Reveal all"}
@@ -321,8 +372,8 @@ const GamePokerMod = (props) => {
                             ></MainButton>
                             <MainButton
                                 text={"Show winner"}
-                                onClick={getNearestPlayer().length ? revealRoundsWinner : null}
-                                className={getNearestPlayer().length ? '' : 'locked'}
+                                onClick={revealRoundsWinner}
+                                locked={!getNearestPlayer()?.length}
                             ></MainButton>
                         </div>
                     }

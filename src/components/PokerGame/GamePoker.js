@@ -10,13 +10,13 @@ const GamePoker = props => {
     const [guess, setGuess] = useState(gameState.playerProgress[getPlayerId()]?.selection || "");
 
     useEffect(() => {
-        if(!isConclusion()) {
-            console.log(gameState.playerProgress[getPlayerId()]?.selection);
+        if(isConclusion())
             setGuess(gameState.playerProgress[getPlayerId()]?.selection || "");
-        }
-    }, [props.eventStatus])
-    
-    
+        if(!isInRound())
+            setGuess("");
+
+    }, [props.eventStatus]);
+
     const updateStatus = () => {
         props.send('seteventstatus', props.eventStatus);
     }
@@ -45,6 +45,10 @@ const GamePoker = props => {
                 ret.push(hint);
         });
         return ret;
+    }
+
+    const isInRound = () => {
+        return !!gameState.roundStatus.find(a => a.current);
     }
 
     const confirmGuess = () => {
@@ -128,7 +132,7 @@ const GamePoker = props => {
                         )}
                     </ul>
                 </div>
-                {!isConclusion() ?
+                {!isConclusion() && isInRound() &&
                     <div className="poker-input">
                         <input 
                             type="text"
@@ -141,7 +145,8 @@ const GamePoker = props => {
                             Confirm
                         </button>
                     </div>
-                :
+                }
+                {isConclusion() && isInRound() &&
                     <div className="sidepanel panel">
                         <ul className="small-list">
                             {props.eventPlayerList?.filter(a => a.playerState === props.PlayerStates.PLAYER).map(a => 
