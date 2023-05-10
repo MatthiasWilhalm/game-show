@@ -18,7 +18,7 @@ const wrongAnswerIndex = (answers, index) => {
     return ret;    
 }
 
-const isHiddenAwnser = (answers, index, hiddenAwnsers) => {
+const isHiddenAnswer = (answers, index, hiddenAwnsers) => {
     const w = wrongAnswerIndex(answers, index);
     const ret = !!hiddenAwnsers?.includes(w);
     return ret;
@@ -66,7 +66,7 @@ const renderJoker = (joker, callback) => {
 const QuestionComponent = props => {
     const awnsers = props.question?.presetAnswers;
     return (
-        <div className="question-grid">
+        <div className="question-grid double-r">
             {renderJoker(props.joker, props.jokerCallback)}
             <div className="players-turn">
                 {props.currentPlayerName && `${props.currentPlayerName}'s turn`}
@@ -80,12 +80,12 @@ const QuestionComponent = props => {
             {awnsers?.map((a, i) =>
                 <div 
                     className={"question-answer"+(props.asking?" question-answer-asking":"")+(props.selection===i?' selected':'')}
-                    onClick={() => (props.callback && !isHiddenAwnser(awnsers, i, props.hiddenAwnsers)) ? props.callback(i) : null}
+                    onClick={() => (props.callback && !isHiddenAnswer(awnsers, i, props.hiddenAwnsers)) ? props.callback(i) : null}
                 >
-                    {a.url && !isHiddenAwnser(awnsers, i, props.hiddenAwnsers)?
+                    {a.url && !isHiddenAnswer(awnsers, i, props.hiddenAwnsers)?
                         renderMediaContent(a.url, a.urlType, "question-answer-img")
                     :''}
-                    {!isHiddenAwnser(awnsers, i, props.hiddenAwnsers) ? a.text : ''}
+                    {!isHiddenAnswer(awnsers, i, props.hiddenAwnsers) ? a.text : ''}
                 </div>
             )}
         </div>

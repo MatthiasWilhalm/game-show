@@ -801,7 +801,7 @@ const Editor = props => {
                     {event?.games.map(renderGame)}
                 </ul>
             </div>
-            <div className="panel">
+            <div className="panel double-r">
                 {renderGameEditList(event.games?.[focusedGame] ?? [])}
             </div>
         </div>
