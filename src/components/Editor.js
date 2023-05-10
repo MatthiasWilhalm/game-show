@@ -19,8 +19,8 @@ const Editor = props => {
     const handleUpdate = (name, value) => {
         event[name] = value;
         setEvent(event);
+        saveEvent();
         forceUpdate();
-        console.log(event);
     }
 
     const updateGame = (name, value, game) => {
@@ -774,9 +774,6 @@ const Editor = props => {
                     </div>
                     <div className="mod-menu-button" onClick={downloadEvent}>
                         Down load
-                    </div>
-                    <div className="mod-menu-button" onClick={saveEvent}>
-                        Save
                     </div>
                 </div>
             </div>
