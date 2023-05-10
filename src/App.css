@@ -27,6 +27,10 @@
   --team-color-b: #50cdff;
 }
 
+html {
+  overflow: hidden;
+}
+
 body {
   font-family: var(--default-font);
   background: var(--screen-bg);
@@ -116,6 +120,7 @@ hr {
   grid-template-rows: 200px auto 20%;
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 
 .lobby-mod-grid {
@@ -125,6 +130,7 @@ hr {
   grid-template-rows: 200px auto 20%;
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 
 
@@ -251,12 +257,24 @@ hr {
   display: grid;
   grid-template-columns: 80% 20%;
   background: var(--default-bg);
-  height: 40px;
+  min-height: 40px;
   align-items: center;
   padding-left: 10px;
   padding-right: 10px;
   margin-bottom: 5px;
   box-shadow: var(--default-button-box);
+}
+
+.small-list li h4 {
+  margin: 0px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  text-align: left !important;
+}
+
+.small-list li h4:hover,
+.small-list li img:hover {
+  cursor: pointer;
 }
 
 .small-list li *:last-child {
@@ -1465,4 +1483,53 @@ background: rgb(158, 158, 158) !important;
   justify-items: center;
   width: 100%;
   height: 100%;
+}
+
+.poker-user-list-item {
+  text-align: left !important;
+}
+
+.poker-input {
+  z-index: 1;
+  display: grid;
+  width: 100%;
+  height: 100px;
+  justify-self: start;
+  background: var(--default-bg);
+  border-left: var(--default-border);
+  border-bottom: var(--default-border);
+  border-top: var(--default-border);
+  box-shadow: var(--button-box-shadow);
+}
+
+.poker-input input {
+  display: flex;
+  align-self: center;
+  justify-self: center;
+  box-shadow: var(--default-inner-box-shadow);
+  border: 0;
+  height: 40px;
+  width: 80%;
+  background-color: #ffffffaf;
+  font-size: 15pt;
+  font-family: var(--default-font);
+  padding-left: 5px;
+}
+
+.poker-input button {
+  border: 0;
+  background: var(--default-bg);
+  height: 80%;
+  width: 70%;
+  justify-self: center;
+  font-family: var(--default-font);
+  border: 2px solid black;
+  font-size: 13pt;
+  box-shadow: var(--button-box-shadow);
+  transition: transform 100ms ease-out;
+}
+
+.poker-input button:hover {
+  background: var(--default-hover-bg);
+  transform: translate(0px, 1px);
 }
