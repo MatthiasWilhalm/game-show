@@ -268,29 +268,21 @@ const GamePokerMod = (props) => {
                         {game.title}
                     </h1>
                 </div>
-                <div className="mod-menu-button-array">
+                <div>
                     <div 
                         className="mod-menu-button"
                         onClick={closeGame}
                     >
                         Lobby
                     </div>
-                    {getCurrentRoundData()?.conclude && 
-                        <div 
-                            className="mod-menu-button"
-                            onClick={() => setConclutionState(false)}
-                        >
-                            back to guess
-                        </div>
-                    }
                 </div>
                 <div className="double panel centered-panel clickable-list">
                     <ul className="large-list">
                         {game.content?.rounds?.map((a, i) => 
                             <li onClick={() => setupRoundStatus(i)} className={isLocked(i)?'locked':''}>
-                                <div>{a.answer}</div>
+                                <div>{a.hints[0]?.text ?? ''}</div>
                                 <div></div>
-                                <div>{a.hints.length+" hints"}</div>
+                                <div>{`Answer: ${a.answer}`}</div>
                             </li>
                         )}
                     </ul>
@@ -307,9 +299,23 @@ const GamePokerMod = (props) => {
                         {getCurrentRound()?.answer}
                     </h1>
                 </div>
-                <div>
-                    <div className="mod-menu-button" onClick={closeRound}>Rounds</div>
+                <div className="mod-menu-button-array">
+                    <div 
+                        className="mod-menu-button"
+                        onClick={closeRound}
+                    >
+                        Rounds
+                    </div>
+                    {getCurrentRoundData()?.conclude && 
+                        <div 
+                            className="mod-menu-button"
+                            onClick={() => setConclutionState(false)}
+                        >
+                            back to guess
+                        </div>
+                    }
                 </div>
+                <div></div>
                 <div className="panel centered-panel clickable-list">
                     <ul className="large-list">
                         {getCurrentRound()?.hints?.map((a, i) => 

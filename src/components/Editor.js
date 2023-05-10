@@ -92,6 +92,13 @@ const Editor = props => {
                     rounds: []
                 }
             break;
+            case 'poker':
+                content = {
+                    scoreWin: 4,
+                    scoreLose: -2,
+                    rounds: []
+                }
+            break;
             case 'bingo':
                 content = {
                     scoreWin: 4,
@@ -136,6 +143,16 @@ const Editor = props => {
                     });
                     updateContent('rounds', game.content.rounds, game);
                 }
+                break;
+            case 'poker':
+                if(game?.content?.rounds instanceof Array) {
+                    game.content.rounds.push({
+                        answer: '',
+                        hints: []
+                    });
+                    updateContent('rounds', game.content.rounds, game);
+                }
+                break;
             case 'bingo':
                 if(game?.content?.questions instanceof Array) {
                     game.content.questions.push({
@@ -392,6 +409,41 @@ const Editor = props => {
                             <button onClick={() => removeGame(index)} className="small-button">-</button>
                         </li>
                     );
+                case 'poker':
+                    return (
+                        <li>
+                            <input 
+                                type={"text"}
+                                value={game.title}
+                                placeholder="Title"
+                                onChange={e => updateGame("title", e.target.value, game)}
+                                className="double"
+                            ></input>
+                            <textarea
+                                value={game.description}
+                                placeholder="description"
+                                onChange={e => updateGame("description", e.target.value, game)}
+                                className="double"
+                            ></textarea>
+                            <label>Score Win</label>
+                            <input 
+                                type={"number"}
+                                value={game.content?.scoreWin}
+                                placeholder="Score Win"
+                                onChange={e => updateContent("scoreWin", e.target.value, game)}
+                                className="double"
+                            ></input>
+                            <label>Score Lose</label>
+                            <input 
+                                type={"number"}
+                                value={game.content?.scoreLose}
+                                placeholder="Score Lose"
+                                onChange={e => updateContent("scoreLose", e.target.value, game)}
+                                className="double"
+                            ></input>
+                            <button onClick={() => removeGame(index)} className="small-button">-</button>
+                        </li>
+                    );
                 default:
                     return null;
             }
@@ -591,6 +643,31 @@ const Editor = props => {
                         )}
                     </ul>
                 );
+            case 'poker':
+                return (
+                    <ul className="editor-main-list">
+                        <li>
+                            <div></div>
+                            <div></div>
+                            <button className="normal-button editor-add-button" onClick={() => addNewContentUnit(game)}>Add</button>
+                        </li>
+                        {game.content.rounds.map((a, i) => 
+                            <li>
+                                <input 
+                                    className="double"
+                                    value={a.answer}
+                                    onChange={e => updateRound('answer', e.target.value, i, game)}
+                                    placeholder="answer">
+                                </input>
+                                <div>
+                                    <button className="small-button" onClick={() => removeRoundForQueueUnit(game, i)}>-</button>
+                                    <button className="small-button" onClick={() => addHintForQueueUnit(game, i)}>+</button>
+                                </div>
+                                {renderQueueHints(a, i, game)}
+                            </li>
+                        )}
+                    </ul>
+                );
             case 'bingo':
                 return(
                     <ul className="editor-main-list">
@@ -719,6 +796,7 @@ const Editor = props => {
                             <option value={"quiz"}>quiz</option>
                             <option value={"queue"}>queue</option>
                             <option value={"bingo"}>bingo</option>
+                            <option value={"poker"}>poker</option>
                         </select>
                         <button className="small-button" onClick={createNewGame}>+</button>
                         <div></div>
