@@ -197,11 +197,7 @@ const GameBingoMod = props => {
     }
 
     const getCorrectAnswerAsString = () => {
-        let ret = "";
-        getCurrentQuestion().presetAnswers.filter(a => a.correct).forEach(a => {
-            ret+=a.text+"; ";
-        });
-        return ret;
+        return getCurrentQuestion().presetAnswers.filter(a => a.correct).map(a => a.text).join("; ");
     }
 
     const closeRound = () => {
@@ -219,15 +215,9 @@ const GameBingoMod = props => {
     }
 
     const generatePlayerArrayToString = player => {
-        let ret = "";
-        if(player instanceof Array && player.length) {
-            player.forEach((a, i) => {
-                ret += a.username;
-                if(i<player.length-1)
-                    ret += ", ";
-            });
-        }
-        return ret;
+        if(player instanceof Array && player.length)
+            return player.map(a => a.username).join(", ");
+        return " ";
     }
 
     const setWinner = () => {
@@ -241,17 +231,17 @@ const GameBingoMod = props => {
             if(gameState.playerProgress[ps].score===maxScore)
                 winner.push(ps);
         });
-        let gs = props.eventStatus.globalScores;
-        let displayScore = "";
+        const winnerScores = [];
         winner.forEach(w => {
-            if(gs[w]) {
-                gs[w] = parseInt(gs[w]) + 1;
-            } else {
-                gs[w] = parseInt(gs[w]) + 1;
-            }
-            displayScore += gs[w]+"; ";
+            const { globalScores } = props.eventStatus;
+            globalScores[w] = parseInt(globalScores[w]) + 1 ?? 1;
+            winnerScores.push(globalScores[w]);
         });
-        triggerGameEndWindow(generatePlayerArrayToString(props.eventPlayerList.filter(a => winner.includes(a.playerId))), displayScore, 1);
+        triggerGameEndWindow(
+            generatePlayerArrayToString(props.eventPlayerList.filter(a => winner.includes(a.playerId))),
+            winnerScores.join("; "),
+            1
+        );
         updateStatus();
     }
 

@@ -1,16 +1,30 @@
+import { useEffect, useState } from "react";
 import { getPlayerId } from "../../tools/tools";
-import BuzzerTriggerEventComponent from "./BuzzerTriggerEventComponent";
-import MainButton from "../MainButton";
-import ResultWindow from "../ResultWindow";
 
-const GameQueuePlayerScreen = props => {
+const GamePoker = props => {
 
+    
     const game = props.eventData?.games[props.eventStatus?.gameStatus?.findIndex(g => g.current)];
     const gameState = props.eventStatus?.gameStatus?.find(g => g.current);
+    
+    const [guess, setGuess] = useState(gameState.playerProgress[getPlayerId()]?.selection || "");
+
+    useEffect(() => {
+        if(isConclusion())
+            setGuess(gameState.playerProgress[getPlayerId()]?.selection || "");
+        if(!isInRound())
+            setGuess("");
+
+    }, [props.eventStatus]);
 
     const updateStatus = () => {
         props.send('seteventstatus', props.eventStatus);
     }
+
+    const isConclusion = () => {
+        return !!getCurrentRoundData()?.conclude;
+    }
+
 
     const getCurrentRoundId = () => {
         return gameState.roundStatus.find(a => a.current)?.roundId;
@@ -18,6 +32,10 @@ const GameQueuePlayerScreen = props => {
 
     const getCurrentRound = () => {
         return game.content.rounds[getCurrentRoundId()];
+    }
+
+    const getCurrentRoundData = () => {
+        return gameState.roundStatus.find(a => a.current);
     }
 
     const getActiveHints = () => {
@@ -29,11 +47,15 @@ const GameQueuePlayerScreen = props => {
         return ret;
     }
 
-    const buzzer = () => {
-        let ngs = gameState.roundStatus;
-        let r = ngs.find(i => i.roundId === getCurrentRoundId());
-        r.paused = true;
-        r.clickedBuzzer = getPlayerId();
+    const isInRound = () => {
+        return !!gameState.roundStatus.find(a => a.current);
+    }
+
+    const confirmGuess = () => {
+        let currentPlayerProgess = gameState.playerProgress[getPlayerId()];
+        if(!currentPlayerProgess)
+            return;
+        currentPlayerProgess.selection = guess;
         updateStatus();
     }
 
@@ -83,6 +105,14 @@ const GameQueuePlayerScreen = props => {
 
     return (
         <div>
+            {/* <ResultWindow
+                username={roundWinner?.username}
+                score={roundWinner?.score}
+                change={roundWinner?.change}
+                msg={roundWinner?.msg}
+                autoHide={true}
+                ref={refResult}
+            /> */}
             <div className="lobby-mod-grid">
                 <div className="game-title">
                     <h1>
@@ -102,30 +132,41 @@ const GameQueuePlayerScreen = props => {
                         )}
                     </ul>
                 </div>
-                <div></div>
-                {(showBuzzer() && !isSpectator())?
-                    <div className="buzzer" onClick={buzzer}>
-                        <h3>Buzzer</h3>
-                        <p>(space)</p>
+                {!isConclusion() && isInRound() &&
+                    <div className="poker-input">
+                        <input 
+                            type="text"
+                            value={guess}
+                            onChange={e => setGuess(e.target.value)}
+                        ></input>
+                        <button
+                            onClick={confirmGuess}
+                        >
+                            Confirm
+                        </button>
                     </div>
-                :
-                    ''
                 }
-                {getBuzzerClickedUsername()?
-                    <BuzzerTriggerEventComponent username={getBuzzerClickedUsername()}/>
-                :
-                    ''
-                }
-                {getBuzzerClickedUsername()?
-                    <div className="buttom-right-button">
-                        <MainButton className={"locked"} text={getBuzzerClickedUsername()+" speaks"}/>
+                {isConclusion() && isInRound() &&
+                    <div className="sidepanel panel">
+                        <ul className="small-list">
+                            {props.eventPlayerList?.filter(a => a.playerState === props.PlayerStates.PLAYER).map(a => 
+                                <li>
+                                    <div className="poker-user-list-item">
+                                        <h4>
+                                            {a.username}
+                                        </h4>
+                                        {gameState.playerProgress[a.playerId]?.visible ? 
+                                            gameState.playerProgress[a.playerId]?.selection ?? ""
+                                        :""}
+                                    </div>
+                                </li>
+                            )}
+                        </ul>
                     </div>
-                :
-                    ''
                 }
             </div>
         </div>
     );
 }
 
-export default GameQueuePlayerScreen
+export default GamePoker

@@ -27,6 +27,10 @@
   --team-color-b: #50cdff;
 }
 
+html {
+  overflow: hidden;
+}
+
 body {
   font-family: var(--default-font);
   background: var(--screen-bg);
@@ -116,6 +120,7 @@ hr {
   grid-template-rows: 200px auto 20%;
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 
 .lobby-mod-grid {
@@ -125,6 +130,7 @@ hr {
   grid-template-rows: 200px auto 20%;
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 
 
@@ -225,11 +231,17 @@ hr {
 
 .panel {
   background: var(--default-panel-bg);
-  height: max-content;
-  max-height: 100%;
+  /* height: max-content;
+  max-height: 100%; */
   min-height: 200px;
-  max-width: 80%;
+  width: 97%;
   overflow: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.panel {
+  scrollbar-width: thin;
 }
 
 .centered-panel {
@@ -251,12 +263,24 @@ hr {
   display: grid;
   grid-template-columns: 80% 20%;
   background: var(--default-bg);
-  height: 40px;
+  min-height: 40px;
   align-items: center;
   padding-left: 10px;
   padding-right: 10px;
   margin-bottom: 5px;
   box-shadow: var(--default-button-box);
+}
+
+.small-list li h4 {
+  margin: 0px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  text-align: left !important;
+}
+
+.small-list li h4:hover,
+.small-list li img:hover {
+  cursor: pointer;
 }
 
 .small-list li *:last-child {
@@ -861,12 +885,13 @@ hr {
 
 .question-grid {
   display: grid;
-  grid-template-columns: 50% 50%;
-  height: fit-content;
+  grid-template-columns: 1fr 1fr;
   align-self: center;
   justify-self: center;
   width: 90%;
   gap: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .joker-content img {
@@ -886,9 +911,9 @@ hr {
   text-align: center;
   background: var(--default-bg);
   box-shadow: var(--button-box-shadow);
-  height: fit-content;
+  /* height: fit-content; */
   min-height: 50px;
-  /* max-height: 200px; */
+  max-height: 200px;
   overflow-y: auto;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -898,12 +923,14 @@ hr {
   justify-self: center;
   max-height: 300px;
   width: auto;
+  height: 100%;
 }
 
 .question-answer-img {
   justify-self: center;
   width: auto;
   max-height: 150px;
+  height: 100%;
 }
 
 .question-answer {
@@ -923,20 +950,20 @@ hr {
 
 .question-answer-asking:hover {
   background: var(--default-hover-bg);
-  transform: translateY(2px);
   cursor: pointer;
 }
 
 .true-false-buttons {
-  width: 90%;
-  position: relative;
+  width: 20vw;
+  position: fixed;
   display: grid;
-  grid-template-columns: 50% 50%;
-  column-gap: 10px;
+  row-gap: 10px;
   align-self: center;
   justify-self: center;
-  height: 50px;
-  top: 50px;
+  height: max-content;
+  max-height: 90px;
+  top: 20px;
+  right: 20px;
 }
 
 .true-false-buttons button {
@@ -946,10 +973,15 @@ hr {
   font-size: 20pt;
   transition: transform 100ms ease-out;
   box-shadow: var(--button-box-shadow);
+  height: 4vw;
+  min-width: 250px;
+  max-width: 320px;
+  min-height: 40px;
+  max-height: 60px;
 }
 
 .true-false-buttons button:hover {
-  transform: translateY(10px);
+  transform: translateY(2px);
   cursor: pointer;
 }
 
@@ -1465,4 +1497,53 @@ background: rgb(158, 158, 158) !important;
   justify-items: center;
   width: 100%;
   height: 100%;
+}
+
+.poker-user-list-item {
+  text-align: left !important;
+}
+
+.poker-input {
+  z-index: 1;
+  display: grid;
+  width: 100%;
+  height: 100px;
+  justify-self: start;
+  background: var(--default-bg);
+  border-left: var(--default-border);
+  border-bottom: var(--default-border);
+  border-top: var(--default-border);
+  box-shadow: var(--button-box-shadow);
+}
+
+.poker-input input {
+  display: flex;
+  align-self: center;
+  justify-self: center;
+  box-shadow: var(--default-inner-box-shadow);
+  border: 0;
+  height: 40px;
+  width: 80%;
+  background-color: #ffffffaf;
+  font-size: 15pt;
+  font-family: var(--default-font);
+  padding-left: 5px;
+}
+
+.poker-input button {
+  border: 0;
+  background: var(--default-bg);
+  height: 80%;
+  width: 70%;
+  justify-self: center;
+  font-family: var(--default-font);
+  border: 2px solid black;
+  font-size: 13pt;
+  box-shadow: var(--button-box-shadow);
+  transition: transform 100ms ease-out;
+}
+
+.poker-input button:hover {
+  background: var(--default-hover-bg);
+  transform: translate(0px, 1px);
 }

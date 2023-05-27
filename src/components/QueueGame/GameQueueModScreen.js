@@ -118,15 +118,9 @@ const GameQueueModScreen = props => {
     }
 
     const generatePlayerArrayToString = player => {
-        let ret = "";
-        if(player instanceof Array && player.length) {
-            player.forEach((a, i) => {
-                ret += a.username;
-                if(i<player.length-1)
-                    ret += ", ";
-            });
-        }
-        return ret;
+        if(player instanceof Array && player.length)
+            return player.map(a => a.username).join(", ");
+        return " ";
     }
 
     const setWinner = () => {
@@ -140,17 +134,17 @@ const GameQueueModScreen = props => {
             if(gameState.playerProgress[ps].score===maxScore)
                 winner.push(ps);
         });
-        let gs = props.eventStatus.globalScores;
-        let displayScore = "";
+        const winnerScores = [];
         winner.forEach(w => {
-            if(gs[w]) {
-                gs[w] = parseInt(gs[w]) + 1;
-            } else {
-                gs[w] = parseInt(gs[w]) + 1;
-            }
-            displayScore += gs[w]+"; ";
+            const { globalScores } = props.eventStatus;
+            globalScores[w] = parseInt(globalScores[w]) + 1 ?? 1;
+            winnerScores.push(globalScores[w]);
         });
-        triggerGameEndWindow(generatePlayerArrayToString(props.eventPlayerList.filter(a => winner.includes(a.playerId))), displayScore, 1);
+        triggerGameEndWindow(
+            generatePlayerArrayToString(props.eventPlayerList.filter(a => winner.includes(a.playerId))),
+            winnerScores.join("; "),
+            1
+        );
         updateStatus();
     }
 
@@ -188,7 +182,8 @@ const GameQueueModScreen = props => {
                 <div className="mod-menu-button-array">
                     <div className="mod-menu-button" onClick={closeGame}>Lobby</div>
                 </div>
-                <div className="double panel centered-panel clickable-list">
+                <div></div>
+                <div className="panel clickable-list">
                     <ul className="large-list">
                         {game.content?.rounds?.map((a, i) => 
                             <li onClick={() => setupRoundStatus(i)} className={isLocked(i)?'locked':''}>
@@ -214,7 +209,8 @@ const GameQueueModScreen = props => {
                 <div className="mod-menu-button-array">
                     <div className="mod-menu-button" onClick={closeRound}>Rounds</div>
                 </div>
-                <div className="double panel centered-panel clickable-list">
+                <div></div>
+                <div className="panel clickable-list">
                     <ul className="large-list">
                         {getCurrentRound()?.hints?.map((a, i) => 
                             <li 

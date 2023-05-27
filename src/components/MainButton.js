@@ -1,11 +1,18 @@
 const MainButton = props => {
+
+    let { text, onClick, className, locked } = props;
+    if(locked) {
+        onClick = null;
+        className += " locked";
+    }
+
     return (
         <button 
-            onClick={e => props.onClick?.(e)}
-            className={"main-button "+(props.className ?? "")}
+            onClick={e => onClick?.(e)}
+            className={"main-button "+(className ?? "")}
             style={props.style}
         >
-            {props.text}
+            {text}
         </button>
     );
 }
