@@ -120,7 +120,7 @@ const GamePoker = props => {
                     </h1>
                 </div>
                 <div></div>
-                <div className="panel centered-panel">
+                <div className="panel">
                     <ul className="large-list">
                         {getActiveHints().map(a => 
                             <li className="no-grid">

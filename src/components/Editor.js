@@ -19,8 +19,8 @@ const Editor = props => {
     const handleUpdate = (name, value) => {
         event[name] = value;
         setEvent(event);
+        saveEvent();
         forceUpdate();
-        console.log(event);
     }
 
     const updateGame = (name, value, game) => {
@@ -775,9 +775,6 @@ const Editor = props => {
                     <div className="mod-menu-button" onClick={downloadEvent}>
                         Down load
                     </div>
-                    <div className="mod-menu-button" onClick={saveEvent}>
-                        Save
-                    </div>
                 </div>
             </div>
             <div className="sidepanel panel double-r">
@@ -804,7 +801,7 @@ const Editor = props => {
                     {event?.games.map(renderGame)}
                 </ul>
             </div>
-            <div className="panel">
+            <div className="panel double-r">
                 {renderGameEditList(event.games?.[focusedGame] ?? [])}
             </div>
         </div>

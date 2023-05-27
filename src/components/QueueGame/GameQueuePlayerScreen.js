@@ -83,14 +83,6 @@ const GameQueuePlayerScreen = props => {
 
     return (
         <div>
-            {/* <ResultWindow
-                username={roundWinner?.username}
-                score={roundWinner?.score}
-                change={roundWinner?.change}
-                msg={roundWinner?.msg}
-                autoHide={true}
-                ref={refResult}
-            /> */}
             <div className="lobby-mod-grid">
                 <div className="game-title">
                     <h1>
@@ -98,7 +90,7 @@ const GameQueuePlayerScreen = props => {
                     </h1>
                 </div>
                 <div></div>
-                <div className="double panel centered-panel">
+                <div className="panel">
                     <ul className="large-list">
                         {getActiveHints().map(a => 
                             <li className="no-grid">

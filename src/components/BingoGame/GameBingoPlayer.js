@@ -66,6 +66,15 @@ const GameBingoPlayer = props => {
         return gameState.roundStatus.find(a => a.current)?.teamsAnswer ?? -1;
     }
 
+    const getCurrentRoundName = () => {
+        let g = gameState.roundStatus.find(a => a.current);
+        console.log(game.content.questions[g.roundId]);
+        if(g) {
+            return game.content.questions[g.roundId]?.category || null;
+        }
+        return null;
+    }
+
     const renderSelect = () => {
         return (
             <div className="lobby-mod-grid">
@@ -94,7 +103,7 @@ const GameBingoPlayer = props => {
                         asking={isAskedPlayer()}
                         callback={isAskedPlayer()?setSelection:null}
                         selection={getQuestionSelection()}
-                        currentPlayerName={TeamNames[getCurrentTeam()]}
+                        currentPlayerName={`(${getCurrentRoundName()}) ${TeamNames[getCurrentTeam()]}`}
                     />
                 </div>
             </div>
