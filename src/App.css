@@ -885,7 +885,7 @@ hr {
 
 .question-grid {
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 1fr 1fr;
   align-self: center;
   justify-self: center;
   width: 90%;
@@ -911,9 +911,9 @@ hr {
   text-align: center;
   background: var(--default-bg);
   box-shadow: var(--button-box-shadow);
-  height: fit-content;
+  /* height: fit-content; */
   min-height: 50px;
-  /* max-height: 200px; */
+  max-height: 200px;
   overflow-y: auto;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -923,12 +923,14 @@ hr {
   justify-self: center;
   max-height: 300px;
   width: auto;
+  height: 100%;
 }
 
 .question-answer-img {
   justify-self: center;
   width: auto;
   max-height: 150px;
+  height: 100%;
 }
 
 .question-answer {
@@ -948,7 +950,6 @@ hr {
 
 .question-answer-asking:hover {
   background: var(--default-hover-bg);
-  transform: translateY(2px);
   cursor: pointer;
 }
 
