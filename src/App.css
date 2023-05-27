@@ -954,15 +954,16 @@ hr {
 }
 
 .true-false-buttons {
-  width: 90%;
-  position: relative;
+  width: 20vw;
+  position: fixed;
   display: grid;
-  grid-template-columns: 50% 50%;
-  column-gap: 10px;
+  row-gap: 10px;
   align-self: center;
   justify-self: center;
-  height: 50px;
-  top: 50px;
+  height: max-content;
+  max-height: 90px;
+  top: 20px;
+  right: 20px;
 }
 
 .true-false-buttons button {
@@ -972,10 +973,15 @@ hr {
   font-size: 20pt;
   transition: transform 100ms ease-out;
   box-shadow: var(--button-box-shadow);
+  height: 4vw;
+  min-width: 250px;
+  max-width: 320px;
+  min-height: 40px;
+  max-height: 60px;
 }
 
 .true-false-buttons button:hover {
-  transform: translateY(10px);
+  transform: translateY(2px);
   cursor: pointer;
 }
 

@@ -63,7 +63,7 @@ const GamePokerMod = (props) => {
     }
 
     const triggerRoundWindow = score => {
-        props.send('triggerresultscreen', {username: getNearestPlayerName, score, change: game.content.scoreWin, msg: ""});
+        props.send('triggerresultscreen', {username: getNearestPlayerName(), score, change: game.content.scoreWin, msg: ""});
     }
 
     const triggerGameEndWindow = (winnerUsername, score, change) => {
@@ -201,15 +201,9 @@ const GamePokerMod = (props) => {
     }
 
     const generatePlayerArrayToString = player => {
-        let ret = "";
-        if(player instanceof Array && player.length) {
-            player.forEach((a, i) => {
-                ret += a.username;
-                if(i<player.length-1)
-                    ret += ", ";
-            });
-        }
-        return ret;
+        if(player instanceof Array && player.length)
+            return player.map(a => a.username).join(", ");
+        return " ";
     }
 
     const setWinner = () => {
@@ -223,17 +217,17 @@ const GamePokerMod = (props) => {
             if(gameState.playerProgress[ps].score===maxScore)
                 winner.push(ps);
         });
-        let gs = props.eventStatus.globalScores;
-        let displayScore = "";
+        const winnerScores = [];
         winner.forEach(w => {
-            if(gs[w]) {
-                gs[w] = parseInt(gs[w]) + 1;
-            } else {
-                gs[w] = parseInt(gs[w]) + 1;
-            }
-            displayScore += gs[w]+"; ";
+            const { globalScores } = props.eventStatus;
+            globalScores[w] = parseInt(globalScores[w]) + 1 ?? 1;
+            winnerScores.push(globalScores[w]);
         });
-        triggerGameEndWindow(generatePlayerArrayToString(props.eventPlayerList.filter(a => winner.includes(a.playerId))), displayScore, 1);
+        triggerGameEndWindow(
+            generatePlayerArrayToString(props.eventPlayerList.filter(a => winner.includes(a.playerId))),
+            winnerScores.join("; "),
+            1
+        );
         updateStatus();
     }
 
@@ -276,7 +270,7 @@ const GamePokerMod = (props) => {
                         Lobby
                     </div>
                 </div>
-                <div className="double panel centered-panel clickable-list">
+                <div className="panel clickable-list">
                     <ul className="large-list">
                         {game.content?.rounds?.map((a, i) => 
                             <li onClick={() => setupRoundStatus(i)} className={isLocked(i)?'locked':''}>
@@ -316,7 +310,7 @@ const GamePokerMod = (props) => {
                     }
                 </div>
                 <div></div>
-                <div className="panel centered-panel clickable-list">
+                <div className="panel clickable-list">
                     <ul className="large-list">
                         {getCurrentRound()?.hints?.map((a, i) => 
                             <li 

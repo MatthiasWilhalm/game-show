@@ -98,6 +98,12 @@ const GameQuizPlayer = props => {
                         {game?.title}
                     </h1>
                 </div>
+                {(!isAskedPlayer() && !isSpec())?
+                        <div className="true-false-buttons">
+                            <button className={getEstimateValue()===1?"selected":"right"} onClick={() => setSelection(1)}>true</button>
+                            <button className={getEstimateValue()===0?"selecetd":"wrong"} onClick={() => setSelection(0)}>false</button>
+                        </div>
+                :''}
                 <div className="question-container">
                     <QuestionComponent 
                         question={getCurrentQuestion()}
@@ -108,12 +114,6 @@ const GameQuizPlayer = props => {
                         callback={isAskedPlayer()?setSelection:null}
                         selection={getQuestionSelection()}
                     />
-                    {(!isAskedPlayer() && !isSpec())?
-                        <div className="true-false-buttons">
-                            <button className={getEstimateValue()===1?"selected":"right"} onClick={() => setSelection(1)}>true</button>
-                            <button className={getEstimateValue()===0?"selecetd":"wrong"} onClick={() => setSelection(0)}>false</button>
-                        </div>
-                    :''}
                 </div>                
             </div>
         );
