@@ -300,7 +300,7 @@ const Editor = props => {
                             <input 
                                 type={"number"}
                                 value={game.content?.joker?.fiftyfifty}
-                                placeholder="Score Spec Lose"
+                                placeholder="fiftyfifty amount"
                                 onChange={e => updateContent("joker", {fiftyfifty: e.target.value}, game)}
                                 className="double"
                             ></input>
